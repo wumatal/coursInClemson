@@ -1,0 +1,13 @@
+Name: Yupeng Wu
+
+Clemson Email Address: yupengw@clemson.edu
+
+Project no: 2
+
+Project due date: Sept 29th, 2017
+
+Project description: To get the input text and output it upside down and backwards by using flex
+
+The easiest part of this project: To input ASCII code of each upside down character.
+
+Problems that I had in completing this project: To come up with the function from a character to its upside down counterpart. Another thing is to read unicode directly from code.txt, but I still can't find a solution for this.
