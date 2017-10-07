@@ -29,15 +29,17 @@
 #define CLICK			1
 #define UNCREATED		0
 #define UNOVERLAP		-1
+#define UNREPLACED		4
 #define UNCLICK			0
 #define CREATED_INDEX	2
 #define OVERLAP_INDEX	3
+#define REPLACE_INDEX   3
 #define CLICK_INDEX		4
 #define MAX_POINTS		4
 #define INVALID			-1
 #define VALID			1
 #define POINT_RADIUS	50
-#define STEP			77
+#define STEP			30
 
 int x_last,y_last;
 /**
@@ -49,15 +51,19 @@ int x_last,y_last;
  * of which each elem has five fields: position of each and number of overlapping points
  * @author Yupeng Wu
  */
-int ctrl_points[MAX_POINTS][5] = {
+int ctrl_points[MAX_POINTS+1][5] = {
 	{0, 0, UNCREATED, UNOVERLAP, UNCLICK}, {0, 0, UNCREATED, UNOVERLAP, UNCLICK}, 
-	{0, 0, UNCREATED, UNOVERLAP, UNCLICK}, {0, 0, UNCREATED, UNOVERLAP, UNCLICK}};
+	{0, 0, UNCREATED, UNOVERLAP, UNCLICK}, {0, 0, UNCREATED, UNOVERLAP, UNCLICK},
+	{0, 0, UNCREATED, UNREPLACED, UNCLICK}};
 int count_points = 0;
 int index = INVALID;
 int overlap_points[2][5] = {
 	{INVALID,INVALID,INVALID,INVALID, EMPTY},
 	{INVALID,INVALID,INVALID,INVALID, EMPTY}};
-
+// Change the look of points and curve
+float typeset[4];
+int previousTime, currentTime, elapsedTime;
+int rate=0;
 
 /**
  * To verify if a point is already clicked, 
@@ -124,7 +130,7 @@ void put_point_to_empty_overlapset (int index);
  * @param the point need to be put in the set
  * @author Yupeng Wu
  */
-void dda_line ();
+void dda_line (int index);
 
 /**
  * To return a point from a overlap set.
@@ -134,6 +140,8 @@ void dda_line ();
  * @author Yupeng Wu
  */
 int choose_point_from_overlapset(int overlapset_index);
+
+void adaptpoint();
   
 /***************************************************************************/
 
@@ -149,16 +157,11 @@ void init_window()
 
 /***************************************************************************/
 
-void write_pixel(int x, int y, float intensity)
+void write_pixel(int x, int y, float * typeset)
 /* Turn on the pixel found at x,y */
 {
-	glLineWidth(2.5);
-	glColor3f (intensity * 0.5f, intensity * 0.0f, intensity * 1.0f);                 
-	/**
-	 * Display the points that user clicks.
-	 * @author Yupeng Wu
-	 */
-	glPointSize(7);
+	glColor3f (typeset[0], typeset[1], typeset[2]);                 
+	glPointSize(typeset[3]);
 	glBegin(GL_POINTS);
 		glVertex3i(x, y, 0);
 	glEnd();	
@@ -171,15 +174,32 @@ void display ( void )   // Create The Display Function
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	      // Clear Screen 
 	
 	// Create the four points
-	for(int i=0; i<4; i++) {
-		// If the point doesn't created, create it.
-		if( ctrl_points[i][2] ){
-			write_pixel(ctrl_points[i][0], ctrl_points[i][1], 1.0);
+	for(int i=0; i<MAX_POINTS+1; i++) {
+		// If the point created, put it.
+		if( ctrl_points[i][CREATED_INDEX] == CREATED ){
+			//typeset[0] = 0.886; typeset[1] = 0.878; typeset[1] = 0.816;
+			typeset[0] = 0.275; typeset[1] = 0.482; typeset[2] = 0.553; 
+			typeset[3] = 7.7;
+			// A point is being replace, put a faded point in its original position
+			//if ( ctrl_points[4][CREATED_INDEX] == CREATED ){
+			if ( i == 4 ){
+				typeset[1] = 0.101; typeset[1] = 0.31; typeset[1] = 0.337;
+				typeset[3] = 7.7;
+			}
+			write_pixel(ctrl_points[i][0], ctrl_points[i][1], typeset);
 		}
 	}
 	
-	if( count_points >= MAX_POINTS ) {				
-		dda_line();
+	
+	if( count_points >= MAX_POINTS ) {
+		//int i = ctrl_points[4][REPLACE_INDEX];
+		//if ( i != 4 && ctrl_points[i][CREATED_INDEX] == CREATED ){
+		//	adaptpoint();
+		//}
+		//else {
+			dda_line( ctrl_points[4][REPLACE_INDEX] );
+		//}
+
 	}
 	glutSwapBuffers();                                      // Draw Frame Buffer 
 }
@@ -189,18 +209,7 @@ void mouse(int button, int state, int x, int y)
 {
 	y *= -1;  //align y with mouse
 	y += 500; //ignore 
-	
-	// When a point is clicked, the curve shuold move with the mouse until another
-	// click happened.
-	index = exist_point_clicked();
-	// Index != INVALID indicates that there is point movement yet.
-	/*if ( index != INVALID ) {
-		ctrl_points[index][0] = x;
-		ctrl_points[index][1] = y;
-		// Maintain the old point.
-		write_pixel(ctrl_points[index][0], ctrl_points[index][1], 0.5);		
-	}*/
-	
+
 	// Left button pressed
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		// To see if it is a point moving action.
@@ -241,7 +250,13 @@ void mouse(int button, int state, int x, int y)
 					}
 					ctrl_points[index][CLICK_INDEX] = CLICK;
 					
-					// curve generate by mouse move
+					// Let ctrl_points[4] to present it
+					ctrl_points[4][CREATED_INDEX] = CREATED;
+					ctrl_points[index][CREATED_INDEX] = UNCREATED;
+					ctrl_points[4][REPLACE_INDEX] = index;
+					ctrl_points[4][0] = ctrl_points[index][0];
+					ctrl_points[4][1] = ctrl_points[index][1];
+					
 				}
 			}
 		}
@@ -260,6 +275,10 @@ void mouse(int button, int state, int x, int y)
 			ctrl_points[index][0] = x;
 			ctrl_points[index][1] = y;
 			ctrl_points[index][CLICK_INDEX] = UNCLICK;
+			ctrl_points[index][CREATED_INDEX] = CREATED;
+			// After place the ctrl_points[index], ctrl_points[4] should faded out.
+			//ctrl_points[4][CREATED_INDEX] = UNCREATED;
+			//ctrl_points[4][REPLACE_INDEX] = 4;
 
 			// Not click on a point, set its overlap field to UNOVERLAP
 			if ( index_clicked == INVALID ) {
@@ -294,9 +313,6 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 		case '1':             // stub for new screen
 			printf("New screen\n");
 			break;
-		// When Backspace or Delete is pressed.
-		// Return the most recent point to its former position;
-		// If it is an new created point, delete it directly
 		default:       
 			break;
 	}
@@ -427,70 +443,97 @@ void put_point_to_empty_overlapset(int index){
 	}
 }
 
-void dda_line (){
+void dda_line (int index){
 	float bx, by;
-	float t = 0;
-	float u = t / float(STEP);
-	// p = u^3 * P0 + 3 * u^2 * (1-u) * P1 + 3 * u * (1-u)^2 * P2 + (1-u)^3 * P3 
-	x_last = std::pow(u, 3) * ctrl_points[0][0] +
-		3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-		3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-		std::pow((1-u), 3) * ctrl_points[3][0];
-	y_last = std::pow(u, 3) * ctrl_points[0][1] +
-		3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-		3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-		std::pow((1-u), 3) * ctrl_points[3][1];
+	float u = 0.0;
+	float dx, dy;
+	int steps, k, t;
+	float xIncrement,yIncrement;
 	
-	for ( int t = 1; t < STEP; t++ ) {
+	bx = ctrl_points[3][0];
+	by = ctrl_points[3][1];
+	
+	//typeset[0] = 0.176; typeset[1] = 0.322; typeset[2] = 0.031; 
+	typeset[0] = 0.882; typeset[1] = 0.996; typeset[1] = 0.643;
+	typeset[3] = 2.5;
+	for ( t = 1; t < STEP + 1; t++ ) {		
+		u = float(t) / float(STEP);
+		// Get the end points
+		// p = u^3 * P0 + 3 * u^2 * (1-u) * P1 + 3 * u * (1-u)^2 * P2 + (1-u)^3 * P3 
+		if ( index != 4 && ctrl_points[index][CREATED_INDEX] == CREATED ){
+			adaptpoint();
+		}
+		switch (index) {
+			case 0: 
+				x_last = std::pow(u, 3) * ctrl_points[4][0] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
+					std::pow((1-u), 3) * ctrl_points[3][0];
+				y_last = std::pow(u, 3) * ctrl_points[4][1] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
+					std::pow((1-u), 3) * ctrl_points[3][1];
+				break;
+			case 1: 
+				x_last = std::pow(u, 3) * ctrl_points[0][0] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[4][0] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
+					std::pow((1-u), 3) * ctrl_points[3][0];
+				y_last = std::pow(u, 3) * ctrl_points[0][1] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[4][1] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
+					std::pow((1-u), 3) * ctrl_points[3][1];
+				break;
+			case 2: 
+				x_last = std::pow(u, 3) * ctrl_points[0][0] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[4][0] +
+					std::pow((1-u), 3) * ctrl_points[3][0];
+				y_last = std::pow(u, 3) * ctrl_points[0][1] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[4][1] +
+					std::pow((1-u), 3) * ctrl_points[3][1];
+				break;
+			case 3: 
+				x_last = std::pow(u, 3) * ctrl_points[0][0] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
+					std::pow((1-u), 3) * ctrl_points[4][0];
+				y_last = std::pow(u, 3) * ctrl_points[0][1] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
+					std::pow((1-u), 3) * ctrl_points[4][1];
+				break;
+			default : 
+				x_last = std::pow(u, 3) * ctrl_points[0][0] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
+					std::pow((1-u), 3) * ctrl_points[3][0];
+				y_last = std::pow(u, 3) * ctrl_points[0][1] +
+					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
+					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
+					std::pow((1-u), 3) * ctrl_points[3][1];
+				break;
+			
+		}
+		
+		// Draw a line between (bx, by) and (x_last, y_last)		
+		dx = std::abs(x_last - bx);
+		dy = std::abs(y_last - by);
+		
+		steps = dx > dy ? dx : dy;
+
+		xIncrement = x_last > bx ? dx / steps : -1 * dx / steps;
+		yIncrement = y_last > by ? dy / steps : -1 * dy / steps;
+		for(k=0;k<steps;k++)
+		{
+			write_pixel(round(bx), round(by), typeset);
+			bx += xIncrement;
+			by += yIncrement;
+		}
 		// Get the begin points.
 		bx = x_last;
 		by = y_last;
-		
-		u = t / float(STEP);
-
-		// Get the end points
-		x_last = std::pow(u, 3) * ctrl_points[0][0] +
-			3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-			3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-			std::pow((1-u), 3) * ctrl_points[3][0];
-		y_last = std::pow(u, 3) * ctrl_points[0][1] +
-			3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-			3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-			std::pow((1-u), 3) * ctrl_points[3][1];
-			
-		// Draw a line between (bx, by) and (x_last, y_last)		
-	
-		
-		float dx = std::abs(x_last-bx);
-		float dy = std::abs(y_last-by);
-		int steps,k;
-		float xIncrement,yIncrement;
-
-		if(dx>dy)
-			steps = dx;
-		else
-			steps = dy;
-
-		xIncrement = float(dx) / float(steps);
-		yIncrement = float(dy) / float(steps);
-		
-		glColor3f (0.5f, 0.5f, 1.0f);                 
-		glPointSize(2);
-		glBegin(GL_LINE_STRIP);
-			glVertex2f(bx,by);
-		glEnd();
-		glFlush();
-
-		for(k=1;k<steps;k++)
-		{
-			bx+= xIncrement;
-			by+= yIncrement;
-			glBegin(GL_POINTS);
-				glVertex2f(bx,by);
-			glEnd();
-			glFlush();
-		}
-	
 	}
 }
 
@@ -536,4 +579,38 @@ int choose_point_from_overlapset(int overlapset_index) {
 			<< std::endl;
 	std::cout << "-----------------------    RETRY   ----------------------- " << std::endl; 
 	return -1;
+}
+
+void adaptpoint(){
+	float dx, dy;
+	int steps, i;
+	float xIncrement,yIncrement;
+	
+	i = ctrl_points[4][REPLACE_INDEX];
+	
+	// Draw a line between (bx, by) and (x_last, y_last)		
+	dx = std::abs(ctrl_points[i][0] - ctrl_points[4][0]);
+	dy = std::abs(ctrl_points[i][1] - ctrl_points[4][0]);
+	
+	steps = dx > dy ? dy : dx;
+
+	xIncrement = ctrl_points[i][0] > ctrl_points[4][0] ? dx / steps : -1 * dx / steps;
+	yIncrement = ctrl_points[i][1] > ctrl_points[4][1] ? dy / steps : -1 * dy / steps;
+	
+	if ( (rate++) % 40 != 0 ) {
+		if(rate > 77)
+			rate = -77;
+		return;
+	}
+	//printf("%d\t%d\n", ctrl_points[4][0], ctrl_points[i][0]);
+	if(ctrl_points[4][0] != ctrl_points[i][0] )
+		ctrl_points[4][0] += xIncrement;
+	if(ctrl_points[4][1] != ctrl_points[i][1])
+		ctrl_points[4][1] += yIncrement;
+	if (ctrl_points[4][0] == ctrl_points[i][0] &&
+		ctrl_points[4][1] == ctrl_points[i][1]) {
+		//ctrl_points[4][REPLACE_INDEX] = 4;
+	    
+	}
+	ctrl_points[4][CREATED_INDEX] = UNCREATED;
 }
