@@ -40,9 +40,9 @@
 #define VALID			1
 #define POINT_RADIUS	50
 #define STEP			30
-#define STRIDE			1
+#define STRIDE			100
 
-int x_last,y_last;
+float x_last,y_last;
 /**
  * Define a array to describe the points, 
  * of which each elem has five fields: x, y, created_flag, overlap_flag, reclick_flag
@@ -64,7 +64,7 @@ int overlap_points[2][5] = {
 // Change the look of points and curve
 float typeset[4];
 int previousTime, currentTime, elapsedTime;
-int rate=0;
+int rate=STRIDE;
 
 /**
  * To verify if a point is already clicked, 
@@ -203,14 +203,11 @@ void display ( void )   // Create The Display Function
 	
 	
 	if( count_points >= MAX_POINTS ) {
-		//int i = ctrl_points[4][REPLACE_INDEX];
-		//if ( i != 4 && ctrl_points[i][CREATED_INDEX] == CREATED ){
-		//	adaptpoint();
-		//}
-		//else {
-			dda_line( ctrl_points[4][REPLACE_INDEX] );
-		//}
-
+		int i = ctrl_points[4][REPLACE_INDEX];
+		if ( i != 4 && ctrl_points[i][CREATED_INDEX] == CREATED ){
+			adaptpoint();
+		}
+		dda_line( i );
 	}
 	glutSwapBuffers();                                      // Draw Frame Buffer 
 }
@@ -469,12 +466,12 @@ void dda_line (int index){
 		// Get the end points
 		// p = u^3 * P0 + 3 * u^2 * (1-u) * P1 + 3 * u * (1-u)^2 * P2 + (1-u)^3 * P3 
 		
-		if ( index != 4 && ctrl_points[index][CREATED_INDEX] == CREATED ){
+	/*	if ( index != 4 && ctrl_points[index][CREATED_INDEX] == CREATED ){
 			adaptpoint();
 		}
-		/*
-		x_last=0;
-		y_last=0;
+	*/	
+		x_last=0.0;
+		y_last=0.0;
 		for( int i=0; i<4; i++ ){
 			if (i==index) {
 				x_last = x_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[4][0] * binomialCoeff(i);
@@ -484,60 +481,6 @@ void dda_line (int index){
 				x_last = x_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[i][0] * binomialCoeff(i);
 				y_last = y_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[i][1] * binomialCoeff(i);		
 			}
-		}
-		*/
-		switch (index) {
-			case 0: 
-				x_last = std::pow(u, 3) * ctrl_points[4][0] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-					std::pow((1-u), 3) * ctrl_points[3][0];
-				y_last = std::pow(u, 3) * ctrl_points[4][1] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-					std::pow((1-u), 3) * ctrl_points[3][1];
-				break;
-			case 1: 
-				x_last = std::pow(u, 3) * ctrl_points[0][0] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[4][0] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-					std::pow((1-u), 3) * ctrl_points[3][0];
-				y_last = std::pow(u, 3) * ctrl_points[0][1] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[4][1] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-					std::pow((1-u), 3) * ctrl_points[3][1];
-				break;
-			case 2: 
-				x_last = std::pow(u, 3) * ctrl_points[0][0] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[4][0] +
-					std::pow((1-u), 3) * ctrl_points[3][0];
-				y_last = std::pow(u, 3) * ctrl_points[0][1] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[4][1] +
-					std::pow((1-u), 3) * ctrl_points[3][1];
-				break;
-			case 3: 
-				x_last = std::pow(u, 3) * ctrl_points[0][0] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-					std::pow((1-u), 3) * ctrl_points[4][0];
-				y_last = std::pow(u, 3) * ctrl_points[0][1] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-					std::pow((1-u), 3) * ctrl_points[4][1];
-				break;
-			default : 
-				x_last = std::pow(u, 3) * ctrl_points[0][0] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][0] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][0] +
-					std::pow((1-u), 3) * ctrl_points[3][0];
-				y_last = std::pow(u, 3) * ctrl_points[0][1] +
-					3 * std::pow(u, 2) * (1-u) * ctrl_points[1][1] +
-					3 * u * std::pow((1-u), 2) * ctrl_points[2][1] +
-					std::pow((1-u), 3) * ctrl_points[3][1];
-				break;
-			
 		}
 		
 		// Draw a line between (bx, by) and (x_last, y_last)		
@@ -617,32 +560,25 @@ void adaptpoint(){
 
 	steps = dx > dy ? dy : dx;
 
-	xIncrement = STRIDE * (ctrl_points[i][0] > ctrl_points[4][0] ? dx / steps : (-1 * dx / steps));
-	yIncrement = STRIDE * (ctrl_points[i][1] > ctrl_points[4][1] ? dy / steps : (-1 * dy / steps));
+	xIncrement = (ctrl_points[i][0] > ctrl_points[4][0] ? dx / steps : (-1 * dx / steps));
+	yIncrement = (ctrl_points[i][1] > ctrl_points[4][1] ? dy / steps : (-1 * dy / steps));
 
-	if ( (rate++) % 100 != 0 ) {
+	if ( (rate++) % 50 != 0 ) {
 		return;
 	}
 	
 	if(ctrl_points[4][0] != ctrl_points[i][0] )
-		ctrl_points[4][0] += xIncrement*dx/(dx+dy)*10;
+		ctrl_points[4][0] += xIncrement*dx/(dx+dy);
 	if(ctrl_points[4][1] != ctrl_points[i][1])
-		ctrl_points[4][1] += yIncrement*dy/(dx+dy)*10;	
-	/*
+		ctrl_points[4][1] += yIncrement*dy/(dx+dy);	
+	
 	if (distance_between_points(ctrl_points[4][0], ctrl_points[4][1],
 			ctrl_points[i][0], ctrl_points[i][1] ) < 
 			( xIncrement*xIncrement + yIncrement*yIncrement) ) {
 		ctrl_points[4][0] = ctrl_points[i][0];
 		ctrl_points[4][1] = ctrl_points[i][1];
 		ctrl_points[4][REPLACE_INDEX] = 4;
-	}*/
-	
-	if ( ctrl_points[4][0] == ctrl_points[i][0] &&
-		ctrl_points[4][1] == ctrl_points[i][1]) {
-		ctrl_points[4][REPLACE_INDEX] = 4;
 	}
-	ctrl_points[4][0] = ctrl_points[i][0];
-	ctrl_points[4][1] = ctrl_points[i][1];
 	ctrl_points[4][CREATED_INDEX] = UNCREATED;
 }
 
