@@ -40,6 +40,7 @@
 #define VALID			1
 #define POINT_RADIUS	50
 #define STEP			30
+#define STRIDE			1
 
 int x_last,y_last;
 /**
@@ -141,7 +142,17 @@ void dda_line (int index);
  */
 int choose_point_from_overlapset(int overlapset_index);
 
+/**
+ * To move a point gradually.
+ * @author Yupeng Wu 
+ */ 
 void adaptpoint();
+
+int binomialCoeff(int k);
+
+double pow_based_3 (double n, int k);
+
+int distance_between_points(int x_1, int y_1, int x_2, int y_2);
   
 /***************************************************************************/
 
@@ -349,8 +360,7 @@ int exist_point_clicked() {
 
 int click_on_point(int x, int y) {
 	for( unsigned int a = 0, mag; a < sizeof(ctrl_points)/sizeof(ctrl_points[0]); a++ ) {
-		mag = (ctrl_points[a][0] - x)*(ctrl_points[a][0] - x) + 
-			  (ctrl_points[a][1] - y)*(ctrl_points[a][1] - y);
+		mag = distance_between_points(ctrl_points[a][0], ctrl_points[a][1], x, y);
 		if (mag < POINT_RADIUS) {
 			return a;
 		}
@@ -360,10 +370,8 @@ int click_on_point(int x, int y) {
 
 bool is_overlap_point(int index_1, int index_2) {
 	int mag;
-	mag = (ctrl_points[index_1][0] - ctrl_points[index_2][0])*
-			(ctrl_points[index_1][0] - ctrl_points[index_2][0]) + 
-		  (ctrl_points[index_1][1] - ctrl_points[index_2][1])*
-			(ctrl_points[index_1][1] - ctrl_points[index_2][1]);
+	mag = distance_between_points(ctrl_points[index_1][0], ctrl_points[index_1][1], 
+				ctrl_points[index_2][0], ctrl_points[index_2][1]);
 	if (mag < POINT_RADIUS) {
 		return true;
 	}
@@ -460,9 +468,24 @@ void dda_line (int index){
 		u = float(t) / float(STEP);
 		// Get the end points
 		// p = u^3 * P0 + 3 * u^2 * (1-u) * P1 + 3 * u * (1-u)^2 * P2 + (1-u)^3 * P3 
+		
 		if ( index != 4 && ctrl_points[index][CREATED_INDEX] == CREATED ){
 			adaptpoint();
 		}
+		/*
+		x_last=0;
+		y_last=0;
+		for( int i=0; i<4; i++ ){
+			if (i==index) {
+				x_last = x_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[4][0] * binomialCoeff(i);
+				y_last = y_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[4][1] * binomialCoeff(i);	
+			}
+			else{
+				x_last = x_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[i][0] * binomialCoeff(i);
+				y_last = y_last + pow_based_3(u, 3-i) * pow_based_3((1-u), i) * ctrl_points[i][1] * binomialCoeff(i);		
+			}
+		}
+		*/
 		switch (index) {
 			case 0: 
 				x_last = std::pow(u, 3) * ctrl_points[4][0] +
@@ -587,30 +610,62 @@ void adaptpoint(){
 	float xIncrement,yIncrement;
 	
 	i = ctrl_points[4][REPLACE_INDEX];
-	
+
 	// Draw a line between (bx, by) and (x_last, y_last)		
 	dx = std::abs(ctrl_points[i][0] - ctrl_points[4][0]);
 	dy = std::abs(ctrl_points[i][1] - ctrl_points[4][0]);
-	
+
 	steps = dx > dy ? dy : dx;
 
-	xIncrement = ctrl_points[i][0] > ctrl_points[4][0] ? dx / steps : -1 * dx / steps;
-	yIncrement = ctrl_points[i][1] > ctrl_points[4][1] ? dy / steps : -1 * dy / steps;
-	
-	if ( (rate++) % 40 != 0 ) {
-		if(rate > 77)
-			rate = -77;
+	xIncrement = STRIDE * (ctrl_points[i][0] > ctrl_points[4][0] ? dx / steps : (-1 * dx / steps));
+	yIncrement = STRIDE * (ctrl_points[i][1] > ctrl_points[4][1] ? dy / steps : (-1 * dy / steps));
+
+	if ( (rate++) % 100 != 0 ) {
 		return;
 	}
-	//printf("%d\t%d\n", ctrl_points[4][0], ctrl_points[i][0]);
+	
 	if(ctrl_points[4][0] != ctrl_points[i][0] )
-		ctrl_points[4][0] += xIncrement;
+		ctrl_points[4][0] += xIncrement*dx/(dx+dy)*10;
 	if(ctrl_points[4][1] != ctrl_points[i][1])
-		ctrl_points[4][1] += yIncrement;
-	if (ctrl_points[4][0] == ctrl_points[i][0] &&
+		ctrl_points[4][1] += yIncrement*dy/(dx+dy)*10;	
+	/*
+	if (distance_between_points(ctrl_points[4][0], ctrl_points[4][1],
+			ctrl_points[i][0], ctrl_points[i][1] ) < 
+			( xIncrement*xIncrement + yIncrement*yIncrement) ) {
+		ctrl_points[4][0] = ctrl_points[i][0];
+		ctrl_points[4][1] = ctrl_points[i][1];
+		ctrl_points[4][REPLACE_INDEX] = 4;
+	}*/
+	
+	if ( ctrl_points[4][0] == ctrl_points[i][0] &&
 		ctrl_points[4][1] == ctrl_points[i][1]) {
-		//ctrl_points[4][REPLACE_INDEX] = 4;
-	    
+		ctrl_points[4][REPLACE_INDEX] = 4;
 	}
+	ctrl_points[4][0] = ctrl_points[i][0];
+	ctrl_points[4][1] = ctrl_points[i][1];
 	ctrl_points[4][CREATED_INDEX] = UNCREATED;
+}
+
+int binomialCoeff(int k){
+	int coeff[k+1];
+	for(int i=0; i<k+1; i++)
+		coeff[i] = 0;
+		
+	coeff[0] = 1;
+	
+	for(int i=1; i<=3; i++) 
+		for(int j=std::min(i, k); j>0; j--)
+			coeff[j] = coeff[j] + coeff[j-1];
+	return coeff[k];
+}
+
+double pow_based_3 (double n, int k){
+	double u = 1.0;
+	for(int i=0; i<k; i++)
+		u = u*n;
+	return u;
+}
+
+int distance_between_points(int x_1, int y_1, int x_2, int y_2){
+	return (x_1 - x_2)*(x_1 - x_2) + (y_1 - y_2)*(y_1 - y_2);
 }
