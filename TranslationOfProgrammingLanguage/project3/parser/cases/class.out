@@ -1,2 +1,6 @@
-("7:4: 'Mapping.__init__'", 1)
-("3:4: 'Mapping.update'", 2)
+("31:1: 'People.name'", 1)
+("29:2: 'People.Man.age'", 1)
+("22:2: 'Pass.Man.height'", 1)
+("21:3: 'Pass.Man.Kid.weight'", 1)
+("7:4: 'Mapping.update'", 2)
+("4:4: 'Mapping.__init__'", 1)

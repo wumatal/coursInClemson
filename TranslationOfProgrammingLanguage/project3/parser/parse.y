@@ -11,8 +11,8 @@ extern char *yytext;
 void yyerror (const char *);
 
 // This struct is used to store name, start location and complexity of a function
-struct func_info { 
-	std::string f_name; // Store the name of the function or class 
+struct func_info {
+	std::string f_name; // Store the name of the function or class
 	int f_begin_loc;	// Store the starting line of the function
 	int f_begin_col;	// Store the starting column of the function
 	int f_complexity = 0; // Store the complexity of the funciton
@@ -23,11 +23,13 @@ func_info *fi;
 // Record whether a finally is along with try.
 bool finally_exist;
 // Record whether a function is within a class.
-bool class_scope;
+int class_scope = 0;
 // Store the class name for further use.
 std::string class_name = "";
 // Get the output in inverse order to match the mccabe result.
 std::stack<func_info> inverse_stack;
+// Make a decorate flag
+bool deco_flag;
 // The print function.
 void print_complexity_in_case();
 %}
@@ -50,12 +52,12 @@ void print_complexity_in_case();
 %union
 {
 	char* str;
-	int complexity; 
+	int complexity;
 }
 
 %type <str> NAME
 %type <complexity> suite stmt plus_stmt compound_stmt if_stmt while_stmt for_stmt
-%type <complexity> try_stmt star_ELIF plus_except opt_FINALLY classdef funcdef
+%type <complexity> try_stmt star_ELIF plus_except opt_FINALLY classdef funcdef with_stmt
 
 %%
 
@@ -89,28 +91,27 @@ decorators // Used in: decorators, decorated
 	| decorator
 	;
 decorated // Used in: compound_stmt
-	: decorators classdef
-	| decorators funcdef		
+	: decorators {deco_flag = true;} classdef
+	| decorators {deco_flag = true;} funcdef
 	;
 funcdef // Used in: decorated, compound_stmt
-	: {
-		// Get the location of the function
-		fi = new func_info();
-		fi->f_begin_loc = yylloc.first_line; 
-		fi->f_begin_col = yylloc.first_column;
-	}
-	DEF NAME parameters COLON suite
+	: DEF NAME parameters COLON suite
 	{
-		if (class_scope) {
-			fi->f_name = class_name + "." + $3;
+		fi = new func_info();
+		fi->f_begin_loc = @1.first_line;
+		fi->f_begin_col = @1.first_column;
+		if (class_scope > 0) {
+			fi->f_name = class_name + "." + $2;
 		}
 		else{
-			fi->f_name = $3;
+			fi->f_name = $2;
 		}
-		fi->f_complexity = $6 + 1;
+		fi->f_complexity = $5 + 1;
 		inverse_stack.push(*fi);
-		delete [] $3;
+		delete [] $2;
+		//std::cout << "class_name1" << fi->f_name << std::endl;
 		delete fi;
+		//std::cout << "class_name2" << $5 << std::endl;
 	}
 	;
 parameters // Used in: funcdef
@@ -138,7 +139,7 @@ pick_STAR_DOUBLESTAR // Used in: varargslist
 	: STAR NAME opt_DOUBLESTAR_NAME
 	{ delete [] $2;}
 	| DOUBLESTAR NAME
-	{ delete [] $2;}
+	//{	delete [] $2;	}
 	;
 opt_COMMA // Used in: varargslist, opt_test, opt_test_2, testlist_safe, listmaker, testlist_comp, pick_for_test_test, pick_for_test, pick_argument
 	: COMMA
@@ -287,13 +288,14 @@ pick_STAR_import // Used in: import_from
 	;
 import_as_name // Used in: import_as_names, star_COMMA_import_as_name
 	: NAME AS NAME
-	{ delete [] $1; delete [] $3;}
+//	{ delete [] $1;
+	//	delete [] $3;}
 	| NAME
 	{ delete [] $1;}
 	;
 dotted_as_name // Used in: dotted_as_names
 	: dotted_name AS NAME
-	{ delete [] $3;}
+//	{ delete [] $3;}
 	| dotted_name
 	;
 import_as_names // Used in: pick_STAR_import
@@ -332,7 +334,7 @@ assert_stmt // Used in: small_stmt
 	| ASSERT test
 	;
 compound_stmt // Used in: stmt
-	: if_stmt
+	:	if_stmt
 	{ $$ = $1; }
 	| while_stmt
 	{ $$ = $1; }
@@ -341,28 +343,30 @@ compound_stmt // Used in: stmt
 	| try_stmt
 	{ $$ = $1; }
 	| with_stmt
-	{ $$ = 0; }
+	{ $$ = $1; }
 	| funcdef
 	{ $$ = $1; }
-	| classdef 
+	| classdef
 	{ $$ = $1; }
 	| decorated
 	{ $$ = 0; }
 	;
 if_stmt // Used in: compound_stmt
-	: IF test COLON suite star_ELIF ELSE COLON suite
-	{ $$ = $4 + $5 + 1; 
+	:	IF test COLON suite star_ELIF ELSE COLON suite
+	{
+		$$ = $4 + $5 + 1;
 	}
 	| IF test COLON suite star_ELIF
-	{ $$ = $4 + $5 + 1; 
+	{
+		$$ = $4 + $5 + 1;
 	}
 	;
 star_ELIF // Used in: if_stmt, star_ELIF
 	: star_ELIF ELIF test COLON suite
-	{ $$ = $5 + 1; 
+	{ $$ = $5 + 1;
 	}
 	| %empty
-	{ $$ = 0; 
+	{ $$ = 0;
 	}
 	;
 while_stmt // Used in: compound_stmt
@@ -378,10 +382,10 @@ for_stmt // Used in: compound_stmt
 	{ $$ = $6 + 1; }
 	;
 try_stmt // Used in: compound_stmt
-	: TRY COLON suite plus_except opt_ELSE opt_FINALLY 
-	{ 
-		if(!finally_exist){	
-			$$ = $3 + $4 + 1; 
+	: TRY COLON suite plus_except opt_ELSE opt_FINALLY
+	{
+		if(!finally_exist){
+			$$ = $3 + $4 + 1;
 		}
 		else {
 			$$ = 0;
@@ -409,6 +413,7 @@ opt_FINALLY // Used in: try_stmt
 	;
 with_stmt // Used in: compound_stmt
 	: WITH with_item star_COMMA_with_item COLON suite
+	{ $$ = $5; }
 	;
 star_COMMA_with_item // Used in: with_stmt, star_COMMA_with_item
 	: star_COMMA_with_item COMMA with_item
@@ -434,8 +439,8 @@ suite // Used in: funcdef, if_stmt, star_ELIF, while_stmt, for_stmt, try_stmt, p
 	: simple_stmt
 	{ $$ = 0; }
 	| NEWLINE INDENT plus_stmt DEDENT
-	{ 
-		$$ = $3; 
+	{
+		$$ = $3;
 	}
 	;
 plus_stmt // Used in: suite, plus_stmt
@@ -559,7 +564,9 @@ atom // Used in: power
 	| LBRACE opt_dictorsetmaker RBRACE
 	| BACKQUOTE testlist1 BACKQUOTE
 	| NAME
-	{ delete [] $1;}
+	{
+			delete [] $1;
+	}
 	| NUMBER
 	| plus_STRING
 	;
@@ -655,19 +662,47 @@ pick_for_test // Used in: dictorsetmaker
 	| star_COMMA_test opt_COMMA
 	;
 classdef // Used in: decorated, compound_stmt
-	: CLASS NAME LPAR opt_testlist RPAR COLON {class_scope = true;class_name = $2;} suite
-	{ 
-		//std::cout << class_name << std::endl;
+	: CLASS NAME LPAR opt_testlist RPAR COLON
+	{
+		if(class_scope > 0){
+			class_name = class_name + "." + $2;
+		}
+		else{
+			class_name = $2;
+		}
+		//std::cout << "class_name1" << class_name << std::endl;
+		class_scope++;
 		delete [] $2;
-		class_scope = false;
-		class_name = "";
 	}
-	| CLASS NAME COLON {class_scope = true;class_name = $2;} suite
-	{ 
-		//std::cout << class_name << std::endl;
+	suite
+	{
+		if(class_name.find_last_of('.') == std::string::npos)
+			class_name.clear();
+		else
+			class_name.erase(class_name.find_last_of('.'), class_name.size());
+		//std::cout << "class_name2" << class_name << std::endl;
+		class_scope--;
+	}
+	| CLASS NAME COLON
+	{
+		if(class_scope){
+			class_name = class_name + "." + $2;
+		}
+		else{
+			class_name = $2;
+		}
+		//std::cout << "class_name3" << class_name << std::endl;
+		class_scope++;
 		delete [] $2;
-		class_scope = false;
-		class_name = "";	
+	}
+	suite
+	{
+		if(class_name.find_last_of('.') == std::string::npos)
+			class_name.clear();
+		else
+			class_name.erase(class_name.find_last_of('.'), class_name.size());
+		//std::cout << "class_name4" << class_name << std::endl;
+		class_scope--;
 	}
 	;
 opt_testlist // Used in: classdef
@@ -754,11 +789,10 @@ void yyerror (const char *s)
 void print_complexity_in_case() {
 	while( !inverse_stack.empty() ){
 		std::cout << "(\"" << inverse_stack.top().f_begin_loc << ":"
-			<< inverse_stack.top().f_begin_col-1 << ": \'" 
-			<< inverse_stack.top().f_name << "\'\", " 
+			<< inverse_stack.top().f_begin_col-1 << ": \'"
+			<< inverse_stack.top().f_name << "\'\", "
 			<< inverse_stack.top().f_complexity
-			<< ")" << std::endl; 
+			<< ")" << std::endl;
 		inverse_stack.pop();
 	}
 }
-
