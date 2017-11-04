@@ -27,31 +27,27 @@ int main() {
     }
     std::stringstream stream(str);
     while(stream >> n){
-      std::cout << "pos" << pos << " : "<< std::endl;
-      if( !bars.empty() )
-        if ( bars.back().height >= n ) 
-          drops += (pos - bars.back().pos - 1) * (bars.back().height - n);
-      else {
-        while( bars.back().height < n ){
+
+      while( !bars.empty() ){
+        if( bars.back().height <= n ){
           drops += (bars.back().height - height) * (pos - bars.back().pos -1);
           height = bars.back().height;
           bars.pop_back();
         }
+        else {
+          if ( pos - bars.back().pos > 1)
+            drops += (pos - bars.back().pos - 1) * ( n - height);
+          break;
+        }
       }
-       
+
       b.height = n;
       b.pos = pos;
       bars.push_back(b);
 
       pos ++ ;
-      // std::cout << " the bars : ";
-      // for(std::vector<bar>::const_iterator i = bars.begin(); i != bars.end(); i++){
-      //   std::cout << i->height << ' ';
-      //   //std::cout << "(n: " << n << ") ";
 
-      // }
-      // std::cout << std::endl;
     }
-    std::cout << drops << std: :endl;
+    std::cout << drops << std::endl;
   }
 }
