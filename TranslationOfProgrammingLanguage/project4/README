@@ -1,0 +1,13 @@
+Name: Yupeng Wu
+
+Clemson Email Address: yupengw@clemson.edu
+
+Project no: 4
+
+Project due date: November 13th, 2017
+
+Project description: Adjust MyPy to perform complexity calculation exactly like McCabe's method.
+
+The easiest part of this project: Write down the bison expression of each statement.
+
+Problems that I had in completing this project: There two problems I have encoutered in this project. First one is passing name from scanner to parser and I solved it with great help from Hui Ma. Comming next is avoiding the memory leak, which was under the instructions of Yuan Gao. I want to express my sincere gratitude to both of them here.
