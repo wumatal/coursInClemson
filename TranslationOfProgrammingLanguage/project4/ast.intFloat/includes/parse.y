@@ -27,11 +27,11 @@ PoolOfNodes& pool = PoolOfNodes::getInstance();
 
 %%
 lines   : lines expr CR
-          { 
+          {
             ($2)->eval()->print();
           }
         | lines IDENT EQ expr CR
-          { Node* lhs = new IdentNode($2); 
+          { Node* lhs = new IdentNode($2);
             $$ = new AsgBinaryNode(lhs, $4);
             pool.add(lhs);
             pool.add($$);
@@ -41,25 +41,25 @@ lines   : lines expr CR
         | { ; }
         ;
 
-expr    : expr PLUS expr   { $$ = new AddBinaryNode($1, $3); 
+expr    : expr PLUS expr   { $$ = new AddBinaryNode($1, $3);
                              pool.add($$);
                            }
-        | expr MINUS expr  { $$ = new SubBinaryNode($1, $3); 
-                             pool.add($$);
-                           } 
-        | expr MULT expr   { $$ = new MulBinaryNode($1, $3); 
-                             pool.add($$);
-                           }  
-        | expr DIV expr    { $$ = new DivBinaryNode($1, $3); 
+        | expr MINUS expr  { $$ = new SubBinaryNode($1, $3);
                              pool.add($$);
                            }
-        | INT              { $$ = new IntLiteral($1);        
+        | expr MULT expr   { $$ = new MulBinaryNode($1, $3);
                              pool.add($$);
                            }
-        | FLOAT            { $$ = new FloatLiteral($1);      
+        | expr DIV expr    { $$ = new DivBinaryNode($1, $3);
                              pool.add($$);
                            }
-        | IDENT            { $$ = new IdentNode($1);         
+        | INT              { $$ = new IntLiteral($1);
+                             pool.add($$);
+                           }
+        | FLOAT            { $$ = new FloatLiteral($1);
+                             pool.add($$);
+                           }
+        | IDENT            { $$ = new IdentNode($1);
                              delete [] $1;
                              pool.add($$);
                            }

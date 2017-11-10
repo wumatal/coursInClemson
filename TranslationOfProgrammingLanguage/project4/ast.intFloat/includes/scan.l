@@ -4,8 +4,10 @@
 %}
 letter      [a-zA-Z]
 digit       [0-9]
-digits      [0-9]+
-float       {digits}"."{digits}
+digits      [+|-]?[0-9]+
+udigits     [0-9]+
+float       {digits}"."{udigits}
+ufloat      {udigits}"."{udigits}
 ident       {letter}({letter}|{digit})*
 
 %%
@@ -15,23 +17,23 @@ ident       {letter}({letter}|{digit})*
 "-"       { return MINUS; }
 "*"       { return MULT;  }
 "/"       { return DIV;   }
-{digits}  { 
+{digits}  {
             yylval.intNumber = atoi(yytext);
-            return INT; 
+            return INT;
           }
-{float}   { 
+{float}   {
             yylval.fltNumber = atof(yytext);
-            return FLOAT; 
+            return FLOAT;
           }
 {ident}   {
             yylval.id = new char[yyleng+1];
             strcpy(yylval.id, yytext);
-            return IDENT; 
+            return IDENT;
           }
 "\n"      { return CR;    }
 .         {}
 %%
-int yywrap() { 
+int yywrap() {
   yylex_destroy();
-  return 1; 
+  return 1;
 }
