@@ -9,19 +9,43 @@ udigits     [0-9]+
 float       {digits}"."{udigits}
 ufloat      {udigits}"."{udigits}
 ident       {letter}({letter}|{digit})*
+simpleop    [+-%]
+complexop   [*/]{1,2}
+assign      ({simpleop}|{complexop})?"="
 
 %%
-
+/*
 "="       { return EQ;    }
 "+"       { return PLUS;  }
 "-"       { return MINUS; }
 "*"       { return MULT;  }
 "/"       { return DIV;   }
-{digits}  {
+*/
+
+{simpleop} {
+            swith(yytext){
+              case '+': return PLUS; break;
+              case '-': return MINUS; break;
+              case '%': return MOD; break;
+              default : break;
+            }
+          }
+{complexop} {
+              swith(yytext){
+                case '+': return PLUS; break;
+                case '-': return MINUS; break;
+                case '%': return MOD; break;
+                default : break;
+              }
+          }
+{assign} {
+
+        }
+{udigits}  {
             yylval.intNumber = atoi(yytext);
             return INT;
           }
-{float}   {
+{ufloat}   {
             yylval.fltNumber = atof(yytext);
             return FLOAT;
           }
