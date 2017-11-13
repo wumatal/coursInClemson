@@ -41,6 +41,48 @@ public:
   virtual const Literal* eval() const;
 };
 
+class PlusAsgBinaryNode : public BinaryNode {
+public:
+  PlusAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class MinusAsgBinaryNode : public BinaryNode {
+public:
+  MinusAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class MultAsgBinaryNode : public BinaryNode {
+public:
+  MultAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class DivAsgBinaryNode : public BinaryNode {
+public:
+  DivAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class ModAsgBinaryNode : public BinaryNode {
+public:
+  ModAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class IdivAsgBinaryNode : public BinaryNode {
+public:
+  IdivAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
+class PowAsgBinaryNode : public BinaryNode {
+public:
+  PowAsgBinaryNode(Node* left, Node* right);
+  virtual const Literal* eval() const;
+};
+
 class AddBinaryNode : public BinaryNode {
 public:
   AddBinaryNode(Node* left, Node* right) : BinaryNode(left, right) { }
@@ -62,6 +104,24 @@ public:
 class DivBinaryNode : public BinaryNode {
 public:
   DivBinaryNode(Node* left, Node* right) : BinaryNode(left, right) { }
+  virtual const Literal* eval() const;
+};
+
+class ModBinaryNode : public BinaryNode {
+public:
+  ModBinaryNode(Node* left, Node* right) : BinaryNode(left, right) { }
+  virtual const Literal* eval() const;
+};
+
+class IdivBinaryNode : public BinaryNode {
+public:
+  IdivBinaryNode(Node* left, Node* right) : BinaryNode(left, right) { }
+  virtual const Literal* eval() const;
+};
+
+class PowBinaryNode : public BinaryNode {
+public:
+  PowBinaryNode(Node* left, Node* right) : BinaryNode(left, right) { }
   virtual const Literal* eval() const;
 };
 
