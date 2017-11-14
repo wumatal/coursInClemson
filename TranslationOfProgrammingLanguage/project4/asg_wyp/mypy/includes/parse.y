@@ -30,7 +30,7 @@
 %token RIGHTSHIFT RIGHTSHIFTEQUAL RPAR RSQB SEMI SLASH SLASHEQUAL STAR STAREQUAL
 %token STRING TILDE TRY VBAREQUAL WHILE WITH YIELD
 %token<intNumber> INT
-%type<intNumber> pick_unop pick_multop augassign pick_PLUS_MINUS /* pick_LEFTSHIFT_RIGHTSHIFT */
+%type<intNumber> pick_unop pick_multop augassign pick_PLUS_MINUS
 %token<fltNumber> FLOAT
 %type<node> atom power term factor
 %type<node> expr xor_expr and_expr shift_expr arith_expr
@@ -207,8 +207,13 @@ pick_yield_expr_testlist // Used in: expr_stmt, star_EQUAL
 star_EQUAL // Used in: expr_stmt, star_EQUAL
 	: star_EQUAL EQUAL pick_yield_expr_testlist
 		{
-			$$ = new AsgBinaryNode($1, $3);
-			pool.add($$);
+			if (!$1) {
+				$$ = $3;
+			}
+			else {
+				$$ = new AsgBinaryNode($1, $3);
+				pool.add($$);
+			}
 		}
 	| %empty
 		{	$$ = NULL;	}
@@ -242,9 +247,7 @@ augassign // Used in: expr_stmt
 print_stmt // Used in: small_stmt
 	: PRINT opt_test
 		{
-			if( !$2 )
-				std::cout << std::endl;
-			else
+			if( $2 )
 				$2->eval()->print();
 		}
 	| PRINT RIGHTSHIFT test opt_test_2
@@ -633,7 +636,6 @@ atom // Used in: power
     { $$ = NULL; }
   | NAME
     {
-			std::cout<<$1<<std::endl;
       $$ = new IdentNode($1);
       delete [] $1;
       pool.add($$);

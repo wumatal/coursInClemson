@@ -278,13 +278,14 @@ comment   #.*
              return INT;
            }
 {fltNumber} {
-             ++numbers;  
+             ++numbers;
              yylval.fltNumber = atof(yytext);
              return FLOAT;
            }
 {name}     {
              ++identifiers;
              yylval.id = new char[yyleng+1];
+             strcpy(yylval.id, yytext);
              return NAME;
             }
 

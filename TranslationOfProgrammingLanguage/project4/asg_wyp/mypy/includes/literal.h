@@ -103,13 +103,13 @@ public:
   }
   virtual const Literal* opDiv(float lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral(std::floor(lhs / val));
+    const Literal* node = new FloatLiteral(lhs / val);
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opDiv(int lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral(std::floor(lhs / val));
+    const Literal* node = new FloatLiteral(lhs / val);
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -135,13 +135,13 @@ public:
   }
   virtual const Literal* opIdiv(float lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral((float)(int)(std::floor(lhs / val)));
+    const Literal* node = new FloatLiteral(std::floor(lhs / val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opIdiv(int lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral((float)(int)(std::floor(lhs / val)));
+    const Literal* node = new FloatLiteral(std::floor(lhs / val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -231,13 +231,13 @@ public:
   }
   virtual const Literal* opDiv(float lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral(std::floor(lhs / val));
+    const Literal* node = new FloatLiteral(lhs / val);
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opDiv(int lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new IntLiteral(std::floor(lhs / val));
+    const Literal* node = new IntLiteral(std::floor((float)lhs / val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -263,7 +263,7 @@ public:
   }
   virtual const Literal* opIdiv(float lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new FloatLiteral((float)(int)(std::floor(lhs / val)));
+    const Literal* node = new FloatLiteral(std::floor(lhs / val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -295,7 +295,7 @@ public:
   }
 
   virtual const Literal* operator-() const {
-    const Literal* node = new IntLiteral(std::floor(-(val)));
+    const Literal* node = new IntLiteral(-(val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
