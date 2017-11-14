@@ -640,7 +640,6 @@ atom // Used in: power
       delete [] $1;
       pool.add($$);
     }
-	//| NUMBER
 	| INT
 		{
 			$$ = new IntLiteral($1);

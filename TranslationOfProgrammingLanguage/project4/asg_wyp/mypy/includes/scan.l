@@ -315,7 +315,7 @@ init_scanner(FILE *input_file)
   tok->indstack[0] = FIRST_COLUMN;  /* Start column (not 0)  */
 }
 
-void fini_scanner() {
+void detr_scanner() {
 	if (tok != NULL) {
 		free(tok);
 	  }

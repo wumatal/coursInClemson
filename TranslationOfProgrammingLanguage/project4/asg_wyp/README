@@ -6,8 +6,8 @@ Project no: 4
 
 Project due date: November 13th, 2017
 
-Project description: To implement an AST to interpret the expressions by using polymorphism.
+Project description: Implementing an AST to interpret the expressions by using polymorphism and overload of operators.
 
-The easiest part of this project: This README statement and the test cases.
+The easiest part of this project: Overloading operators and implementing nodes deriving from the base.
 
-Problems that I had in completing this project:
+Problems that I had in completing this project: The most effort-taking part for me is to get the entire mypy syntax clear. I spent days in playing the ast.intFloat to figure out my own AST but failed in unary operates. It is time-consuming to eliminate all the memory leaks as well.

@@ -32,7 +32,7 @@
 
 
 extern void init_scanner(FILE *);
-extern void fini_scanner();
+extern void detr_scanner();
 
 static FILE *
 open_file(const char *filename) {
@@ -44,7 +44,6 @@ open_file(const char *filename) {
   return file;
 }
 
-
 int main(int argc, char * argv[]) {
   FILE *input_file = stdin;
   if (argc > 1) { /* user-supplied filename */
@@ -53,11 +52,12 @@ int main(int argc, char * argv[]) {
   init_scanner(input_file);
   yydebug = 0;  /* Change to 1 if you want debugging */
   int parse_had_errors = yyparse();
-  fini_scanner();
+  detr_scanner();
   fclose(input_file);
   if (parse_had_errors) {
     fprintf(stderr,"Abnormal termination\n");
   }
+  std::cout << "Program syntactically correct" << std::endl;
   PoolOfNodes::getInstance().drainThePool();
   return (parse_had_errors ? EXIT_FAILURE : EXIT_SUCCESS);
 }

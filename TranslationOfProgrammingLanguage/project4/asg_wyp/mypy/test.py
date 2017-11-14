@@ -24,7 +24,7 @@ files = os.listdir( testDir )
 for x in files:
   if fnmatch.fnmatch(x, "*.py"):
     testcase = os.path.join(testDir, x)
-    retcode = subprocess.call("./run < "+testcase+"> /tmp/out",shell=True)
+    retcode = subprocess.call("./run < "+testcase+"> cases/out",shell=True)
     if retcode != 0:
       testCode( retcode, "\tFAILED to run test case "+x)
     else:
@@ -32,9 +32,7 @@ for x in files:
       if not os.path.isfile( output ):
         print "test case", x[:-3]+'.out', "doesn't exist"
         sys.exit( 1 )
-      if not filecmp.cmp("/tmp/out", output): 
+      if not filecmp.cmp("cases/out", output):
         print "\tTEST CASE FAILED", x
       else :
         print "testcase:", x, "passed"
-
-

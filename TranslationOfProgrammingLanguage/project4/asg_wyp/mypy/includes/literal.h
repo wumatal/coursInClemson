@@ -269,7 +269,7 @@ public:
   }
   virtual const Literal* opIdiv(int lhs) const  {
     if ( val == 0 ) throw std::string("Zero Division Error");
-    const Literal* node = new IntLiteral(std::floor(lhs / val));
+    const Literal* node = new IntLiteral(std::floor((float)lhs / val));
     PoolOfNodes::getInstance().add(node);
     return node;
   }
