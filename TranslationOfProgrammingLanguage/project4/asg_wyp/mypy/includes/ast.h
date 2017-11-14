@@ -24,9 +24,8 @@ private:
 
 class UnaryNode : public Node {
 public:
-  UnaryNode(const std::string sng, Node* n) : Node(), num(n), sngs(sng) { }
+  UnaryNode(const int sng, Node* n) : Node(), num(n), sngs(sng) { }
   virtual const Literal* eval() const;
-  const std::string getSngs() const { return sngs;  }
   Node* getNum() const { return num;  }
   UnaryNode(const UnaryNode&) = delete;
   UnaryNode& operator=(const UnaryNode&) = delete;
@@ -34,7 +33,7 @@ public:
 protected:
   Node *num;
 private:
-  std::string sngs;
+  int sngs;
 };
 
 class BinaryNode : public Node {

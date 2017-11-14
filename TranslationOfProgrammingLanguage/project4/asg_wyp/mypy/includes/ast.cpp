@@ -17,8 +17,7 @@ const Literal* UnaryNode::eval() const {
     throw "error";
   }
   const Literal* x = num->eval();
-  const std::string n = sngs;
-  if( std::count(sngs.begin(), sngs.end(), '-') % 2 == 1 ){
+  if( sngs == '-' ){
     return -(*x);
   }
   else
