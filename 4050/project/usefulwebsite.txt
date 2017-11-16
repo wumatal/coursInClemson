@@ -1,0 +1,6 @@
+Compiler:
+https://gist.github.com/romanlarionov/2a22e77be3f2b574a2bd
+opengl tutorials:
+http://lazyfoo.net/tutorials/OpenGL/
+http://www.swiftless.com/tutorials/opengl/window.html
+https://github.com/opengl-tutorials/ogl/tree/2.1_branch
