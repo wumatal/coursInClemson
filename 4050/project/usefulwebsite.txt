@@ -4,3 +4,4 @@ opengl tutorials:
 http://lazyfoo.net/tutorials/OpenGL/
 http://www.swiftless.com/tutorials/opengl/window.html
 https://github.com/opengl-tutorials/ogl/tree/2.1_branch
+https://learnopengl.com/
