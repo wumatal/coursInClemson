@@ -1,3 +1,9 @@
+#ifndef LUTIL_H
+#define LUTIL_H
+
+#include "LOpenGL.h"
+#include <stdio.h>
+
 // Screen constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -57,3 +63,6 @@ void render();
  *  -If the user presses e, the matrix mode is set to projection
  **********************************************************************/
 void handleKeys( unsigned char key, int x, int y );
+
+
+#endif
