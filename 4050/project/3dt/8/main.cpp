@@ -1,14 +1,13 @@
 #include "LUtil.h"
 
-
 int main( int argc, char **argv ) {
   glutInit( &argc, argv );
 
-  glutInitDisplayMode( GLUT_SINGLE );
+  glutInitDisplayMode( GLUT_DOUBLE );
 
   glutInitWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
   glutInitWindowPosition( 100, 100 );
-  glutCreateWindow( "7" );
+  glutCreateWindow( "8" );
 
   glutDisplayFunc( display );
   // GLUT likes us to place all of variables to be updated into an "idle" method,
