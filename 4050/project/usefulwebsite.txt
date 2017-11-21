@@ -3,5 +3,8 @@ https://gist.github.com/romanlarionov/2a22e77be3f2b574a2bd
 opengl tutorials:
 http://lazyfoo.net/tutorials/OpenGL/
 http://www.swiftless.com/tutorials/opengl/window.html
+https://www.cs.rpi.edu/~cutler/classes/advancedgraphics/F05/assignments/assignment2/
+https://www.cs.rpi.edu/~cutler/classes/advancedgraphics/S17/memory_debugging.php
 https://github.com/opengl-tutorials/ogl/tree/2.1_branch
 https://learnopengl.com/
+http://www3.ntu.edu.sg/home/ehchua/programming/opengl/cg_introduction.html#zz-2.
