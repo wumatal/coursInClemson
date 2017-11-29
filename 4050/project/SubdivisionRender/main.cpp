@@ -78,7 +78,7 @@ struct Vector3
 //Edge struct used for the odd case.
 //This will help with applying 3/8 weight to adjacent vertices
 //and 1/8 weight to opposite vertices
-struct Edge 
+struct Edge
 {
 	float three8th1, three8th2;
 	float one8th1, one8th2;
@@ -111,7 +111,7 @@ struct Triangle
 		normalB = point1.cross(point2);
 		normalB.normalize();
 	}
-	
+
 	Vector3 calcNormalC() {
 		Vector3 point1 = a-c;
 		Vector3 point2 = b-c;
@@ -132,7 +132,7 @@ struct Ray
 
 	Ray() : o(0.0,0.0,0.0), d(0.0,0.0,0.0)
 	{}
-	
+
 	Ray( Vector3 o, Vector3 d )
 		: o(o), d(d)
 	{}
@@ -146,7 +146,7 @@ struct Ray
 struct Quaternion
 {
 	float w, x, y, z;
-	
+
 	Quaternion() : w(0), x(0), y(0), z(0)
 	{}
 
@@ -179,7 +179,7 @@ struct Quaternion
 struct Light {
 	Vector3 color, pos;
 	float intensity;
-	
+
 	Light(): color(0.0,0.0,0.0), pos(0.0,0.0,0.0), intensity(0.9) {}
 
 	Light( Vector3 c, Vector3 p, float i ) {
@@ -204,12 +204,10 @@ unsigned subCount = 0;
 //Renders pixel to screen
 void renderPixel(int x, int y, float r, float g, float b)
 {
-	// ...
-	// Complete this function
-	// ...
+
 	glBegin(GL_POINTS);
 	glVertex3i(x, y, 0);
-	glColor3f(r,g,b);	
+	glColor3f(r,g,b);
 	glEnd();
 }
 
@@ -221,13 +219,13 @@ void DDA_alg(float x1, float y1, float x2, float y2)
 	float steps;
 	float x_inc, y_inc;
 	float x = x1, y = y1;
-	
+
 	if( abs(dx) > abs(dy) ) steps = abs(dx);
-	else steps = abs(dy);			
+	else steps = abs(dy);
 
 	x_inc = dx/steps;
 	y_inc = dy/steps;
-	
+
 	for (int i = 0; i < steps; ++i) {
 		x += x_inc;
 		y += y_inc;
@@ -309,7 +307,7 @@ void rayRender(unsigned char k);
 
 //-----Shadow Rendering
 void shadowRender(Ray r, vector<Triangle> triangles, float i, float j);
-//help render check of shadow vs mesh 
+//help render check of shadow vs mesh
 float inFront[WINDOW_WIDTH][WINDOW_HEIGHT];
 
 //-----Anti-Aliasing
@@ -342,13 +340,13 @@ Vector3 matrixMultiply( vector<Vector3> rotation, Vector3 point );
 void GL_render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+
 	drawTriangles(coords2);
 	if(lastKey=='i') {
 		rayRender('i');
 		antiAliasing(aaX, aaY, aaZ);
 	}
-	
+
 	glutSwapBuffers();
 }
 //uses keyboard during program
@@ -371,7 +369,7 @@ void keyboard(unsigned char key, int x, int y)
 				coords.clear(); coords2.clear(); coordsTemp.clear();
 				faceVertices.clear(); faceVertices2.clear();
 				verticesTemp.clear(); neighbors.clear(); neigh.clear();
-				
+
 				readFile(fileName);
 				faceVertices2 = faceVertices;
 				coords2 = coords;
@@ -386,8 +384,8 @@ void keyboard(unsigned char key, int x, int y)
 			verticesTemp=faceVertices2;
 			subdivide(verticesTemp, coordsTemp);
 			vertUpdate(coordsTemp);
-			adjList(faceVertices2, coords2);	
-			storeEdges( neighbors, faceVertices2 );		
+			adjList(faceVertices2, coords2);
+			storeEdges( neighbors, faceVertices2 );
 			helpOdd(faceVertices2);
 			break;
 		case 'r': //rotate
@@ -447,7 +445,7 @@ void GLInit(int* argc, char** argv)
 /******************************MAIN***********************************/
 /**********************************************************************/
 int main(int argc, char** argv)
-{	
+{
 	fileName = argv[1];
 	readFile(fileName);
 	faceVertices2 = faceVertices;
@@ -468,8 +466,8 @@ int main(int argc, char** argv)
 void printVertices() {
 	cout << "VERTICES" << endl;
 	for(int i = 0; i < faceVertices2.size(); i++) {
-		cout << faceVertices2[i].x << " " 
-		     << faceVertices2[i].y << " " 
+		cout << faceVertices2[i].x << " "
+		     << faceVertices2[i].y << " "
 		     << faceVertices2[i].z << endl;
 	}
 }
@@ -477,7 +475,7 @@ void printVertices() {
 void printCoords() {
 	cout << "COORDINATES" << endl;
 	for (int i = 0; i < coords2.size(); i++) {
-		cout << coords2[i].x << " " << coords2[i].y << " " 
+		cout << coords2[i].x << " " << coords2[i].y << " "
                      << coords2[i].z << endl;
 	}
 }
@@ -493,7 +491,7 @@ bool hasVec3(vector<Vector3> v, Vector3 v2) {
 
 float beta(int n) {
 	return (1.0/n)*((5.0/8.0)- pow(((3.0/8.0)+(1.0/4.0)*cos((2*PI)/n)),2) );
-	
+
 }
 
 float alpha(int n) {
@@ -503,7 +501,7 @@ float alpha(int n) {
 
 int search(vector<Vector3> v, Vector3 v2) {
 	for (int i=0; i< v.size(); i++) {
-		if (v[i].x == v2.x && v[i].y == v2.y && v[i].z == v2.z) { 
+		if (v[i].x == v2.x && v[i].y == v2.y && v[i].z == v2.z) {
 			return i;
 		}
 	}
@@ -550,9 +548,9 @@ void readFile( char* fileName ) {
 
 		myFile.close();
 	}
-	
+
 	else cout << "Unable to open file";
-	
+
 }
 
 bool isAdj( map < int, set<int> > n, int v1, int v2 ) {
@@ -573,7 +571,7 @@ bool isAdj( map < int, set<int> > n, int v1, int v2 ) {
 		}
 		adjFlag = false;
 	}
-	if(!adjFlag) 
+	if(!adjFlag)
 		cout << v1 <<  " NOT adjacent to " << v2 << endl;
 
 	return adjFlag;
@@ -593,7 +591,7 @@ void helpOdd(vector<Vector3> vert) {
 			neigh1 = vert[j].x;
 			neigh2 = vert[j].y;
 			neigh3 = vert[j].z;
-			if( (adj1 == neigh1 || adj1 == neigh2 || adj1 == neigh3) && 
+			if( (adj1 == neigh1 || adj1 == neigh2 || adj1 == neigh3) &&
 			     	  (adj3 == neigh1 || adj3 == neigh2 || adj3 == neigh3)) {
 				line.three8th1 = adj1, line.three8th2 = adj3, line.one8th1 = adj2;
 				if (neigh1 != adj1 && neigh1 != adj3) line.one8th2 = neigh1;
@@ -693,7 +691,7 @@ Vector3 updateMid(vector<Vector3>coords, int n, int m) {
 	float VALUE_3_8 = 3.0/8.0;
 	float VALUE_1_8 = 1.0/8.0;
 	for(int i = 0; i < edges.size();++i) {
-		if ( (edges[i].three8th1 == m && edges[i].three8th2 == n) || 
+		if ( (edges[i].three8th1 == m && edges[i].three8th2 == n) ||
 		     (edges[i].three8th1 == n && edges[i].three8th2==m ) ) {
 			mid.x=VALUE_3_8*coords[n].x+VALUE_3_8*coords[m].x+VALUE_1_8*coords[(int)edges[i].one8th1].x+VALUE_1_8*coords[(int)edges[i].one8th2].x;
 			mid.y=VALUE_3_8*coords[n].y+VALUE_3_8*coords[m].y+VALUE_1_8*coords[(int)edges[i].one8th1].y+VALUE_1_8*coords[(int)edges[i].one8th2].y;
@@ -746,7 +744,7 @@ void drawTriangles(vector<Vector3> c) {
 			c1.x = c[i].x*SCALE;
 			c1.y = c[i].y*SCALE;
 			c1.z = c[i].z*SCALE;
-	
+
 			c2.x = c[neigh[i][j]].x*SCALE;
 			c2.y = c[neigh[i][j]].y*SCALE;
 			c2.z = c[neigh[i][j]].z*SCALE;
@@ -803,7 +801,7 @@ vector<Vector3> getRotationMatrix( Quaternion q ) {
 	row3.x = (2*q.x*q.z)-(2*q.w*q.y);
 	row3.y = (2*q.y*q.z)-(2*q.w*q.x);
 	row3.z = q.w*q.w - q.x*q.x - q.y*q.y + q.z*q.z;
-	
+
 	rotation.push_back(row1);
 	rotation.push_back(row2);
 	rotation.push_back(row3);
@@ -898,7 +896,7 @@ void rotate(unsigned char k) {
 
 void translate(unsigned char k) {
 	//check boundries
-	float smallX = coords2[0].x, bigX = coords2[0].x, 
+	float smallX = coords2[0].x, bigX = coords2[0].x,
 	      smallY = coords2[0].y, bigY = coords2[0].y;
 	for( int i = 0; i < coords2.size(); i++ ) {
 		if( coords2[i].x < smallX ) smallX = coords2[i].x;
@@ -906,7 +904,7 @@ void translate(unsigned char k) {
 		if( coords2[i].y < smallY ) smallY = coords2[i].y;
 		if( coords2[i].y > bigY ) bigY = coords2[i].y;
 	}
-	
+
 	//translate
 	switch(k)
 	{
@@ -942,9 +940,9 @@ void translate(unsigned char k) {
 }
 
 float rayIntersect( Ray ray, Triangle tri ) {
-	float t, beta, gamma;	
+	float t, beta, gamma;
 	Vector3 BminusA, CminusA, AminusRo;
-	
+
 	//initialize variables
 	BminusA = tri.b - tri.a;
 	//cout << "BminusA: " << BminusA.x << " " << BminusA.y << " " << BminusA.z << endl;
@@ -959,7 +957,7 @@ float rayIntersect( Ray ray, Triangle tri ) {
 		      (-BminusA.y),(-CminusA.y),(AminusRo.y),
 		      (-BminusA.z),(-CminusA.z),(AminusRo.z));
 	//cout << "dett: " << dett << endl;
-	
+
 	//find determinant for c
 	float detc = 0;
 	detc = det3x3((-BminusA.x),(AminusRo.x),(ray.d.x),
@@ -973,7 +971,7 @@ float rayIntersect( Ray ray, Triangle tri ) {
 		      (AminusRo.y),(-CminusA.y),(ray.d.y),
 		      (AminusRo.z),(-CminusA.z),(ray.d.z));
 	//cout << "detb: " << detb << endl;
-	
+
 	//find determinant for a
 	float deta = 0;
 	deta = det3x3((-BminusA.x),(-CminusA.x),(ray.d.x),
@@ -1097,10 +1095,10 @@ void helpRender(Ray r, vector<Triangle> triangles, float i, float j, Vector3 cen
 	for(int k = 0; k < triangles.size(); k++) {
 		t = rayIntersect( r, triangles[k] );
 		inFront[(int)i][(int)j] = t;
-		if(t < prev) { 
-			checkHit = 1; prev = t; 
+		if(t < prev) {
+			checkHit = 1; prev = t;
 			phong = phongLight(triangles[k], i, j, centroid);
-			
+
 			//render object at pixel i,j
 			renderPixel( (int)i, (int)j, phong.x*material.x, phong.y*material.y, phong.z*material.z );
 			aaX[(int)i][(int)j] = phong.x*material.x;
@@ -1109,7 +1107,7 @@ void helpRender(Ray r, vector<Triangle> triangles, float i, float j, Vector3 cen
 		}
 	}
 	//background
-	if( checkHit != 1 ) { 
+	if( checkHit != 1 ) {
 		renderPixel((int)i,(int)j,1,1,1);
 		aaX[(int)i][(int)j] = 1;
 		aaY[(int)i][(int)j] = 1;
@@ -1121,7 +1119,7 @@ void shadowRender(Ray r, vector<Triangle> triangles, float i, float j) {
 	float t = NOTHIT, prev = NOTHIT, checkHit = 0;
 	for(int k = 0; k < triangles.size(); k++) {
 		t = rayIntersect( r, triangles[k] );
-		if(t < prev) checkHit = 1; 
+		if(t < prev) checkHit = 1;
 		if(t < prev) prev = t;
 
 		//shadow
