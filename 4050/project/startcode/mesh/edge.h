@@ -32,6 +32,8 @@ public:
   Triangle* getTriangle() const { assert (triangle != NULL); return triangle; }
   Edge* getOpposite() const {
     // warning!  the opposite edge might be NULL!
+    // std::cout << "or:" << getVertex()->getIndex();
+    // std::cout << " <-> op:" << opposite->getVertex()->getIndex() << std::endl;
     return opposite;
   }
   float getCrease() const { return crease; }
@@ -67,7 +69,7 @@ public:
   // Add debug by Wolfgang
   void Print() {
     std::cout << "(" << vertex->getIndex() << ", "
-              << opposite->getVertex()->getIndex() << ")"
+              << opposite->getVertex()->getIndex() << ") "
               << std::endl;
   }
 

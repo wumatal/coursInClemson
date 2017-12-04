@@ -46,9 +46,29 @@ public:
 
   // Add debug by Wolfgang
   void Print() {
-    std::cout << "(" << (*this)[0]->getIndex() << ", "
-              << (*this)[1]->getIndex() << ", "
-              << (*this)[2]->getIndex() << ")" << std::endl;
+    // Edge* ea = getEdge();
+    // Edge* ec = ea->getNext();
+    // Edge* eb = ec->getNext();
+    //
+    // Edge* ea_op = ea->getOpposite();
+    // Edge* eb_op = eb->getOpposite();
+    // Edge* ec_op = ec->getOpposite();
+    //
+    // Vertex* oa = ea_op->getNext()->getVertex();
+    // Vertex* ob = eb_op->getNext()->getVertex();
+    // Vertex* oc = ec_op->getNext()->getVertex();
+    //
+    // std::cout << "(a(" << (*this)[0]->getIndex() << "), b("
+    //           << (*this)[1]->getIndex() << "), c("
+    //           << (*this)[2]->getIndex() << "))"
+    //           << "eaop: " << oa->getIndex()
+    //           << " | ebop: " << ob->getIndex()
+    //           << " | ecop: " << oc->getIndex()
+    //           << std::endl;
+    std::cout << "(a(" << (*this)[0]->getIndex() << "), b("
+              << (*this)[1]->getIndex() << "), c("
+              << (*this)[2]->getIndex() << "))"
+              << std::endl;
   }
 
   // NOTE: If you want to modify a triangle, remove it from the mesh,

@@ -29,7 +29,7 @@ public:
   // ========
   // VERTICES
   int numVertices() const { return vertices->Count(); }
-  Vertex* addVertex(int level, const Vec3f &pos);
+  Vertex* addVertex(int index, int level, const Vec3f &pos);
   // this creates a relationship between 3 vertices (2 parents, 1 child)
   void setParentsChild(Vertex *p1, Vertex *p2, Vertex *child);
   // this accessor will find a child vertex (if it exists) when given
@@ -65,6 +65,7 @@ public:
   //  to get all triangles of the mesh and set new triangles for the mesh
   Bag<Triangle*> * getTriangles() { return triangles; }
   void setTriangles(Bag<Triangle*> *triangles);
+  void setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec );
 
   // ===============
   // OTHER ACCESSORS

@@ -12,9 +12,9 @@ enum BAG_ELEMENT_MARK { BAG_MARK_NULL, BAG_MARK_DELETE, BAG_MARK_PRESENT };
 #define MAX_ITERATORS 1
 
 // Already defined in utils.h by Wolfgang
-// #define LARGE_PRIME_A 10007
-// #define LARGE_PRIME_B 11003
-// #define LARGE_PRIME_C 12007
+#define LARGE_PRIME_A 10007
+#define LARGE_PRIME_B 11003
+#define LARGE_PRIME_C 12007
 
 int NextLargestPrime(unsigned int x);  // defined in utils.h
 

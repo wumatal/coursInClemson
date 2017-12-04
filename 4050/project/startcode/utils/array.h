@@ -36,7 +36,7 @@ public:
 
   // =========
   // MODIFIERS
-  void Add(const ARRAY_ELEMENT elem) {
+  void Add(const ARRAY_ELEMENT elem, int index ) {
     if (count == size) {
       // double the space & copy
       int new_size = size*2;
@@ -50,7 +50,10 @@ public:
       size = new_size;
     }
     assert (count < size);
-    data[count] = elem;
+    if( index == -1)
+      data[count] = elem;
+    else
+      data[index] = elem;
     count++;
   }
 

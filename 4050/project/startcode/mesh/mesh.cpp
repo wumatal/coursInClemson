@@ -52,10 +52,11 @@ Mesh::~Mesh() {
 // =======================================================================
 // Add new parameter by Wolfgang
 // new 'level' field to indicate which iteration the vertices belong to
-Vertex* Mesh::addVertex(int level, const Vec3f &position) {
-  int index = numVertices();
+Vertex* Mesh::addVertex(int index, int level, const Vec3f &position) {
+  if( index == -1 )
+    index = numVertices();
   Vertex *v = new Vertex(index, level, position);
-  vertices->AddNoDuplicates(v);
+  vertices->Add(v, index);
   // vertices->Add(v);
   if (bbox == NULL)
     bbox = new BoundingBox(position,position);
@@ -66,14 +67,10 @@ Vertex* Mesh::addVertex(int level, const Vec3f &position) {
 
 void Mesh::setVertices(Array<Vertex*>* vs){
   // Just copy the position
-  // for( int i = 0; i < vs->Count(); i ++ ) {
-  //   (*vertices)[i]->set((*vs)[i]->get());
-  // }
-  //vertices->Copy(this->vertices);
-  if( this->vertices->Count() > 0)
-    this->vertices->DeleteAllElements();
-  // Add new VERTICES
-  this->vertices->Copy(vertices);
+  for( int i = 0; i < vs->Count(); i ++ ) {
+    (*vertices)[i]->set((*vs)[i]->get());
+  }
+
 }
 
 void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
@@ -109,30 +106,27 @@ void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
   edges->Add(eb);
   edges->Add(ec);
 
-  // std::cout << "ea_op : ()" << (*ea)[1]->get() <<", "<<(*ea)[0]->get()<<");" << std::endl;
   Edge *ea_op = getEdge((*ea)[1],(*ea)[0]);
-  // std::cout << "eb_op : ()" << (*eb)[1]->get() <<", "<<(*eb)[0]->get()<<");" << std::endl;
   Edge *eb_op = getEdge((*eb)[1],(*eb)[0]);
-  // std::cout << "ec_op : ()" << (*ec)[1]->get() <<", "<<(*ec)[0]->get()<<");" << std::endl;
   Edge *ec_op = getEdge((*ec)[1],(*ec)[0]);
 
   if (ea_op != NULL) {
     ea_op->setOpposite(ea);
-    // printf("(%d, %d, %d) : (%d, %d) opp %d next %d\n",
+    // printf("(%d, %d, %d) : (%d, %d) opp %d\n",
     // (*ea)[1]->getIndex(), ea->getNext()->getVertex()->getIndex(), ea->getVertex()->getIndex(),
-    // (*ea)[1]->getIndex(), (*ea)[0]->getIndex(), ea_op->getVertex()->getIndex(), ea->getNext()->getVertex()->getIndex());
+    // (*ea)[1]->getIndex(), (*ea)[0]->getIndex(), ea_op->getVertex()->getIndex());
   }
   if (eb_op != NULL) {
     eb_op->setOpposite(eb);
-    // printf("(%d, %d, %d) : (%d, %d) opp %d next %d\n",
+    // printf("(%d, %d, %d) : (%d, %d) opp %d\n",
     // (*eb)[1]->getIndex(), eb ->getNext()->getVertex()->getIndex(), eb->getVertex()->getIndex(),
-    // (*eb)[1]->getIndex(), (*eb)[0]->getIndex(), eb_op->getVertex()->getIndex(), eb->getNext()->getVertex()->getIndex());
+    // (*eb)[1]->getIndex(), (*eb)[0]->getIndex(), eb_op->getVertex()->getIndex());
   }
   if (ec_op != NULL) {
     ec_op->setOpposite(ec);
-    // printf("(%d, %d, %d) : (%d, %d) opp %d next %d\n",
+    // printf("(%d, %d, %d) : (%d, %d) opp %d\n",
     // (*ec)[1]->getIndex(), ec->getNext()->getVertex()->getIndex(), ec->getVertex()->getIndex(),
-    // (*ec)[1]->getIndex(), (*ec)[0]->getIndex(), ec_op->getVertex()->getIndex(), ec->getNext()->getVertex()->getIndex());
+    // (*ec)[1]->getIndex(), (*ec)[0]->getIndex(), ec_op->getVertex()->getIndex());
   }
 
   // add the triangle to the master list
@@ -159,20 +153,23 @@ void Mesh::removeTriangle(Triangle *t) {
   delete t;
 }
 
-void Mesh::setTriangles(Bag<Triangle*> *triangles) {
+void Mesh::setTriangles(Bag<Triangle*> *ts) {
   // First, clear the old edges
   // Bag<Triangle*> *this_triangles = getTriangles();
-  // this_triangles->DeleteAllElements();
-  // this_triangles->Clear();
-  this->triangles->DeleteAllElements();
-  this->triangles->Clear();
+  triangles->DeleteAllElements();
+  triangles->Clear();
+  // Iterator<Triangle*> *iter1 = triangles->StartIteration();
+  // while (Triangle *t = iter1->GetNext()) {
+  //   removeTriangle(t)
+  // }
+  // triangles->EndIteration(iter1);
   // Then add new edges in
-  Iterator<Triangle*> *iter = triangles->StartIteration();
+  Iterator<Triangle*> *iter = ts->StartIteration();
   while (Triangle *t = iter->GetNext()) {
     //this_triangles->Add(t);
-  this->triangles->Add(t);
+  triangles->Add(t);
   }
-  triangles->EndIteration(iter);
+  ts->EndIteration(iter);
 }
 
 Edge* Mesh::getEdge(Vertex *a, Vertex *b) const {
@@ -197,6 +194,7 @@ void Mesh::setEdges(Bag<Edge*> *edges) {
 }
 
 Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
+  // std::cout << "Parent(" << p1->getIndex() << "," << p2->getIndex()<< ")" << std::endl;
   VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(), p2->getIndex());
   if (vp == NULL) return NULL;
   return vp->get();
@@ -204,14 +202,7 @@ Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
 
 // Alter this func by Wolfgang
 void Mesh::setParentsChild(Vertex *p1, Vertex *p2, Vertex *child) {
-  Vertex* v1 = getChildVertex(p1, p2);
-  Vertex* v2 = getChildVertex(p2, p1);
-  if( v1 != NULL || v2  != NULL ) {
-    vertices->Remove(child);
-  }
-  else{
-    vertex_parents->Add(new VertexParent(p1,p2,child));
-  }
+  vertex_parents->Add(new VertexParent(p1,p2,child));
 }
 
 // =======================================================================
@@ -260,7 +251,7 @@ void Mesh::Load(const char *input_file) {
       vert_count++;
       sscanf (line, "%s %f %f %f\n",token,&x,&y,&z);
       // 0 stands for the first generation of vertices
-      addVertex( 0, Vec3f(x,y,z) );
+      addVertex( -1, 0, Vec3f(x,y,z) );
     } else if (!strcmp(token,"f")) {
       int num = sscanf (line, "%s %s %s %s %s %s\n",token,
 			atoken,btoken,ctoken,dtoken,etoken);
@@ -420,7 +411,7 @@ void Mesh::Paint(ArgParser *args) {
 //
 // Pass 2 : Change the position of all vertices
 //  Odd :
-//    -interior 3/8 * vertex_parents + 1/8 * opposite->vertex + 1/8 * next->vertex
+//    -interior 3/8 * vertex_parents + 1/8 * opposite->next->vertex + 1/8 * next->vertex
 //    -border   1/2 * vertex_parents
 //  Even:
 //    -interior
@@ -429,59 +420,25 @@ void Mesh::Paint(ArgParser *args) {
 
 void Mesh::LoopSubdivision(int level) {
   printf ("The %dth Subdivide the mesh!\n", level);
-  // For debug use==================
-  // int numtri = 0;
-  // std::cout << "Before sub, vertices: " << std::endl;
-  // vertices->Print();
-  // std::cout << "Before sub, verticesparent: " << std::endl;
-  // vertex_parents->Print();
-  // std::cout << "Before sub, triangles: " << std::endl;
-  // triangles->Print();
-  // std::cout << "Before sub, edges: " << std::endl;
-  // edges->Print();
-  // ===============================
-  Mesh *mesh = new Mesh(this);
-  // Recompute the position of original vertices, which are level-1 vertices
-  // And put them input new mesh
-  // Vec3f newPosition;
-  // // Record the number of neighbor
-  // int n, i;
-  // // record center vertex
-  // Vertex* v;
-  // Edge* he;
-  // Edge* oe;
-  // Vertex* ov;
-  //
-  // for( i = 0; i < vertices->Count(); i ++ ) {
-  //   n = 0;
-  //   v = (*vertices)[i];
-  //   he = v->getEdge();
-  //   newPosition *= 0;
-  //   std::cout << "Original index " << v->getIndex() << ":" << v->get() << std::endl;
-  //
-  //   do {
-  //     ++n;
-  //     oe = he->getOpposite();
-  //     ov = oe->getVertex();
-  //     // std::cout << "**Neigbor index " << ov->getIndex() << ":" << ov->get() << std::endl;
-  //     newPosition += ov->get();
-  //     he = oe->getNext()->getNext();
-  //   } while( he != v->getEdge());
-  //
-  //   if ( n == 3 ) {
-  //     newPosition = ((IN_EVEN_E3 * v->get()) + (IN_EVEN_E3_NEIBOR * newPosition));
-  //   }
-  //   else {
-  //     newPosition = ((( 1.0 - n * IN_EVEN_G3 ) * v->get()) + (IN_EVEN_G3 * newPosition));
-  //   }
-  //
-  //   std::cout << "dot "<< v->getIndex() <<" final pos:" << newPosition << std::endl;
-  //   mesh->addVertex( v->getLevel(), newPosition );
-  // }
+  Mesh* mesh = new Mesh();
 
-  // Iterate all triangles to create new vertices, triangles and edges
-  Iterator<Triangle*> *iter = triangles->StartIteration();
-  while (Triangle *t = iter->GetNext()) {
+  // Add mid point to each edge
+  Iterator<Edge*> *eiter = edges->StartIteration();
+  while (Edge *e = eiter->GetNext()) {
+    Vertex* p1 = (*e)[0]; // the compute vertex
+    Vertex* p2 = (*e)[1]; // the 1st neighbor
+    // Create new vertex
+    Vertex* v = getChildVertex(p1, p2);
+    if( v == NULL ){
+      v = addVertex(-1, level, 0.5*(p1->get() + p2->get()));
+    }
+    setParentsChild(p1, p2, v);
+  }
+  edges->EndIteration(eiter);
+  // triangles->Print();
+  // Iterate all triangles to create new triangles and edges
+  Iterator<Triangle*> *titer = triangles->StartIteration();
+  while (Triangle *t = titer->GetNext()) {
     // All interior vertices we need to get are like :
     //      ao------a------co
     //       \     / \    /
@@ -495,68 +452,190 @@ void Mesh::LoopSubdivision(int level) {
     Vertex* va = (*t)[0];
     Vertex* vb = (*t)[1];
     Vertex* vc = (*t)[2];
+    // Get odd vertices
+    Vertex* ab = getChildVertex(va, vb);
+    Vertex* bc = getChildVertex(vb, vc);
+    Vertex* ca = getChildVertex(vc, va);
 
     Vec3f a = va->get();
     Vec3f b = vb->get();
     Vec3f c = vc->get();
     // Get 3 opppsite even vertices
-    Edge *ea_op = getEdge(vb, va);
-    Edge *eb_op = getEdge(vc, vb);
-    Edge *ec_op = getEdge(va, vc);
+    Edge* ea = t->getEdge();
+    Edge* ec = ea->getNext();
+    Edge* eb = ec->getNext();
 
-    Vec3f ao = ea_op->getNext()->getVertex()->get();
-    Vec3f bo = eb_op->getNext()->getVertex()->get();
-    Vec3f co = ec_op->getNext()->getVertex()->get();
+    Edge* ea_op = ea->getOpposite();
+    Edge* eb_op = eb->getOpposite();
+    Edge* ec_op = ec->getOpposite();
 
-    // Calculate new vertices
-    Vec3f ab = IN_ODD_ADJ * ( a + b ) + IN_ODD_OPP * ( ao + c );
-    Vec3f bc = IN_ODD_ADJ * ( b + c ) + IN_ODD_OPP * ( bo + a );
-    Vec3f ca = IN_ODD_ADJ * ( c + a ) + IN_ODD_OPP * ( co + b );
+    Vec3f vab;
+    Vec3f vbc;
+    Vec3f vca;
 
-    Vertex* vab = addVertex(level, ab);
-    setParentsChild(va, vb, vab);
+    if( ab == NULL || bc == NULL || ca == NULL ){
+      continue;
+    }
 
-    Vertex* vbc = addVertex(level, bc);
-    setParentsChild(vb, vc, vbc);
+    // Recompute positions of all vertices
+    // ================== EVEN ==================
+    // Calc each even of a triangle only if visit = 0
+    if( va->getVisit() == 0 ){
+      mesh->setEvenPosition(va, vb, vc, ea, ec);
+    }
+    if( vb->getVisit() == 0 ){
+      mesh->setEvenPosition(vb, vc, va, eb, ea);
+    }
+    if( vc->getVisit() == 0 ){
+      mesh->setEvenPosition(vc, va, vb, ec, eb);
+    }
+    va->setVisit();
+    vb->setVisit();
+    vc->setVisit();
+    // ================ EVEN END ================
+    // ================== ODD ===================
+    // interior odd: the oppo's next exists
+    if( ea_op != NULL ) {
+      Vec3f ao = ea_op->getNext()->getVertex()->get();
+      vab = IN_ODD_ADJ * ( a + b ) + IN_ODD_OPP * ( ao + c );
+    }
+    // boundary odd: the oppo's next does not exist
+    else {
+      vab = BD_ODD_ADJ * ( a + b );
+    }
+    // b
+    if( eb_op != NULL ) {
+      Vec3f bo = eb_op->getNext()->getVertex()->get();
+      vbc = IN_ODD_ADJ * ( b + c ) + IN_ODD_OPP * ( bo + a );
+    }
+    else {
+      vbc = BD_ODD_ADJ * ( b + c );
+    }
+    // c
+    if( ec_op != NULL ) {
+      Vec3f co = ec_op->getNext()->getVertex()->get();
+      vca = IN_ODD_ADJ * ( c + a ) + IN_ODD_OPP * ( co + b );
+    }
+    else {
+      vca = BD_ODD_ADJ * ( c + a  );
+    }
+    // Change the positions
+    ab->set(vab);  bc->set(vbc);  ca->set(vca);
+    // ================ ODD END =================
+    // interior even
+    // boundary even
 
-    Vertex* vca = addVertex(level, ca);
-    setParentsChild(vc, va, vca);
-
-    // Add new triangles accordingly, and new edges created in addTriangle()
-    // std::cout << numtri++ << std::endl;
-    mesh->addTriangle(getChildVertex(va, vb), getChildVertex(vb, vc), getChildVertex(vc, va));
-    // std::cout << numtri++ << std::endl;
-    mesh->addTriangle(getChildVertex(va, vb), getChildVertex(vc, va), va);
-    // std::cout << numtri++ << std::endl;
-    mesh->addTriangle(getChildVertex(vc, va), getChildVertex(vb, vc), vc);
-    // std::cout << numtri++ << std::endl;
-    mesh->addTriangle(getChildVertex(va, vb), vb, getChildVertex(vb, vc));
+    // create 4 triangles
+    mesh->addTriangle(bc, ca, ab);
+    mesh->addTriangle(vb, bc, ab);
+    mesh->addTriangle(ab, ca, va);
+    mesh->addTriangle(bc, vc, ca);
   }
-  // For debug use==================
-  // std::cout << "After sub, temp vertices: " << std::endl;
-  // vertices->Print();
-  // std::cout << "After sub, verticesparent: " << std::endl;
-  // vertex_parents->Print();
-  // std::cout << "After sub, temp triangles: " << std::endl;
-  // mesh->getTriangles()->Print();
-  // std::cout << "After sub, temp edges: " << std::endl;
-  // mesh->getEdges()->Print();
-  // ===============================
-  triangles->EndIteration(iter);
-  // Put all these new created thing into mesh
-  // setMesh(mesh);
-  // setVertices(mesh->getVertices());
-  setEdges(mesh->getEdges());
+  triangles->EndIteration(titer);
   setTriangles(mesh->getTriangles());
-  // For debug use==================
-  // std::cout << "After sub, vertices: " << std::endl;
-  // vertices->Print();
-  // std::cout << "After sub, triangles: " << std::endl;
-  // triangles->Print();
-  // std::cout << "After sub, edges: " << std::endl;
-  // edges->Print();
-  // ===============================
+  setEdges(mesh->getEdges());
 
+  setVertices(mesh->getVertices());
+
+  delete mesh;
+}
+// =================================================================
+// Even vertex calc by Wolfgang
+// =================================================================
+void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec) {
+  int tri_n = 1;  // record the number of triangles adjacent to a
+  int n = 2;      // record the number of vertices adjacet to a
+  Vec3f newPosition = b->get() + c->get();
+  Edge* ea_op;
+  Edge* ec_op;
+  Edge* le = ea;       // record current left edge
+  Edge* re = ec;       // record current right edge
+  Vertex* lv = b;     // record current left vertex
+  Vertex* rv = c;     // record current right vertex
+  std::cout << "1" << std::endl;
+  // get all vertices left to b
+  while( (ea_op = ea->getOpposite()) != NULL
+        && (ec_op = ec->getOpposite()) != NULL ){
+    // When ec doesnot meet eb, keep going.
+    std::cout << "2" << std::endl;
+    if( ea_op != ec ) {
+      std::cout << "31" << std::endl;
+      // std::cout << "ea_op" << std::endl;
+      le = ea_op->getNext();
+      lv = le->getVertex();
+
+      tri_n++;// Get into a new triangle, increase tri_n;
+      n++;    // Add a new Vertex
+      newPosition += lv->get();
+      ea = le->getNext();
+    }
+    // When eb doesnot meet ec, keep going.
+    if( ec_op != ea ) {
+      std::cout << "32" << std::endl;
+      re = ec_op->getNext();
+      rv = re->getVertex();
+
+      tri_n++;// Get into a new triangle, increase tri_n;
+      n++;    // Add a new Vertex
+      newPosition += rv->get();
+      ec = re;
+    }
+    // When the two edges meet, Calc the result and put it in mesh.
+    else {
+      std::cout << "33" << std::endl;
+      if( n == 3 ) {
+        newPosition = ((IN_EVEN_E3 * a->get()) + (IN_EVEN_E3_NEIBOR * newPosition));
+      }
+      else {
+        newPosition = ((IN_EVEN_G3 * a->get()) + (IN_EVEN_E3_NEIBOR / (float)n) * newPosition);
+      }
+      break;
+    }
+  }
+  // if ea_op is not null, then get till the left border
+  if( ec_op == NULL) {
+    while( (ea_op = ea->getOpposite()) != NULL ){
+      std::cout << "41" << std::endl;
+      le = ea_op->getNext();
+      lv = le->getVertex();
+
+      tri_n++;// Get into a new triangle, increase tri_n;
+      n++;    // Add a new Vertex
+      // newPosition += lv->get();
+      ea = le->getNext();
+    }
+    //if( rv == NULL ) rv = c;
+    newPosition = BD_EVEN_MID * a->get() + BD_EVEN_END * (lv->get()+rv->get());
+
+  }
+  if( ea_op == NULL ) {
+    // if ec_op is not null, then get till the right border
+    while( (ec_op = ec->getOpposite()) != NULL ){
+      std::cout << "42" << std::endl;
+      re = ec_op->getNext();
+      std::cout << "421" << std::endl;
+      rv = re->getVertex();
+      std::cout << "422" << std::endl;
+
+      tri_n++;// Get into a new triangle, increase tri_n;
+      n++;    // Add a new Vertex
+      // newPosition += rv->get();
+      std::cout << "423" << std::endl;
+      ec = re;
+      std::cout << "424" << std::endl;
+    }
+    std::cout << "425" << std::endl;
+    //if( lv == NULL ) lv = b;
+    newPosition = BD_EVEN_MID * a->get() + BD_EVEN_END * (lv->get()+rv->get());
+    std::cout << "426" << std::endl;
+
+  }
+
+  std::cout << "5" << std::endl;
+  addVertex(a->getIndex(), a->getLevel(), newPosition);
+  std::cout << "6" << std::endl;
+  a->setVisit(tri_n);
+  std::cout << "7" << std::endl;
 }
 
 // =================================================================

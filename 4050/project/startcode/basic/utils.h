@@ -17,17 +17,20 @@
 
 // Set the mask by Wolfgang
 // Mask of end even vertices for interior odd vertices
-#define IN_ODD_ADJ 3.0/8.0
+#define IN_ODD_ADJ 0.375f
 // Mask of opposite even vertices for interior odd vertices
-#define IN_ODD_OPP 1.0/8.0
+#define IN_ODD_OPP 0.125f
 // Mask of end even vertices for boundary odd vertices
-#define BD_ODD_ADJ 1.0/2.0
+#define BD_ODD_ADJ 0.5f
 // Mask for interior even vertices whose degrees are equals to 3
-#define IN_EVEN_E3 7.0/16.0
-#define IN_EVEN_E3_NEIBOR 3.0/16.0
+#define IN_EVEN_E3 0.4275f
+#define IN_EVEN_E3_NEIBOR 0.1875f
 // Mask for interior even vertices whose degrees are greater than 3
-#define IN_EVEN_G3 3.0/8.0
+#define IN_EVEN_G3 0.625f
+#define IN_EVEN_G3_NEIBOR 0.375f
 // Mask of end even vertices for boundary odd vertices
+#define BD_EVEN_MID 0.75f
+#define BD_EVEN_END 0.125f
 
 // Set limit subdivison time by Wolfgang
 #define SUB_LIMIT 4
