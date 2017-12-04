@@ -10,10 +10,10 @@
 #include "matrix.h"
 #include "vectors.h"
 
-
-float det4x4(float a1, float a2, float a3, float a4, 
-	     float b1, float b2, float b3, float b4, 
-	     float c1, float c2, float c3, float c4, 
+// Solve determinant.
+float det4x4(float a1, float a2, float a3, float a4,
+	     float b1, float b2, float b3, float b4,
+	     float c1, float c2, float c3, float c4,
 	     float d1, float d2, float d3, float d4);
 float det3x3(float a1,float a2,float a3,
 	     float b1,float b2,float b3,
@@ -46,7 +46,7 @@ Matrix::Matrix(const float *m) {
 void Matrix::SetToIdentity() {
   for (int y = 0; y < 4; y++) {
     for (int x = 0; x < 4; x++) {
-      data[y][x] = (x == y); 
+      data[y][x] = (x == y);
     }
   }
 }
@@ -54,7 +54,7 @@ void Matrix::SetToIdentity() {
 void Matrix::Clear() {
   for (int y = 0; y < 4; y++) {
     for (int x = 0; x < 4; x++) {
-      data[y][x] = 0; 
+      data[y][x] = 0;
     }
   }
 }
@@ -99,26 +99,26 @@ int Matrix::Inverse(Matrix &m, float epsilon) const {
   m.data[1][1] =   det3x3( a1, a3, a4, c1, c3, c4, d1, d3, d4);
   m.data[2][1] = - det3x3( a1, a3, a4, b1, b3, b4, d1, d3, d4);
   m.data[3][1] =   det3x3( a1, a3, a4, b1, b3, b4, c1, c3, c4);
-  
+
   m.data[0][2] =   det3x3( b1, b2, b4, c1, c2, c4, d1, d2, d4);
   m.data[1][2] = - det3x3( a1, a2, a4, c1, c2, c4, d1, d2, d4);
   m.data[2][2] =   det3x3( a1, a2, a4, b1, b2, b4, d1, d2, d4);
   m.data[3][2] = - det3x3( a1, a2, a4, b1, b2, b4, c1, c2, c4);
-  
+
   m.data[0][3] = - det3x3( b1, b2, b3, c1, c2, c3, d1, d2, d3);
   m.data[1][3] =   det3x3( a1, a2, a3, c1, c2, c3, d1, d2, d3);
   m.data[2][3] = - det3x3( a1, a2, a3, b1, b2, b3, d1, d2, d3);
   m.data[3][3] =   det3x3( a1, a2, a3, b1, b2, b3, c1, c2, c3);
-  
+
   m *= 1/det;
   return 1;
 }
 
-float det4x4(float a1, float a2, float a3, float a4, 
-	     float b1, float b2, float b3, float b4, 
-	     float c1, float c2, float c3, float c4, 
+float det4x4(float a1, float a2, float a3, float a4,
+	     float b1, float b2, float b3, float b4,
+	     float c1, float c2, float c3, float c4,
 	     float d1, float d2, float d3, float d4) {
-  return 
+  return
       a1 * det3x3( b2, b3, b4, c2, c3, c4, d2, d3, d4)
     - b1 * det3x3( a2, a3, a4, c2, c3, c4, d2, d3, d4)
     + c1 * det3x3( a2, a3, a4, b2, b3, b4, d2, d3, d4)
@@ -146,21 +146,21 @@ float det2x2(float a, float b,
 Matrix& Matrix::operator=(const Matrix& m) {
   for (int y=0; y<4; y++) {
     for (int x=0; x<4; x++) {
-      data[y][x] = m.data[y][x]; 
+      data[y][x] = m.data[y][x];
     }
   }
-  return (*this); 
+  return (*this);
 }
 
 int Matrix::operator==(const Matrix& m) const {
   for (int y=0; y<4; y++) {
     for (int x=0; x<4; x++) {
       if (this->data[y][x] != m.data[y][x]) {
-	return 0; 
+				return 0;
       }
     }
   }
-  return 1; 
+  return 1;
 }
 
 Matrix operator+(const Matrix& m1, const Matrix& m2) {
@@ -170,7 +170,7 @@ Matrix operator+(const Matrix& m1, const Matrix& m2) {
       answer.data[y][x] = m1.data[y][x] + m2.data[y][x];
     }
   }
-  return answer; 
+  return answer;
 }
 
 Matrix operator-(const Matrix& m1, const Matrix& m2) {
@@ -180,7 +180,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2) {
       answer.data[y][x] = m1.data[y][x] - m2.data[y][x];
     }
   }
-  return answer; 
+  return answer;
 }
 
 Matrix operator*(const Matrix& m1, const Matrix& m2) {
@@ -188,8 +188,7 @@ Matrix operator*(const Matrix& m1, const Matrix& m2) {
   for (int y=0; y<4; y++) {
     for (int x=0; x<4; x++) {
       for (int i=0; i<4; i++) {
-	answer.data[y][x] 
-	  += m1.data[y][i] * m2.data[i][x];
+				answer.data[y][x] += m1.data[y][i] * m2.data[i][x];
       }
     }
   }
@@ -220,7 +219,7 @@ Matrix Matrix::MakeTranslation(const Vec3f &v) {
 }
 
 Matrix Matrix::MakeScale(const Vec3f &v) {
-  Matrix s; 
+  Matrix s;
   s.SetToIdentity();
   s.data[0][0] = v.x();
   s.data[1][1] = v.y();;
@@ -322,8 +321,8 @@ void Matrix::Write(FILE *F) const {
       if (fabs(tmp) < 0.00001) tmp = 0;
       fprintf (F, "%12.6f ", tmp);
     }
-    fprintf (F,"\n"); 
-  } 
+    fprintf (F,"\n");
+  }
 }
 
 void Matrix::Read(FILE *F) {
@@ -331,9 +330,9 @@ void Matrix::Read(FILE *F) {
   for (int y = 0; y < 4; y++) {
     for (int x = 0; x < 4; x++) {
       int scanned = fscanf (F,"%f",&data[y][x]);
-      assert (scanned == 1); 
+      assert (scanned == 1);
     }
-  } 
+  }
 }
 
 // ====================================================================

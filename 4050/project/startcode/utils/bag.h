@@ -11,11 +11,12 @@ enum BAG_ELEMENT_MARK { BAG_MARK_NULL, BAG_MARK_DELETE, BAG_MARK_PRESENT };
 
 #define MAX_ITERATORS 1
 
-#define LARGE_PRIME_A 10007
-#define LARGE_PRIME_B 11003
-#define LARGE_PRIME_C 12007
+// Already defined in utils.h by Wolfgang
+// #define LARGE_PRIME_A 10007
+// #define LARGE_PRIME_B 11003
+// #define LARGE_PRIME_C 12007
 
-int NextLargestPrime(unsigned int x);  // defined in utils.C
+int NextLargestPrime(unsigned int x);  // defined in utils.h
 
 // ======================================================================
 
@@ -37,11 +38,13 @@ public:
     for (int i = 0; i < size; i++)
       marks[i] = BAG_MARK_NULL;
     count = 0;
-    del_count = 0; }
+    del_count = 0;
+  }
   virtual ~Bag() {
     assert (num_iterators == 0);
     delete [] data;
-    delete [] marks; }
+    delete [] marks;
+  }
 
   // =========
   // ACCESSORS
@@ -54,9 +57,9 @@ public:
     int x = orig;
     while (1) {
       if (marks[x] == BAG_MARK_NULL)
-	return 0;
+	      return 0;
       if (marks[x] == BAG_MARK_PRESENT && data[x] == e)
-	return 1;
+        return 1;
       x = skip(orig,x);
     }
   }
@@ -77,13 +80,15 @@ public:
     else if (b < a && b < c)
       return Get(b,c,a);
     assert (c < a && c < b);
-    return Get(c,a,b); }
+    return Get(c,a,b);
+  }
 
 
   BAG_ELEMENT GetReorder(int a, int b) const {
     assert (a != b);
     if (a < b) return Get(a,b);
-    return Get(b,a); }
+    return Get(b,a);
+  }
 
   BAG_ELEMENT Get(int a, int b) const {
     assert (a != b);
@@ -92,14 +97,14 @@ public:
     while (1) {
       assert (x >= 0 && x < size);
       if (marks[x] == BAG_MARK_NULL)
-	return 0;
+	      return 0;
       if (marks[x] == BAG_MARK_PRESENT) {
-	int _a,_b,_c;
-	assert (data[x] != (BAG_ELEMENT)0);
-	extract_func(data[x],_a,_b,_c);
-	if (_a ==a && _b == b) {
-	  return data[x];
-	}
+      	int _a,_b,_c;
+      	assert (data[x] != (BAG_ELEMENT)0);
+      	extract_func(data[x],_a,_b,_c);
+      	if (_a ==a && _b == b) {
+      	  return data[x];
+      	}
       }
       x = skip(orig,x);
     }
@@ -152,10 +157,10 @@ public:
     while (1) {
       assert (marks[x] != BAG_MARK_NULL);
       if (marks[x] == BAG_MARK_PRESENT && data[x] == e) {
-	marks[x] = BAG_MARK_DELETE;
-	del_count++;
-	count--;
-	break;
+      	marks[x] = BAG_MARK_DELETE;
+      	del_count++;
+      	count--;
+      	break;
       }
       x = skip(orig,x);
     }
@@ -165,7 +170,7 @@ public:
     assert(num_iterators == 0);
     for (int i = 0; i < size; i++) {
       if (marks[i] == BAG_MARK_PRESENT)
-	delete data[i];
+	      delete data[i];
       marks[i] = BAG_MARK_NULL;
     }
     del_count = 0;
@@ -183,21 +188,26 @@ public:
 
   void Print() {
     printf ("BAG::PRINT %d %d %d\n",size,count,del_count);
-    int c=0;
+    // int c=0;
+    // for (int i = 0; i < size; i++) {
+    //   printf ("%3d: ",i);
+    //   if (marks[i] == BAG_MARK_PRESENT) {
+    //   	data[i]->Print();
+    //   	c++;
+    //   } else if (marks[i] == BAG_MARK_DELETE) {
+    //     printf ("XXXXXXXXXX\n");
+    //   } else {
+    //   	assert (marks[i] == BAG_MARK_NULL);
+    //   	printf ("NULL\n");
+    //   }
+    // }
+    // assert(c==count);
     for (int i = 0; i < size; i++) {
-      printf ("%3d: ",i);
-      if (marks[i] == BAG_MARK_PRESENT) {
-	data[i]->Print();
-	c++;
-      } else if (marks[i] == BAG_MARK_DELETE) {
-	printf ("XXXXXXXXXX\n");
-      } else {
-	assert (marks[i] == BAG_MARK_NULL);
-	printf ("NULL\n");
-      }
+      if (marks[i] == BAG_MARK_PRESENT)
+      	data[i]->Print();
     }
-    assert(c==count);
   }
+
 
 private:
   void Resize(int s) {
@@ -220,10 +230,10 @@ private:
     // copy the stuff
     if (old_data != NULL) {
       for (int i = 0; i < old_size; i++) {
-	if (old_marks[i] == BAG_MARK_PRESENT) {
-	  tmp_count++;
-	  Add(old_data[i]);
-	}
+      	if (old_marks[i] == BAG_MARK_PRESENT) {
+      	  tmp_count++;
+      	  Add(old_data[i]);
+      	}
       }
     }
     // cleanup
@@ -288,7 +298,8 @@ protected:
   // CONSTRUCTOR & DESTRUCTOR
   Iterator(Bag<ITERATOR_ELEMENT> *b) {
     bag = b;
-    i = 0; }
+    i = 0;
+  }
   virtual ~Iterator() {}
 
 public:
@@ -298,9 +309,9 @@ public:
     ITERATOR_ELEMENT answer = (ITERATOR_ELEMENT)0;
     while (i < bag->size) {
       if (bag->marks[i] == BAG_MARK_PRESENT) {
-	answer = bag->data[i];
-	assert (answer != (ITERATOR_ELEMENT)0);
-	break;
+      	answer = bag->data[i];
+      	assert (answer != (ITERATOR_ELEMENT)0);
+      	break;
       }
       i++;
     }

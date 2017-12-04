@@ -133,6 +133,10 @@ void GLCanvas::motion(int x, int y) {
 // ========================================================
 
 void GLCanvas::keyboard(unsigned char key, int x, int y) {
+  // Add a static variable level by Wolfgang
+  // to indicate which interation the subdivison is in
+  static int level = 0;
+
   switch (key) {
   case 'w':  case 'W':
     args->wireframe = !args->wireframe;
@@ -143,13 +147,15 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
     Render();
     break;
   case 's': case 'S':
-    mesh->LoopSubdivision();
+    // Add level to 'LoopSubdivision' by Wolfgang
+    // so that we can trace back the last generation of vertices
+    mesh->LoopSubdivision(++level);
     Render();
     break;
-  case 'd': case 'D':
+  /*case 'd': case 'D':
     mesh->Simplification((int)floor(0.9*mesh->numTriangles()));
     Render();
-    break;
+    break;*/
   case 'q':  case 'Q':
     exit(0);
     break;

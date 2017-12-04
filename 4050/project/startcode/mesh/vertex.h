@@ -7,6 +7,7 @@
 #include "../basic/vectors.h"
 
 class Vertex;
+class Edge;
 
 // ==========================================================
 
@@ -16,12 +17,17 @@ public:
 
   // ========================
   // CONSTRUCTOR & DESTRUCTOR
-  Vertex(int i, const Vec3f &pos) : position(pos) { index = i; }
+  // Alert this CONSTRUCTOR a new field 'level'
+  Vertex(int i, const Vec3f &pos) : position(pos) { index = i; level = 0;}
+  Vertex(int i, int l, const Vec3f &pos) : position(pos) { index = i; level = l; }
   virtual ~Vertex() { }
 
   // =========
   // ACCESSORS
   int getIndex() const { return index; }
+  // Add getLevel & getEdge accordingly by Wolfgang
+  int getLevel() const { return level; }
+  Edge* getEdge() const { return edge; }
   double x() const { return position.x(); }
   double y() const { return position.y(); }
   double z() const { return position.z(); }
@@ -31,6 +37,11 @@ public:
   // MODIFIERS
   void set(Vec3f v) { position = v; }
   void set(double x, double y, double z) { position.Set(x,y,z); }
+  // Add SetEdge func by Wolfgang
+  void setEdge(Edge* e) { edge = e; }
+
+  // Add debug by Wolfgang
+  void Print() { std::cout << level << "-" << index << ":" << position << std::endl; }
 
 private:
 
@@ -46,6 +57,13 @@ private:
   // this is the index from the original .obj file.
   // technically not part of the half-edge data structure
   int index;
+
+  // Add new member by Wolfgang
+  // record the iteration infomation
+  int level;
+  // record the half-edge it belong to
+  Edge* edge;
+
 
   // NOTE: the vertices don't know anything about adjacency.  In some
   // versions of this data structure they have a pointer to one of

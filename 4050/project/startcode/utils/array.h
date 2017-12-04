@@ -16,28 +16,34 @@ public:
     assert (s > 0);
     size = s;
     count = 0;
-    data = new ARRAY_ELEMENT [size]; }
-  virtual ~Array() { 
-    delete [] data; 
-    data = NULL; }
+    data = new ARRAY_ELEMENT [size];
+  }
+  virtual ~Array() {
+    delete [] data;
+    data = NULL;
+  }
 
   // =========
   // ACCESSORS
-  int Count() const { return count; }  
+  int Count() const { return count; }
+  // Add size() by Wolfgang
+  int Size() const { return size; }
+
   ARRAY_ELEMENT operator [] (int i) const {
     assert (i >= 0 && i < count);
-    return data[i]; }
-  
+    return data[i];
+  }
+
   // =========
   // MODIFIERS
   void Add(const ARRAY_ELEMENT elem) {
     if (count == size) {
-      // double the space & copy 
+      // double the space & copy
       int new_size = size*2;
       //printf ("need to resize array from %d to %d\n", size, new_size);
       ARRAY_ELEMENT * new_data = new ARRAY_ELEMENT [new_size];
       for (int i = 0; i < size; i++) {
-	new_data[i] = data[i];
+	       new_data[i] = data[i];
       }
       delete [] data;
       data = new_data;
@@ -48,7 +54,10 @@ public:
     count++;
   }
 
-  void AddNoDuplicates(const ARRAY_ELEMENT e) { if (!Member(e)) Add(e); }
+  void AddNoDuplicates(const ARRAY_ELEMENT e) {
+    if (!Member(e))
+      Add(e);
+  }
 
   ARRAY_ELEMENT Replace(int i, const ARRAY_ELEMENT elem) {
     assert(i >= 0 && i < count);
@@ -61,26 +70,28 @@ public:
     int x = -1;
     for (int i = 0; i < count; i++) {
       if (data[i] == elem) {
-	x = i;
-	break;
+      	x = i;
+      	break;
       }
     }
     assert (x >= 0);
     data[x] = data[count-1];
-    count--;    
+    count--;
   }
 
   int Member(const ARRAY_ELEMENT elem) const {
-    int x = -1;
+    //int x = -1;
     for (int i = 0; i < count; i++) {
       if (data[i] == elem) {
-	x = i;
-	break;
+      	//x = i;
+      	//break;
+        return 1;
       }
     }
-    if (x >= 0) return 1;
+    //if (x >= 0) return 1;
     return 0;
   }
+
 
   void Clear() {
     count = 0;
@@ -91,6 +102,25 @@ public:
       delete data[i];
     }
     count = 0;
+  }
+
+  // Add Copy() by Wolfgang
+  void Copy(Array<ARRAY_ELEMENT>* array) {
+    int dcout;
+    //count = dcout = data->Count();
+    dcout = array->Count();
+    //size = data->Size();
+    for(int i=0; i < dcout; i++) {
+      AddNoDuplicates(array->data[i]);
+    }
+  }
+
+  // debug func by Wolfgang
+  void Print() {
+    printf ("ARRAY::PRINT %d %d\n",size,count);
+    for (int i = 0; i < count; i++) {
+    	data[i]->Print();
+    }
   }
 
 private:

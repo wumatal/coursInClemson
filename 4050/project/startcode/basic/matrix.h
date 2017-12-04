@@ -22,25 +22,28 @@ public:
   Matrix(const Matrix& m);
   Matrix(const float *m);
   ~Matrix() {}
-  
+
   // ACCESSORS
   float* glGet(void) const {
     float *glMat = new float[16];
      glMat[0]=data[0][0];  glMat[1]=data[1][0];  glMat[2]=data[2][0];  glMat[3]=data[3][0];
      glMat[4]=data[0][1];  glMat[5]=data[1][1];  glMat[6]=data[2][1];  glMat[7]=data[3][1];
-     glMat[8]=data[0][2];  glMat[9]=data[1][2]; glMat[10]=data[2][2]; glMat[11]=data[3][2];
-    glMat[12]=data[0][3]; glMat[13]=data[1][3]; glMat[14]=data[2][3]; glMat[15]=data[3][3];
-    return glMat; }
-  float Get(int x, int y) const { 
+     glMat[8]=data[0][2];  glMat[9]=data[1][2];  glMat[10]=data[2][2]; glMat[11]=data[3][2];
+     glMat[12]=data[0][3]; glMat[13]=data[1][3]; glMat[14]=data[2][3]; glMat[15]=data[3][3];
+    return glMat;
+  }
+  float Get(int x, int y) const {
     assert (x >= 0 && x < 4);
     assert (y >= 0 && y < 4);
-    return data[y][x]; }
-  
+    return data[y][x];
+  }
+
   // MODIFIERS
   void Set(int x, int y, float v) {
     assert (x >= 0 && x < 4);
     assert (y >= 0 && y < 4);
-    data[y][x] = v; }
+    data[y][x] = v;
+  }
   void SetToIdentity();
   void Clear();
 
@@ -72,8 +75,8 @@ public:
   static Matrix MakeYRotation(float theta);
   static Matrix MakeZRotation(float theta);
   static Matrix MakeAxisRotation(const Vec3f &v, float theta);
-
-  // Use to transform a point with a matrix
+  //Matrix() { Clear(); }
+  // transform a point with a matrix
   // that may include translation
   void Transform(Vec4f &v) const;
   void Transform(Vec3f &v) const {
@@ -95,7 +98,7 @@ public:
   // INPUT / OUTPUT
   void Write(FILE *F = stdout) const;
   void Read(FILE *F);
-  
+
 private:
 
   // REPRESENTATION

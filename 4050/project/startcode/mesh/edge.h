@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <assert.h>
+#include "vertex.h"
 
 class Vertex;
 class Triangle;
@@ -11,7 +12,7 @@ class Triangle;
 // ===================================================================
 // half-edge data structure
 
-class Edge { 
+class Edge {
 
 public:
 
@@ -23,7 +24,7 @@ public:
   // here's the hash function to use for edges so they
   // can be efficiently accessed within the Bag data structure
   static void extract_func(Edge *e, int &a, int &b, int &c);
- 
+
   // =========
   // ACCESSORS
   Vertex* getVertex() const { assert (vertex != NULL); return vertex; }
@@ -31,9 +32,10 @@ public:
   Triangle* getTriangle() const { assert (triangle != NULL); return triangle; }
   Edge* getOpposite() const {
     // warning!  the opposite edge might be NULL!
-    return opposite; }
+    return opposite;
+  }
   float getCrease() const { return crease; }
-  Vertex* operator[](int i) const { 
+  Vertex* operator[](int i) const {
     if (i==0) return getVertex();
     if (i==1) return getNext()->getNext()->getVertex();
     assert(0);
@@ -42,17 +44,17 @@ public:
   // =========
   // MODIFIERS
   void setOpposite(Edge *e) {
-    assert (opposite == NULL); 
+    assert (opposite == NULL);
     assert (e != NULL);
     assert (e->opposite == NULL);
-    opposite = e; 
-    e->opposite = this; 
+    opposite = e;
+    e->opposite = this;
   }
-  void clearOpposite() { 
-    if (opposite == NULL) return; 
-    assert (opposite->opposite == this); 
+  void clearOpposite() {
+    if (opposite == NULL) return;
+    assert (opposite->opposite == this);
     opposite->opposite = NULL;
-    opposite = NULL; 
+    opposite = NULL;
   }
   void setNext(Edge *e) {
     assert (next == NULL);
@@ -61,6 +63,13 @@ public:
     next = e;
   }
   void setCrease(float c) { crease = c; }
+
+  // Add debug by Wolfgang
+  void Print() {
+    std::cout << "(" << vertex->getIndex() << ", "
+              << opposite->getVertex()->getIndex() << ")"
+              << std::endl;
+  }
 
 private:
 

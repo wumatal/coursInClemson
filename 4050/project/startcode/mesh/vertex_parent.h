@@ -30,6 +30,7 @@ public:
     p1 = _p1;
     p2 = _p2;
     v = _v;
+    visited = false;
   }
   ~VertexParent();
 
@@ -43,6 +44,15 @@ public:
   // =========
   // ACCESSORS
   Vertex* get() const { return v; }
+  // Add debug by Wolfgang
+  bool isVisited() { return visited; }
+  void visit() { if( !visited ) visited = !visited; }
+  void Print() {
+    std::cout << "p1:" << p1->get() << "&"
+              << "p2:" << p2->get() << "--"
+              << "v :" << v->get() 
+              << std::endl; }
+
 
 protected:
 
@@ -54,6 +64,10 @@ protected:
   Vertex *p1;
   Vertex *p2;
   Vertex *v;
+
+  // Add by Wolfgang
+  // This flag used to indicate whether this vertex is visited
+  bool visited;
 };
 
 // ===================================================================
