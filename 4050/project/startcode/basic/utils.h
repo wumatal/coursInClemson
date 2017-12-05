@@ -16,21 +16,33 @@
 		          ( (((z)<(y))&&((y)<(x))) ? (y) : (z) ))))
 
 // Set the mask by Wolfgang
+typedef enum {SMOOTH, DART, REG_CREASE, IRR_CREASE, CORNER} code;
 // Mask of end even vertices for interior odd vertices
-#define IN_ODD_ADJ 0.375f
+const float IN_ODD_ADJ = 0.375f;
 // Mask of opposite even vertices for interior odd vertices
-#define IN_ODD_OPP 0.125f
+const float IN_ODD_OPP = 0.125f;
 // Mask of end even vertices for boundary odd vertices
-#define BD_ODD_ADJ 0.5f
+const float BD_ODD_ADJ = 0.5f;
 // Mask for interior even vertices whose degrees are equals to 3
-#define IN_EVEN_E3 0.4275f
-#define IN_EVEN_E3_NEIBOR 0.1875f
+const float IN_EVEN_E3 = 0.4275f;
+const float IN_EVEN_E3_NEIBOR = 0.1875f;
 // Mask for interior even vertices whose degrees are greater than 3
-#define IN_EVEN_G3 0.625f
-#define IN_EVEN_G3_NEIBOR 0.375f
+const float IN_EVEN_G3 = 0.625f;
+const float IN_EVEN_G3_NEIBOR = 0.375f;
 // Mask of end even vertices for boundary odd vertices
-#define BD_EVEN_MID 0.75f
-#define BD_EVEN_END 0.125f
+const float BD_EVEN_MID = 0.75f;
+const float BD_EVEN_END = 0.125f;
+
+const float twopi = 6.28318530717958647692f;
+// This table is used for sharp edges
+static const int mask_table[5][5] =
+{
+    {1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1},
+    {1, 1, 2, 3, 3},
+    {1, 1, 3, 2, 2},
+    {1, 1, 3, 2, 2},
+};
 
 // Set limit subdivison time by Wolfgang
 #define SUB_LIMIT 4

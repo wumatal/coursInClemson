@@ -142,10 +142,10 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
     args->wireframe = !args->wireframe;
     Render();
     break;
-  case 'g': case 'G':
-    args->gouraud = !args->gouraud;
-    Render();
-    break;
+  // case 'g': case 'G':
+  //   args->gouraud = !args->gouraud;
+  //   Render();
+  //   break;
   case 's': case 'S':
     // Add level to 'LoopSubdivision' by Wolfgang
     // so that we can trace back the last generation of vertices

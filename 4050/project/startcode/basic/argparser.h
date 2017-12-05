@@ -24,8 +24,8 @@ public:
       	width = height = atoi(argv[i]);
       } else if ( !strcmp(argv[i],"-w") || !strcmp(argv[i],"-wireframe") ) {
         wireframe = true;
-      } else if ( !strcmp(argv[i],"-g") || !strcmp(argv[i],"-gouraud") ) {
-        gouraud = true;
+      // } else if ( !strcmp(argv[i],"-g") || !strcmp(argv[i],"-gouraud") ) {
+      //   gouraud = true;
       } else {
       	printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
       	assert(0);
