@@ -12,6 +12,17 @@ class Edge;
 class Triangle;
 class VertexParent;
 
+// Set the mask by Wolfgang
+typedef enum {SMOOTH, DART, REG_CREASE, IRR_CREASE, CORNER} code;
+// This table is used for sharp edges
+static const int mask_table[5][5] =
+{
+    {1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1},
+    {1, 1, 2, 3, 3},
+    {1, 1, 3, 2, 2},
+    {1, 1, 3, 2, 2},
+};
 // ======================================================================
 // ======================================================================
 
@@ -65,6 +76,7 @@ public:
   //  to get all triangles of the mesh and set new triangles for the mesh
   Bag<Triangle*> * getTriangles() { return triangles; }
   void setTriangles(Bag<Triangle*> *triangles);
+  Vertex* setOddPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ab_op, int level );
   void setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec );
 
   // ===============

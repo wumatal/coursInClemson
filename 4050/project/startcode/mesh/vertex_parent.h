@@ -27,8 +27,14 @@ public:
   VertexParent(Vertex *_p1, Vertex *_p2, Vertex *_v) {
     assert (_p1 != NULL && _p2 != NULL && _v != NULL);
     assert (_p1 != _p2 && _p1 != _v && _p2 != _v);
-    p1 = _p1;
-    p2 = _p2;
+    if( _p1->getIndex() < _p2->getIndex() ) {
+      p1 = _p1;
+      p2 = _p2;
+    }
+    else {
+      p1 = _p2;
+      p2 = _p1;
+    }
     v = _v;
     visited = false;
   }
@@ -50,7 +56,7 @@ public:
   void Print() {
     std::cout << "p1:" << p1->get() << "&"
               << "p2:" << p2->get() << "--"
-              << "v :" << v->get() 
+              << "v :" << v->get()
               << std::endl; }
 
 
