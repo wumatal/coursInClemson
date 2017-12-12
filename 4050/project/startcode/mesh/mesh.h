@@ -1,6 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <vector>
 #include "../basic/vectors.h"
 #include "../utils/array.h"
 #include "../utils/bag.h"
@@ -85,19 +86,19 @@ public:
 
   // ===============
   // OTHER FUNCTIONS
-  void Paint(ArgParser *args);
-  void LoopSubdivision(int level);
+  void  Paint(ArgParser *args);
+  void  LoopSubdivision(int level);
   //void Simplification(int target_tri_count);
 
 private:
 
   // ==============
   // REPRESENTATION
-  Array<Vertex*> *vertices;
-  Bag<Edge*> *edges;
-  Bag<Triangle*> *triangles;
-  BoundingBox *bbox;
-  Bag<VertexParent*> *vertex_parents;
+  Array<Vertex*>*     vertices;
+  Bag<Edge*>*         edges;
+  Bag<Triangle*>*     triangles;
+  BoundingBox*        bbox;
+  Bag<VertexParent*>* vertex_parents;
 
 };
 
