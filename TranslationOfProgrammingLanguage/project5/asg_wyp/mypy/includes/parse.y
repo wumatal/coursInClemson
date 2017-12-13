@@ -66,9 +66,7 @@ file_input // Used in: start
 pick_NEWLINE_stmt // Used in: star_NEWLINE_stmt
 	: NEWLINE
 	| stmt
-		{
-			$1->eval();
-		}
+		{	$1->eval();	  	}
 	;
 star_NEWLINE_stmt // Used in: file_input, star_NEWLINE_stmt
 	: star_NEWLINE_stmt pick_NEWLINE_stmt
@@ -158,9 +156,9 @@ stmt // Used in: pick_NEWLINE_stmt, plus_stmt
 	;
 simple_stmt // Used in: stmt, suite
 	: small_stmt star_SEMI_small_stmt SEMI NEWLINE
-		/*{ $$ = $1;			}*/
+		{ $$ = $1;			}
 	| small_stmt star_SEMI_small_stmt NEWLINE
-		/*{ $$ = $1;			}*/
+		{ $$ = $1;			}
 	;
 star_SEMI_small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
 	: star_SEMI_small_stmt SEMI small_stmt
@@ -810,6 +808,7 @@ power // Used in: factor
 	| atom star_trailer
 		{
 			if($2 != NULL) {
+				// int s = $1->getIdent();
 				std::string n = reinterpret_cast<IdentNode*>($1)->getIdent();
 				$$ = new CallNode(n);
 				pool.add($$);

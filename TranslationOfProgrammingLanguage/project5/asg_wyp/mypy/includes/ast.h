@@ -50,7 +50,8 @@ private:
 
 class CallNode : public Node {
 public:
-  CallNode(const std::string& id) : Node(), ident(id) {}
+  CallNode(const std::string& id)
+  : Node(), ident(id) {}
   // virtual ~CallNode() {}
   const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
@@ -61,14 +62,16 @@ private:
 class FuncNode : public Node {
 public:
   FuncNode(const std::string& id, Node* s, Node* arg)
-    : Node(), ident(id), suite(s), para(arg) {}
+    : Node(), ident(id), suite(s), para(arg){}
   // virtual ~FuncNode() {}
   const std::string getIdent() const { return ident; }
+
   virtual const Literal* eval() const;
 private:
   std::string ident;
   Node* suite;
   Node* para;
+
 
   FuncNode(const FuncNode&);
   FuncNode& operator=(const FuncNode&);

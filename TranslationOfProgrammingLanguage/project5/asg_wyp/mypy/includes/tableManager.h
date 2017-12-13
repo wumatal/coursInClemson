@@ -31,7 +31,7 @@ private:
   int  currentScope;
   bool returned;
 
-std::vector<SymbolTable>   tables;
+  std::vector<SymbolTable>   tables;
   std::vector<FunctionTable> functions;
 
   TableManager() : currentScope(0), returned(false), tables(), functions() {

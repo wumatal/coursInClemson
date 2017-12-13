@@ -32,8 +32,17 @@ const Node* TableManager::getSuite(const std::string& name) {
   // std::cout << "tableManager: func" << name << "NOT FOUND!" << std::endl;
   // std::exception up = std::exception();
   // throw up;
-  FunctionTable& funcTable = functions[currentScope-1];
-  return funcTable.getValue(name);
+  const Node* func;
+  for( int i=currentScope-1; i >= 0; i--) {
+    func = functions[i].getValue(name);
+    if ( func != NULL )
+      return func;
+  }
+  std::cout << "tableManager: func" << name << "NOT FOUND!" << std::endl;
+  std::exception up = std::exception();
+  throw up;
+  // FunctionTable& funcTable = functions[currentScope-1];
+  // return funcTable.getValue(name);
 }
 
 // Record newly scaned symbol
@@ -62,7 +71,13 @@ bool TableManager::checkSymbol(const std::string& name) const {
 
 // search this scope and above to trace a func
 bool TableManager::checkFuncName(const std::string& name) const {
-  return functions[currentScope].found(name);
+  // std::cout << currentScope << std::endl;
+  bool found = false;
+  for( int i=currentScope; i >= 0; i--) {
+    found += functions[i].found(name);
+  }
+  return found;
+  // return functions[currentScope].found(name);
 }
 
 void TableManager::pushScope() {

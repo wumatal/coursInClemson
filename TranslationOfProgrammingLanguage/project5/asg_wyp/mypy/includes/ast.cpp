@@ -110,8 +110,11 @@ const Literal* SuiteNode::eval() const {
 }
 
 const Literal* CallNode::eval() const {
+  // std::cout << ident << std::endl;
   TableManager& tm = TableManager::getInstance();
   // std::cout << tm.checkFuncName(ident) << std::endl;
+  // std::cout << ident << std::endl;
+  // tm.display();
   const Literal* result = NULL;
   if (tm.checkFuncName(ident)) {
     tm.pushScope();

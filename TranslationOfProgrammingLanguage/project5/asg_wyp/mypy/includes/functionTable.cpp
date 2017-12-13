@@ -2,8 +2,9 @@
 
 bool FunctionTable::found(const std::string& name) const {
   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
-  if ( it == functions.end() )
+  if ( it == functions.end() ){
     return false;
+  }
   else
     return true;
 }
@@ -15,8 +16,10 @@ void FunctionTable::insert(const std::string& name, const Node* suite) {
 const Node* FunctionTable::getValue(const std::string& name) const {
   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
   if ( it == functions.end() )
-    throw name + std::string(" NOT FOUND!" );
-  return it->second;
+    // throw name + std::string(" NOT FOUND!" );
+    return NULL;
+  else
+    return it->second;
 }
 void FunctionTable::display() const{
   std::map<std::string, const Node*>::const_iterator it = functions.begin();

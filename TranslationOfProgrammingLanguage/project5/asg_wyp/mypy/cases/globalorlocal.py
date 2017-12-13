@@ -7,4 +7,5 @@ def g():
   x = 10
   f()
 
-print g()
+g()
+f()
