@@ -12,7 +12,7 @@ public:
   FunctionTable () : functions() {}
   bool found(const std::string& name) const;
   void insert(const std::string& name, const Node* suite);
-  const Node* getEntry(const std::string& name) const;
+  const Node* getValue(const std::string& name) const;
   void display() const;
   // virtual ~FunctionTable ();
 private:

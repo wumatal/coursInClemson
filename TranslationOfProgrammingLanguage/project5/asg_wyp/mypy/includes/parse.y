@@ -37,6 +37,7 @@
 %type<node> testlist_comp comp_for star_COMMA_test opt_COMMA testlist
 %type<node> compound_stmt simple_stmt if_stmt funcdef stmt suite
 %type<node> opt_arglist arglist star_trailer trailer flow_stmt return_stmt
+%type<node> parameters varargslist
 
 %type<intNumber> pick_unop pick_multop pick_PLUS_MINUS
 %type<intNumber> pick_LEFTSHIFT_RIGHTSHIFT augassign comp_op
@@ -65,13 +66,15 @@ file_input // Used in: start
 pick_NEWLINE_stmt // Used in: star_NEWLINE_stmt
 	: NEWLINE
 	| stmt
-		{ $1->eval();		}
+		{
+			$1->eval();
+		}
 	;
 star_NEWLINE_stmt // Used in: file_input, star_NEWLINE_stmt
 	: star_NEWLINE_stmt pick_NEWLINE_stmt
 		/*{	$$ = $2;			}*/
 	| %empty
-		/*{	$$ = nullptr;	}*/
+		/*{	$$ = NULL;   	}*/
 	;
 decorator // Used in: decorators
 	: AT dotted_name LPAR opt_arglist RPAR NEWLINE
@@ -80,7 +83,7 @@ decorator // Used in: decorators
 opt_arglist // Used in: decorator, trailer
 	: arglist
 	| %empty
-		{	$$ = nullptr;	}
+		{	$$ = NULL;   	}
 	;
 decorators // Used in: decorators, decorated
 	: decorators decorator
@@ -92,18 +95,26 @@ decorated // Used in: compound_stmt
 	;
 funcdef // Used in: decorated, compound_stmt
 	: DEF NAME parameters COLON suite {
-			$$ = new FuncNode( $2, $5 );
+			$$ = new FuncNode( $2, $5, $3 );
 			pool.add($$);
 			delete [] $2;
 	}
 	;
 parameters // Used in: funcdef
 	: LPAR varargslist RPAR
+		{
+			// $$ = new FmlParaNode($2);
+			// pool.add($$);
+			$$ = NULL;
+		}
 	| LPAR RPAR
+		{ $$ = NULL;	}
 	;
 varargslist // Used in: parameters, old_lambdef, lambdef
 	: star_fpdef_COMMA pick_STAR_DOUBLESTAR
+		{ $$ = NULL;	}
 	| star_fpdef_COMMA fpdef opt_EQUAL_test opt_COMMA
+		{ $$ = NULL;	}
 	;
 opt_EQUAL_test // Used in: varargslist, star_fpdef_COMMA
 	: EQUAL test
@@ -123,9 +134,9 @@ pick_STAR_DOUBLESTAR // Used in: varargslist
 	;
 opt_COMMA // Used in: varargslist, opt_test, opt_test_2, testlist_safe, listmaker, testlist_comp, pick_for_test_test, pick_for_test, pick_argument
 	: COMMA
-		{	$$ = nullptr;	}
+		{	$$ = NULL;   	}
 	| %empty
-		{	$$ = nullptr;	}
+		{	$$ = NULL;   	}
 	;
 fpdef // Used in: varargslist, star_fpdef_COMMA, fplist, star_fpdef_notest
 	: NAME
@@ -155,7 +166,7 @@ star_SEMI_small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
 	: star_SEMI_small_stmt SEMI small_stmt
 		/*{ $$ = $3;			}*/
 	| %empty
-		/*{ $$ = nullptr;	}*/
+		/*{ $$ = NULL;   	}*/
 	;
 small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
 	: expr_stmt
@@ -163,27 +174,27 @@ small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
 	| print_stmt
 		{	$$ = $1;			}
 	| del_stmt
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| pass_stmt
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| flow_stmt
 		{ $$ = $1; 			}
 	| import_stmt
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| global_stmt
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| exec_stmt
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| assert_stmt
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	;
 expr_stmt // Used in: small_stmt
 	: testlist augassign pick_yield_expr_testlist
 		{
-			Node* temp = nullptr;
+			Node* temp = NULL;
 			switch ($2) {
         case PLUSEQUAL:
-					$$ = new AddBinaryNode($1, $3);
+					temp = new AddBinaryNode($1, $3);
 					$$ = new AsgBinaryNode($1, temp);
 					pool.add(temp);
 					pool.add($$);
@@ -250,7 +261,7 @@ expr_stmt // Used in: small_stmt
 				// 	pool.add($$);
 				// 	break;
         default:
-					$$ = nullptr;
+					$$ = NULL;
           break;
       }
 		}
@@ -313,7 +324,7 @@ print_stmt // Used in: small_stmt
 			pool.add( $$ );
 		}
 	| PRINT RIGHTSHIFT test opt_test_2
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 		/*{
 			$$ = new PrintNode( $3 );
 			pool.add( $$ );
@@ -321,15 +332,15 @@ print_stmt // Used in: small_stmt
 	;
 star_COMMA_test // Used in: star_COMMA_test, opt_test, listmaker, testlist_comp, testlist, pick_for_test
 	: star_COMMA_test COMMA test
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| %empty
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	;
 opt_test // Used in: print_stmt
 	: test star_COMMA_test opt_COMMA
 		{ $$ = $1; 			}
 	| %empty
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	;
 plus_COMMA_test // Used in: plus_COMMA_test, opt_test_2
 	: plus_COMMA_test COMMA test
@@ -347,15 +358,15 @@ pass_stmt // Used in: small_stmt
 	;
 flow_stmt // Used in: small_stmt
 	: break_stmt
-		{ $$ = nullptr;			}
+		{ $$ = NULL;   			}
 	| continue_stmt
-		{ $$ = nullptr;			}
+		{ $$ = NULL;   			}
 	| return_stmt
 		{ $$ = $1;					}
 	| raise_stmt
-		{ $$ = nullptr;			}
+		{ $$ = NULL;   			}
 	| yield_stmt
-		{ $$ = nullptr;			}
+		{ $$ = NULL;   			}
 	;
 break_stmt // Used in: flow_stmt
 	: BREAK
@@ -454,19 +465,19 @@ compound_stmt // Used in: stmt
 	: if_stmt
 		{ $$ = $1;			}
 	| while_stmt
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| for_stmt
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| try_stmt
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| with_stmt
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| funcdef
 		{ $$ = $1;			}
 	| classdef
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	| decorated
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	;
 if_stmt // Used in: compound_stmt
 	: IF test COLON suite star_ELIF ELSE COLON suite
@@ -482,7 +493,7 @@ if_stmt // Used in: compound_stmt
 	| IF test COLON suite star_ELIF
 		{
 			if ($2) {
-        $$ = new IfNode($2, $4, nullptr);
+        $$ = new IfNode($2, $4, NULL);
         pool.add($$);
       }
       else {
@@ -560,7 +571,7 @@ plus_stmt // Used in: suite, plus_stmt
 	| stmt
 		{
 			$$ = new std::vector<Node*>();
-			$$->reserve(8);
+			// $$->reserve(8);
 			$$->push_back($1);
 		}
 	;
@@ -584,29 +595,29 @@ test // Used in: opt_EQUAL_test, print_stmt, star_COMMA_test, opt_test, plus_COM
 	: or_test opt_IF_ELSE
 		{ $$ = $1;	 		}
 	| lambdef
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	;
 opt_IF_ELSE // Used in: test
   : IF or_test ELSE test
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
   | %empty
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
   ;
 or_test // Used in: old_test, test, opt_IF_ELSE, or_test, comp_for
   : and_test
     { $$ = $1;	 		}
   | or_test OR and_test
-    { $$ = nullptr; }
+    { $$ = NULL;    }
   ;
 and_test // Used in: or_test, and_test
   : not_test
     { $$ = $1;	 		}
   | and_test AND not_test
-    { $$ = nullptr; }
+    { $$ = NULL;    }
   ;
 not_test // Used in: and_test, not_test
   : NOT not_test
-    { $$ = nullptr; }
+    { $$ = NULL;    }
   | comparison
     { $$ = $1;	 		}
   ;
@@ -701,7 +712,7 @@ shift_expr // Used in: and_expr, shift_expr
 			// 	$$ = new RShiftBinaryNode($1, $3);
 			// 	pool.add($$);
 			// }
-			$$ = nullptr;
+			$$ = NULL;
 		}
 	;
 pick_LEFTSHIFT_RIGHTSHIFT // Used in: shift_expr
@@ -717,6 +728,7 @@ arith_expr // Used in: shift_expr, arith_expr
 		{
 			if ($2 == PLUS) {
 				$$ = new AddBinaryNode($1, $3);
+				// std::cout << "here" << std::endl;
 				pool.add($$);
 			}
 			if ($2 == MINUS) {
@@ -797,7 +809,7 @@ power // Used in: factor
 		}
 	| atom star_trailer
 		{
-			if(!$2) {
+			if($2 != NULL) {
 				std::string n = reinterpret_cast<IdentNode*>($1)->getIdent();
 				$$ = new CallNode(n);
 				pool.add($$);
@@ -811,17 +823,17 @@ star_trailer // Used in: power, star_trailer
 	: star_trailer trailer
 		{ $$ = $2; 				}
 	| %empty
-		{ $$ = nullptr;		}
+		{ $$ = NULL;   		}
 	;
 atom // Used in: power
 	: LPAR opt_yield_test RPAR
 		{ $$ = $2; 				}
   | LSQB opt_listmaker RSQB
-    { $$ = nullptr; 	}
+    { $$ = NULL;    	}
   | LBRACE opt_dictorsetmaker RBRACE
-    { $$ = nullptr;		}
+    { $$ = NULL;   		}
   | BACKQUOTE testlist1 BACKQUOTE
-    { $$ = nullptr; 	}
+    { $$ = NULL;    	}
   | NAME
     {
       $$ = new IdentNode($1);
@@ -838,8 +850,10 @@ atom // Used in: power
 			$$ = new FloatLiteral($1);
       pool.add($$);
     }
+	| NUMBER
+    { $$ = NULL; }
 	| plus_STRING
-    { $$ = nullptr;			}
+    { $$ = NULL;   		}
 	;
 pick_yield_expr_testlist_comp // Used in: opt_yield_test
 	: yield_expr
@@ -851,7 +865,7 @@ opt_yield_test // Used in: atom
 	: pick_yield_expr_testlist_comp
 		{ $$ = $1;				}
 	| %empty
-		{ $$ = nullptr;		}
+		{ $$ = NULL;   		}
 	;
 opt_listmaker // Used in: atom
 	: listmaker
@@ -881,11 +895,14 @@ lambdef // Used in: test
 	;
 trailer // Used in: star_trailer
 	: LPAR opt_arglist RPAR
-		{ $$ = nullptr;		}
+		{
+			$$ = new ArgNode($2);
+      pool.add($$);
+		}
 	| LSQB subscriptlist RSQB
-		{ $$ = nullptr;		}
+		{ $$ = NULL;   		}
 	| DOT NAME
-		{ $$ = nullptr;		}
+		{ $$ = NULL;   		}
 	;
 subscriptlist // Used in: trailer
 	: subscript star_COMMA_subscript COMMA
@@ -952,7 +969,7 @@ opt_testlist // Used in: classdef
 	;
 arglist // Used in: opt_arglist
 	: star_argument_COMMA pick_argument
-		{	$$ = nullptr;		}
+		{	$$ = NULL;   		}
 	;
 star_argument_COMMA // Used in: arglist, star_argument_COMMA
 	: star_argument_COMMA argument COMMA
@@ -997,9 +1014,9 @@ comp_iter // Used in: comp_for, comp_if
 	;
 comp_for // Used in: testlist_comp, pick_for_test_test, pick_for_test, opt_comp_for, comp_iter
 	: FOR exprlist IN or_test comp_iter
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	| FOR exprlist IN or_test
-		{ $$ = nullptr; }
+		{ $$ = NULL;    }
 	;
 comp_if // Used in: comp_iter
 	: IF old_test comp_iter
@@ -1013,7 +1030,7 @@ yield_expr // Used in: pick_yield_expr_testlist, yield_stmt, pick_yield_expr_tes
 	: YIELD testlist
 		{	$$ = $2;			}
 	| YIELD
-		{ $$ = nullptr;	}
+		{ $$ = NULL;   	}
 	;
 star_DOT // Used in: pick_dotted_name, star_DOT
 	: star_DOT DOT

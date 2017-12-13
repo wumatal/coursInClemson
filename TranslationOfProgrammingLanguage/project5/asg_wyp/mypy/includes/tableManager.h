@@ -12,26 +12,26 @@ class Literal;
 class TableManager {
 public:
   static TableManager& getInstance();
-  const  Literal*      getEntry( const std::string& name );
-  const  Node*         getSuite( const std::string& name );
-  void   insert( const std::string& name, const Literal* node);
-  void   insert( const std::string& name, const Node* node );
-  bool   checkName( const std::string& name ) const;
-  bool   checkFunc( const std::string& name ) const;
+  const Literal* getSymbol(const std::string&);
+  const Node* getSuite(const std::string&);
+  void  insertSymbol(const std::string&, const Literal*);
+  void  insertFunction(const std::string&, const Node*);
+  bool  checkSymbol(const std::string&) const;
+  bool  checkFuncName(const std::string&) const;
   // accessors added
-  int    getCurrentScope() const { return currentScope;       }
-  void   setCurrentScope( int scope ) { currentScope = scope; }
-  bool   isReturned() const { return returned;                }
-  void   setReturned( bool re ) { returned = re;              }
-  void   pushScope();
-  void   popScope();
-  void   display() const;
+  int   getCurrentScope() const { return currentScope; }
+  void  setCurrentScope(int scope) { currentScope = scope; }
+  bool  getReturned() const { return returned; }
+  void  setReturned(bool b) { returned = b; }
+  void  pushScope();
+  void  popScope();
+  void  display() const;
 
 private:
   int  currentScope;
   bool returned;
 
-  std::vector<SymbolTable>   tables;
+std::vector<SymbolTable>   tables;
   std::vector<FunctionTable> functions;
 
   TableManager() : currentScope(0), returned(false), tables(), functions() {

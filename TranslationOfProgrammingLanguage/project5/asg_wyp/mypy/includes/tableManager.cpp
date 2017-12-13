@@ -7,41 +7,45 @@ TableManager& TableManager::getInstance(){
 }
 
 // Get the Symbol Entry
-const Literal* TableManager::getEntry( const std::string& name ) {
-  const Literal* symbol;
-  for ( SymbolTable s : tables ) {
-    symbol = s.getEntry(name);
-    if ( symbol != nullptr )
-      return symbol;
-  }
-  std::cout << "tableManager: symbol" << name << "NOT FOUND!" << std::endl;
-  std::exception up = std::exception();
-  throw up;
+const Literal* TableManager::getSymbol( const std::string& name ) {
+  // const Literal* symbol;
+  // for ( SymbolTable s : tables ) {
+  //   symbol = s.getSymbol(name);
+  //   if ( symbol != nullptr )
+  //     return symbol;
+  // }
+  // std::cout << "tableManager: symbol" << name << "NOT FOUND!" << std::endl;
+  // std::exception up = std::exception();
+  // throw up;
+  SymbolTable& symbolTable = tables[currentScope];
+  return symbolTable.getValue(name);
 }
 
 // Get the Function Entry
 const Node* TableManager::getSuite(const std::string& name) {
-  const Node* func;
-  for ( FunctionTable f : functions ) {
-    func = f.getEntry(name);
-    if ( func != nullptr )
-      return func;
-  }
-  std::cout << "tableManager: func" << name << "NOT FOUND!" << std::endl;
-  std::exception up = std::exception();
-  throw up;
+  // const Node* func;
+  // for ( FunctionTable f : functions ) {
+  //   func = f.getSymbol(name);
+  //   if ( func != nullptr )
+  //     return func;
+  // }
+  // std::cout << "tableManager: func" << name << "NOT FOUND!" << std::endl;
+  // std::exception up = std::exception();
+  // throw up;
+  FunctionTable& funcTable = functions[currentScope-1];
+  return funcTable.getValue(name);
 }
 
 // Record newly scaned symbol
 // Scope ++?
-void TableManager::insert(const std::string& name, const Literal* node) {
+void TableManager::insertSymbol(const std::string& name, const Literal* node) {
   SymbolTable& table = tables[currentScope];
   table.insert(name, node);
 }
 
 // Record newLy scaned function
 // Scope ++?
-void TableManager::insert(const std::string& name, const Node* node) {
+void TableManager::insertFunction(const std::string& name, const Node* node) {
   FunctionTable& table = functions[currentScope];
   SymbolTable symbTemp;
   FunctionTable funcTemp;
@@ -52,12 +56,12 @@ void TableManager::insert(const std::string& name, const Node* node) {
 }
 
 // search this scope and above to trace a symbol
-bool TableManager::checkName(const std::string& name) const {
+bool TableManager::checkSymbol(const std::string& name) const {
   return tables[currentScope].found(name);
 }
 
 // search this scope and above to trace a func
-bool TableManager::checkFunc(const std::string& name) const {
+bool TableManager::checkFuncName(const std::string& name) const {
   return functions[currentScope].found(name);
 }
 

@@ -27,13 +27,12 @@ private:
 class IfNode : public Node {
 public:
   IfNode ( Node* n, Node* ts, Node* es )
-    : Node(), test(n), thenSuite(ts), elseSuite(es) {}
+    : Node(), test(n), suite(ts), elseSuite(es) {}
   virtual const Literal* eval() const;
-protected:
-  Node* test;
-  Node* thenSuite;
-  Node* elseSuite;
 private:
+  Node* test;
+  Node* suite;
+  Node* elseSuite;
   IfNode(const IfNode&);
   IfNode& operator=(const IfNode&);
 };
@@ -61,21 +60,43 @@ private:
 
 class FuncNode : public Node {
 public:
-  FuncNode(const std::string& id, Node* n) : Node(), ident(id), suite(n) {}
+  FuncNode(const std::string& id, Node* s, Node* arg)
+    : Node(), ident(id), suite(s), para(arg) {}
   // virtual ~FuncNode() {}
   const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
   Node* suite;
+  Node* para;
 
   FuncNode(const FuncNode&);
   FuncNode& operator=(const FuncNode&);
 };
 
+class ParaNode : public Node {
+public:
+  virtual ~ParaNode() {}
+  virtual const Literal* eval() const = 0;
+};
+
+class ActParaNode : public ParaNode {
+public:
+  virtual const Literal* eval() const;
+private:
+  Node* para;
+};
+
+class FmlParaNode : public ParaNode {
+public:
+  virtual const Literal* eval() const;
+private:
+  Node* para;
+};
+
 class SuiteNode : public Node {
 public:
-  SuiteNode ( const std::vector<Node*> s ) : Node(), stmts(s) {}
+  SuiteNode(const std::vector<Node*>& vec) : Node(), stmts(vec) {}
   // virtual ~SuiteNode() {}
   virtual const Literal* eval() const;
 private:
@@ -91,6 +112,17 @@ private:
 
   PrintNode(const PrintNode&);
   PrintNode& operator=(const PrintNode&);
+};
+
+class ArgNode : public Node {
+public:
+  ArgNode(Node* n): Node(), arglist(n) {}
+  virtual const Literal* eval() const { return NULL; }
+private:
+  Node* arglist;
+
+  ArgNode& operator=(const ArgNode&);
+  ArgNode(const ArgNode&);
 };
 
 class UnaryNode : public Node {

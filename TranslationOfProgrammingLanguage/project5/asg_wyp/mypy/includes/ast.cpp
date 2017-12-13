@@ -12,16 +12,16 @@ const Literal* IfNode::eval() const {
   int testFlag;
   const IntLiteral* testptr = dynamic_cast<const IntLiteral*>(test->eval());
   if (testptr) {
-    // std::cout << "Int Bool: " << ptr->getEntry() << std::endl;
+    // std::cout << "Int Bool: " << ptr->getSymbol() << std::endl;
     testFlag = testptr->getValue();
   }
   else {
-    // std::cout << "Float Bool: " << static_cast<const FloatLiteral*>(test->eval())->getEntry() << std::endl;
+    // std::cout << "Float Bool: " << static_cast<const FloatLiteral*>(test->eval())->getSymbol() << std::endl;
     const FloatLiteral* ftestptr = static_cast<const FloatLiteral*>(test->eval());
     testFlag = static_cast<int>(ftestptr->getValue());
   }
   if (testFlag) {
-    thenSuite->eval();
+    suite->eval();
   }
   else {
     elseSuite->eval();
@@ -38,12 +38,12 @@ const Literal* IfNode::eval() const {
   //
   // bool flag = lit->eval()->isTrue();
   // if( flag ) {
-  //   if( !thenSuite )
-  //     throw std::string("thenSuite is null!");
+  //   if( !suite )
+  //     throw std::string("suite is null!");
   //   tm.pushScope();
-  //   thenSuite->eval();
+  //   suite->eval();
   //   if( tm.checkName("__RETURN__")) {
-  //     const Literal* ret = tm.getEntry("__RETURN__");
+  //     const Literal* ret = tm.getSymbol("__RETURN__");
   //     tm.popScope();
   //     tm.insertSymb("__RETURN__", ret);
   //   }
@@ -58,7 +58,7 @@ const Literal* IfNode::eval() const {
   //   tm.pushScope();
   //   elseSuite->eval();
   //   if( tm.checkName("__RETURN__")) {
-  //     const Literal* ret = tm.getEntry("__RETURN__");
+  //     const Literal* ret = tm.getSymbol("__RETURN__");
   //     tm.popScope();
   //     tm.insertSymb("__RETURN__", ret);
   //   }
@@ -70,43 +70,55 @@ const Literal* IfNode::eval() const {
   //   throw std::string ("Neither true nor false");
   // }
 
-  return nullptr;
+  return NULL;
 }
 
 const Literal* FuncNode::eval() const {
-  TableManager::getInstance().insert( ident, suite );
-  return nullptr;
+  TableManager::getInstance().insertFunction(ident, suite);
+  return NULL;
+}
+
+const Literal* ActParaNode::eval() const {
+  // TableManager::getInstance().insertSymbol(ident, suite);
+  return NULL;
+}
+
+const Literal* FmlParaNode::eval() const {
+  // TableManager::getInstance().insertSymbol(ident, suite);
+  return NULL;
 }
 
 const Literal* SuiteNode::eval() const {
-  const Literal* result = nullptr;
-  for(const Node* n : stmts) {
-    if(!n)
-      throw std::string("SuiteNode is nullptr");
-    if (TableManager::getInstance().isReturned()) {
-      break;
-    }
-    result = n->eval();
-    const ReturnNode* rNode = dynamic_cast<const ReturnNode*>(n);
-    if (rNode) {
-      TableManager::getInstance().setReturned(true);
-      break;
+  // std::cout << "suite" << std::endl;
+  const Literal* result = NULL;
+  for (const Node* n : stmts) {
+    // if(!n)
+    // throw std::string("SuiteNode is nullptr");
+    if (n) {
+      if (TableManager::getInstance().getReturned()) {
+        break;
+      }
+      result = n->eval();
+      const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(n);
+      if (ptr) {
+        TableManager::getInstance().setReturned(true);
+        break;
+      }
     }
   }
   return result;
 }
 
 const Literal* CallNode::eval() const {
-
   TableManager& tm = TableManager::getInstance();
-  const Literal* result = nullptr;
-  // std::cout << tm.checkFunc(ident) << std::endl;
-  if (tm.checkFunc(ident)) {
+  // std::cout << tm.checkFuncName(ident) << std::endl;
+  const Literal* result = NULL;
+  if (tm.checkFuncName(ident)) {
     tm.pushScope();
     // std::cout << "currentScope: " << tm.getCurrentScope() << std::endl;
     result = tm.getSuite(ident)->eval();
     tm.setReturned(false);
-    // const Literal* res = TableManager::getInstance().getEntry("__RETURN__");
+    // const Literal* returnLit = tm.getSymbol("__RETURN__");
     tm.popScope();
   }
   return result;
@@ -120,7 +132,7 @@ const Literal* PrintNode::eval() const {
   else {
     std::cout << "None" << std::endl;
   }
-  return nullptr;
+  return NULL;
 }
 
 const Literal* ReturnNode::eval() const {
@@ -132,7 +144,6 @@ const Literal* ReturnNode::eval() const {
     return node->eval();
   }
 }
-
 
 // PlusAsgBinaryNode::PlusAsgBinaryNode(Node* left, Node* right) :
 //   BinaryNode(left, right) {
@@ -250,15 +261,15 @@ const Literal* IdentNode::eval() const {
 
   while (tm.getCurrentScope() >= 0) {
     // std::cout << "scope: " << tm.getCurrentScope() << std::endl;
-    if (tm.checkName(ident)) {
-      const Literal* val = tm.getEntry(ident);
+    if (tm.checkSymbol(ident)) {
+      const Literal* val = tm.getSymbol(ident);
       tm.setCurrentScope(scope);
       return val;
     }
     else {
       if (tm.getCurrentScope() == 0) {
         tm.setCurrentScope(scope);
-        std::cout << "IdentNode: name '" << ident << "' NOT FOUND" << std::endl;
+        std::cout << "NameError: name '" << ident << "' is not defined" << std::endl;
         return NULL;
       }
       else {
@@ -266,7 +277,7 @@ const Literal* IdentNode::eval() const {
       }
     }
   }
-  return nullptr;
+  return NULL;
 }
 
 const Literal* UnaryNode::eval() const {
@@ -288,7 +299,7 @@ const Literal* AsgBinaryNode::eval() const {
   const Literal* res = right->eval();
 
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  TableManager::getInstance().insert(n, res);
+  TableManager::getInstance().insertSymbol(n, res);
   return res;
 }
 
@@ -298,7 +309,7 @@ const Literal* PlusAsgBinaryNode::eval() const {
   }
 
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -307,7 +318,7 @@ const Literal* MinusAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -316,7 +327,7 @@ const Literal* MultAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -325,7 +336,7 @@ const Literal* DivAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -334,7 +345,7 @@ const Literal* ModAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -343,7 +354,7 @@ const Literal* IdivAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 
@@ -352,7 +363,7 @@ const Literal* PowAsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getEntry(n);
+  const Literal* res = TableManager::getInstance().getSymbol(n);
   return res;
 }
 

@@ -580,7 +580,7 @@ public:
 
   virtual const Literal* eval() const { return this; }
   virtual void print() const {
-    std::cout << "INT:" << val << std::endl;
+    std::cout << "INT: " << val << std::endl;
   }
   int getValue() const { return val; }
 private:
