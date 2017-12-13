@@ -10,6 +10,7 @@ class Node;
 class FunctionTable {
 public:
   FunctionTable () : functions() {}
+  // int found(const std::string& name) const;
   bool found(const std::string& name) const;
   void insert(const std::string& name, const Node* suite);
   const Node* getValue(const std::string& name) const;

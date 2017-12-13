@@ -13,6 +13,7 @@ bool SymbolTable::found(const std::string& name) const {
 
 void SymbolTable::insert(const std::string& name, const Literal* val) {
   symbolTable[name] = val;
+  // display();
 }
 
 const Literal* SymbolTable::getValue(const std::string& name) const {

@@ -64,37 +64,35 @@ public:
   FuncNode(const std::string& id, Node* s, Node* arg)
     : Node(), ident(id), suite(s), para(arg){}
   // virtual ~FuncNode() {}
-  const std::string getIdent() const { return ident; }
-
+  const std::string getIdent() const { return ident;  }
+  // void  setCreateScope( int s ) { createScope = s;    }
+  // int   getCreateScope() const  { return createScope; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
   Node* suite;
   Node* para;
-
+  // int   createScope;
 
   FuncNode(const FuncNode&);
   FuncNode& operator=(const FuncNode&);
 };
 
-class ParaNode : public Node {
-public:
-  virtual ~ParaNode() {}
-  virtual const Literal* eval() const = 0;
-};
 
-class ActParaNode : public ParaNode {
+class ActParaNode : public Node {
 public:
+  ActParaNode(const std::vector<Node*>& vec) : Node(), acts(vec) {}
   virtual const Literal* eval() const;
 private:
-  Node* para;
+  std::vector<Node*> acts;
 };
 
-class FmlParaNode : public ParaNode {
+class FmlParaNode : public Node {
 public:
+  FmlParaNode(const std::vector<Node*>& vec) : Node(), fmls(vec) {}
   virtual const Literal* eval() const;
 private:
-  Node* para;
+  std::vector<Node*> fmls;
 };
 
 class SuiteNode : public Node {

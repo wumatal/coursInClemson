@@ -1,5 +1,13 @@
 #include "functionTable.h"
 
+// int FunctionTable::found(const std::string& name) const {
+//   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
+//   if ( it != functions.end() ){
+//     return it->second->getCreateScope();
+//   }
+//   else
+//     return -1;
+// }
 bool FunctionTable::found(const std::string& name) const {
   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
   if ( it == functions.end() ){

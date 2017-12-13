@@ -22,7 +22,7 @@ const Literal* TableManager::getSymbol( const std::string& name ) {
 }
 
 // Get the Function Entry
-const Node* TableManager::getSuite(const std::string& name) {
+const Node* TableManager::getSuite(const std::string& name, int startScope) {
   // const Node* func;
   // for ( FunctionTable f : functions ) {
   //   func = f.getSymbol(name);
@@ -33,10 +33,12 @@ const Node* TableManager::getSuite(const std::string& name) {
   // std::exception up = std::exception();
   // throw up;
   const Node* func;
-  for( int i=currentScope-1; i >= 0; i--) {
+  for( int i=startScope; i >= 0; i--) {
     func = functions[i].getValue(name);
-    if ( func != NULL )
+    if ( func != NULL ){
+      // std::cout << "scope: " << i << std::endl;
       return func;
+    }
   }
   std::cout << "tableManager: func" << name << "NOT FOUND!" << std::endl;
   std::exception up = std::exception();
@@ -48,6 +50,7 @@ const Node* TableManager::getSuite(const std::string& name) {
 // Record newly scaned symbol
 // Scope ++?
 void TableManager::insertSymbol(const std::string& name, const Literal* node) {
+  // std::cout << "scope " << currentScope << std::endl;
   SymbolTable& table = tables[currentScope];
   table.insert(name, node);
 }
@@ -70,13 +73,21 @@ bool TableManager::checkSymbol(const std::string& name) const {
 }
 
 // search this scope and above to trace a func
-bool TableManager::checkFuncName(const std::string& name) const {
+// bool TableManager::checkFuncName(const std::string& name) const {
+int TableManager::checkFuncName(const std::string& name) const {
   // std::cout << currentScope << std::endl;
-  bool found = false;
-  for( int i=currentScope; i >= 0; i--) {
-    found += functions[i].found(name);
+
+  // bool found = false;
+  // for( int i=currentScope; i >= 0; i--) {
+  //   found += functions[i].found(name);
+  // }
+  // return found;
+  int i;
+  for( i=currentScope; i >= 0; i--) {
+    if( functions[i].found(name) )
+      return i;
   }
-  return found;
+  return -1;
   // return functions[currentScope].found(name);
 }
 

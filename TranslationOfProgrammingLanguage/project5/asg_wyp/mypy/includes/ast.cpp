@@ -80,12 +80,29 @@ const Literal* FuncNode::eval() const {
 
 const Literal* ActParaNode::eval() const {
   // TableManager::getInstance().insertSymbol(ident, suite);
-  return NULL;
+  const Literal* result = NULL;
+  return result;
 }
 
 const Literal* FmlParaNode::eval() const {
-  // TableManager::getInstance().insertSymbol(ident, suite);
-  return NULL;
+  // std::cout << "suite" << std::endl;
+  const Literal* result = NULL;
+  // for (const Node* n : fmls) {
+  //   // if(!n)
+  //   // throw std::string("SuiteNode is nullptr");
+  //   if (n) {
+  //     if (TableManager::getInstance().getReturned()) {
+  //       break;
+  //     }
+  //     result = n->eval();
+  //     const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(n);
+  //     if (ptr) {
+  //       TableManager::getInstance().setReturned(true);
+  //       break;
+  //     }
+  //   }
+  // }
+  return result;
 }
 
 const Literal* SuiteNode::eval() const {
@@ -116,10 +133,13 @@ const Literal* CallNode::eval() const {
   // std::cout << ident << std::endl;
   // tm.display();
   const Literal* result = NULL;
-  if (tm.checkFuncName(ident)) {
+  int startScope = tm.checkFuncName(ident);
+  // int temp = tm.getCurrentScope();
+  // std::cout << "startScope" << startScope << std::endl;
+  if (startScope != -1) {
     tm.pushScope();
-    // std::cout << "currentScope: " << tm.getCurrentScope() << std::endl;
-    result = tm.getSuite(ident)->eval();
+    // std::cout << ident << " "<< startScope <<":" << std::endl;
+    result = tm.getSuite(ident, startScope)->eval();
     tm.setReturned(false);
     // const Literal* returnLit = tm.getSymbol("__RETURN__");
     tm.popScope();
@@ -302,6 +322,7 @@ const Literal* AsgBinaryNode::eval() const {
   const Literal* res = right->eval();
 
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
+  // std::cout << "scope: "<< TableManager::getInstance() << "x=" << std::endl;
   TableManager::getInstance().insertSymbol(n, res);
   return res;
 }

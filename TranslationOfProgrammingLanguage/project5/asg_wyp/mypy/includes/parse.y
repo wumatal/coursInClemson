@@ -36,8 +36,8 @@
 %type<node> opt_yield_test pick_yield_expr_testlist_comp yield_expr
 %type<node> testlist_comp comp_for star_COMMA_test opt_COMMA testlist
 %type<node> compound_stmt simple_stmt if_stmt funcdef stmt suite
-%type<node> opt_arglist arglist star_trailer trailer flow_stmt return_stmt
-%type<node> parameters varargslist
+%type<node> arglist star_trailer trailer flow_stmt return_stmt
+%type<node> parameters fpdef opt_EQUAL_test
 
 %type<intNumber> pick_unop pick_multop pick_PLUS_MINUS
 %type<intNumber> pick_LEFTSHIFT_RIGHTSHIFT augassign comp_op
@@ -49,7 +49,7 @@
 %token<id> NAME
 %token<intNumber> INT
 %token<fltNumber> FLOAT
-%type<vec> plus_stmt
+%type<vec> plus_stmt varargslist star_fpdef_COMMA opt_arglist
 
 %start start
 
@@ -80,8 +80,9 @@ decorator // Used in: decorators
 	;
 opt_arglist // Used in: decorator, trailer
 	: arglist
+		{	$$->push_back($1);						 }
 	| %empty
-		{	$$ = NULL;   	}
+		{ $$ = new std::vector<Node*>(); }
 	;
 decorators // Used in: decorators, decorated
 	: decorators decorator
@@ -101,26 +102,44 @@ funcdef // Used in: decorated, compound_stmt
 parameters // Used in: funcdef
 	: LPAR varargslist RPAR
 		{
-			// $$ = new FmlParaNode($2);
-			// pool.add($$);
-			$$ = NULL;
+			$$ = new FmlParaNode(*$2);
+			pool.add($$);
 		}
 	| LPAR RPAR
 		{ $$ = NULL;	}
 	;
 varargslist // Used in: parameters, old_lambdef, lambdef
 	: star_fpdef_COMMA pick_STAR_DOUBLESTAR
-		{ $$ = NULL;	}
+		{
+			$$ = $1;
+		}
 	| star_fpdef_COMMA fpdef opt_EQUAL_test opt_COMMA
-		{ $$ = NULL;	}
+		{
+			if( $3 != NULL ){
+				Node* temp = new AsgBinaryNode($2, $3);
+				$1->push_back(temp);
+				pool.add(temp);
+			}
+			else {
+				$1->push_back($2);
+			}
+			$$ = $1;
+		}
 	;
 opt_EQUAL_test // Used in: varargslist, star_fpdef_COMMA
 	: EQUAL test
+		{ $$ = $2;			}
 	| %empty
+		{ $$ = NULL;		}
 	;
 star_fpdef_COMMA // Used in: varargslist, star_fpdef_COMMA
 	: star_fpdef_COMMA fpdef opt_EQUAL_test COMMA
+		{
+			$1->push_back($2);
+			$$ = $1;
+		}
 	| %empty
+		{ $$ = new std::vector<Node*>(); }
 	;
 opt_DOUBLESTAR_NAME // Used in: pick_STAR_DOUBLESTAR
 	: COMMA DOUBLESTAR NAME
@@ -138,7 +157,13 @@ opt_COMMA // Used in: varargslist, opt_test, opt_test_2, testlist_safe, listmake
 	;
 fpdef // Used in: varargslist, star_fpdef_COMMA, fplist, star_fpdef_notest
 	: NAME
+		{
+			$$ = new IdentNode($1);
+			delete [] $1;
+			pool.add($$);
+		}
 	| LPAR fplist RPAR
+		{ $$ = NULL;							}
 	;
 fplist // Used in: fpdef
 	: fpdef star_fpdef_notest COMMA
@@ -895,8 +920,14 @@ lambdef // Used in: test
 trailer // Used in: star_trailer
 	: LPAR opt_arglist RPAR
 		{
-			$$ = new ArgNode($2);
-      pool.add($$);
+			// $$ = new ArgNode($2);
+			if( $2 != NULL ) {
+				$$ = new ActParaNode(*$2);
+				pool.add($$);
+			}
+			else {
+				$$ = NULL;
+			}
 		}
 	| LSQB subscriptlist RSQB
 		{ $$ = NULL;   		}
