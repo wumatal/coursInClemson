@@ -1,0 +1,20 @@
+Name: Yuan Gao
+
+Clemson Email Address: yuang@g.clemson.edu
+
+Project no: 6
+
+Project due date: 12/13/2017
+
+Project description:
+Design and implement an Abstract Syntax Tree (AST) to represent and interpret my Python code. The program ranslates Python parameters including actual parameters and formal parameters. Also, the program implements recursion such as factorial.
+
+The parameters are retrieved as vector of Node* and stored as ParaNode. The argments are stored as ArgNode. In the CallNode, the parameters and arguments are compared to pass the arguments into functions. When return the function itself, the program implements recursions.
+
+The easiest part of this project: 
+No
+
+Problems that I had in completing this project: 
+
+
+
