@@ -24,10 +24,12 @@ const Literal* IfNode::eval() const {
 
 
   if (testFlag) {
-    res = suite->eval();
+    const SuiteNode* stmts = static_cast<const SuiteNode*> (suite);
+    res = stmts->eval();
   }
   else if( elseSuite ){
-    res = elseSuite->eval();
+    const SuiteNode* stmts = static_cast<const SuiteNode*> (elseSuite);
+    res = stmts->eval();
   }
 
   return res;
@@ -47,21 +49,7 @@ const Literal* ActParaNode::eval() const {
 const Literal* FmlParaNode::eval() const {
   // std::cout << "suite" << std::endl;
   const Literal* result = NULL;
-  // for (const Node* n : fmls) {
-  //   // if(!n)
-  //   // throw std::string("SuiteNode is nullptr");
-  //   if (n) {
-  //     if (TableManager::getInstance().getReturned()) {
-  //       break;
-  //     }
-  //     result = n->eval();
-  //     const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(n);
-  //     if (ptr) {
-  //       TableManager::getInstance().setReturned(true);
-  //       break;
-  //     }
-  //   }
-  // }
+
   return result;
 }
 
@@ -93,7 +81,6 @@ const Literal* CallNode::eval() const {
   int startScope = tm.checkFuncName(ident);
   int currentScope = tm.getCurrentScope();
   // protect site
-  // std::cout << ident<<"=callScope:"<<currentScope <<"|exeScope:"<<startScope<< std::endl;
   if (startScope != -1) {
     std::vector<Node*> parameters;
     // tm.display();
@@ -111,6 +98,7 @@ const Literal* CallNode::eval() const {
         argVec = static_cast<const ActParaNode*>(acts)->getValue();
       }
       std::vector<const Literal*> augVal;
+      if ( argVec.size() != parameters.size() ) throw std::string("Parameter Match Failed!");
       for (unsigned int i = 0; i < parameters.size(); i++) {
         augVal.push_back(argVec[i]->eval());
       }

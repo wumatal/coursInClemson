@@ -219,12 +219,12 @@ public:
     return rhs.opLt(val);
   }
   virtual const Literal* opLt(float lhs) const {
-    const Literal* node = new FloatLiteral( val < lhs );
+    const Literal* node = new FloatLiteral( val > lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opLt(int lhs) const {
-    const Literal* node = new FloatLiteral( val < lhs );
+    const Literal* node = new FloatLiteral( val > lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -233,13 +233,13 @@ public:
     return rhs.opLe(val);
   }
   virtual const Literal* opLe(float lhs) const {
-    const Literal* node = new FloatLiteral( val <= lhs );
+    const Literal* node = new FloatLiteral( val >= lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
 
   virtual const Literal* opLe(int lhs) const {
-    const Literal* node = new FloatLiteral( val <= lhs );
+    const Literal* node = new FloatLiteral( val >= lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -276,12 +276,12 @@ public:
     return rhs.opGe(val);
   }
   virtual const Literal* opGe(float lhs) const {
-    const Literal* node = new FloatLiteral( val >= lhs );
+    const Literal* node = new FloatLiteral( val <= lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opGe(int lhs) const {
-    const Literal* node = new FloatLiteral( val >= lhs );
+    const Literal* node = new FloatLiteral( val <= lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
@@ -290,12 +290,12 @@ public:
     return rhs.opGt(val);
   }
   virtual const Literal* opGt(float lhs) const {
-    const Literal* node = new FloatLiteral( val > lhs );
+    const Literal* node = new FloatLiteral( val < lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
   virtual const Literal* opGt(int lhs) const {
-    const Literal* node = new FloatLiteral( val > lhs );
+    const Literal* node = new FloatLiteral( val < lhs );
     PoolOfNodes::getInstance().add(node);
     return node;
   }
