@@ -79,7 +79,7 @@ public:
   // virtual const Literal* opRsh(float) const =0;
   // virtual const Literal* opRsh(int) const =0;
 
-  virtual const Literal* eval() const = 0;
+  virtual const Literal* eval(std::string) const = 0;
   virtual void print() const {
     std::cout << "No Way" << std::endl;
   }
@@ -324,7 +324,7 @@ public:
   //   return nullptr;
   // }
 
-  virtual const Literal* eval() const { return this; }
+  virtual const Literal* eval(std::string caller) const { caller.size();return this; }
   virtual void print() const {
     std::cout << "FLOAT: " << val << std::endl;
   }
@@ -578,7 +578,7 @@ public:
   // }
 
 
-  virtual const Literal* eval() const { return this; }
+  virtual const Literal* eval(std::string caller) const { caller.size();return this; }
   virtual void print() const {
     std::cout << "INT: " << val << std::endl;
   }

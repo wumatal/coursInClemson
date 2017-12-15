@@ -8,16 +8,16 @@
 
 
 
-const Literal* IfNode::eval() const {
+const Literal* IfNode::eval(std::string caller) const {
   int testFlag;
-  const IntLiteral* testptr = dynamic_cast<const IntLiteral*>(test->eval());
+  const IntLiteral* testptr = dynamic_cast<const IntLiteral*>(test->eval(caller));
   if (testptr) {
     // std::cout << "Int Bool: " << ptr->getSymbol() << std::endl;
     testFlag = testptr->getValue();
   }
   else {
-    // std::cout << "Float Bool: " << static_cast<const FloatLiteral*>(test->eval())->getSymbol() << std::endl;
-    const FloatLiteral* ftestptr = static_cast<const FloatLiteral*>(test->eval());
+    // std::cout << "Float Bool: " << static_cast<const FloatLiteral*>(test->eval(caller))->getSymbol() << std::endl;
+    const FloatLiteral* ftestptr = static_cast<const FloatLiteral*>(test->eval(caller));
     testFlag = static_cast<int>(ftestptr->getValue());
   }
   const Literal* res = NULL;
@@ -25,35 +25,37 @@ const Literal* IfNode::eval() const {
 
   if (testFlag) {
     const SuiteNode* stmts = static_cast<const SuiteNode*> (suite);
-    res = stmts->eval();
+    res = stmts->eval(caller);
   }
   else if( elseSuite ){
     const SuiteNode* stmts = static_cast<const SuiteNode*> (elseSuite);
-    res = stmts->eval();
+    res = stmts->eval(caller);
   }
 
   return res;
 }
 
-const Literal* FuncNode::eval() const {
+const Literal* FuncNode::eval(std::string creater) const {
+  creater.size();
   TableManager::getInstance().insertFunction(ident, para, suite);
   return NULL;
 }
 
-const Literal* ActParaNode::eval() const {
-  // TableManager::getInstance().insertSymbol(ident, suite);
-  const Literal* result = NULL;
-  return result;
+const Literal* ActParaNode::eval(std::string caller) const {
+
+  caller.size();
+  return NULL;
+
 }
 
-const Literal* FmlParaNode::eval() const {
+const Literal* FmlParaNode::eval(std::string caller) const {
   // std::cout << "suite" << std::endl;
+  caller.size();
   const Literal* result = NULL;
-
   return result;
 }
 
-const Literal* SuiteNode::eval() const {
+const Literal* SuiteNode::eval(std::string caller) const {
   // std::cout << "suite" << std::endl;
   const Literal* result = NULL;
   for (const Node* node : stmts) {
@@ -63,7 +65,7 @@ const Literal* SuiteNode::eval() const {
       if (TableManager::getInstance().getReturned()) {
         break;
       }
-      result = node->eval();
+      result = node->eval(caller);
       const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(node);
       if (ptr) {
         TableManager::getInstance().setReturned(true);
@@ -74,33 +76,42 @@ const Literal* SuiteNode::eval() const {
   return result;
 }
 
-const Literal* CallNode::eval() const {
+const Literal* CallNode::eval(std::string caller) const {
+  caller.size();
   TableManager& tm = TableManager::getInstance();
   // tm.display();
   const Literal* result = NULL;
   int startScope = tm.checkFuncName(ident);
+
+
   int currentScope = tm.getCurrentScope();
   // protect site
   if (startScope != -1) {
+
     std::vector<Node*> parameters;
+    const FmlParaNode* para = static_cast<const FmlParaNode*>(tm.getPara(ident, startScope));
     // tm.display();
-    tm.setCurrentScope(startScope);
-    tm.pushScope();
+    if( ident != caller ) {
+      tm.setCurrentScope(startScope);
+      tm.pushScope();
+      tm.protectStack(currentScope);
+    }
+    else{
+      tm.pushScope();
+    }
     const SuiteNode* stmts = static_cast<const SuiteNode*> (tm.getSuite(ident, startScope));
-    tm.protectStack(currentScope);
     // std::vector<std::map<std::string, const Literal*>> recvTables = tm.protectStack(currentScope);
     // tm.pushScope(ident);
-    if( tm.getPara( ident, startScope ) ) {
-
+    if( para ) {
       parameters = static_cast<const FmlParaNode*>(tm.getPara(ident, startScope))->getValue();
+
       std::vector<Node*> argVec;
-      if (acts ) {
-        argVec = static_cast<const ActParaNode*>(acts)->getValue();
-      }
+      if ( acts == NULL ) throw std::string("Parameter Match Failed!");
+      argVec = static_cast<const ActParaNode*>(acts)->getValue();
       std::vector<const Literal*> augVal;
       if ( argVec.size() != parameters.size() ) throw std::string("Parameter Match Failed!");
       for (unsigned int i = 0; i < parameters.size(); i++) {
-        augVal.push_back(argVec[i]->eval());
+        augVal.push_back(argVec[i]->eval(ident));
       }
       for (unsigned int i = 0; i < parameters.size(); i++) {
         const std::string n = static_cast<IdentNode*>(parameters[i])->getIdent();
@@ -108,21 +119,26 @@ const Literal* CallNode::eval() const {
 
       }
     }
-    result = stmts->eval();
+    result = stmts->eval(ident);
 
     tm.setReturned(false);
-    tm.restoreStack(currentScope);
-    // tm.restoreStack(currentScope, recvTables);
-    tm.popScope();
-    tm.setCurrentScope(currentScope);
+    if( ident != caller ) {
+      tm.restoreStack(currentScope);
+      // tm.restoreStack(currentScope, recvTables);
+      tm.popScope();
+      tm.setCurrentScope(currentScope);
+    }
+    else{
+      tm.popScope();
+    }
   }
   return result;
 }
 
-const Literal* PrintNode::eval() const {
+const Literal* PrintNode::eval(std::string caller) const {
   const Literal* temp = NULL;
   if (node) {
-    temp = node->eval();
+    temp = node->eval(caller);
   }
   if (temp) {
     temp->print();
@@ -133,129 +149,87 @@ const Literal* PrintNode::eval() const {
   return NULL;
 }
 
-const Literal* ReturnNode::eval() const {
+const Literal* ReturnNode::eval(std::string caller) const {
   if (node == NULL) {
     // std::cout << " return null" << std::endl;
     return NULL;
   }
   else {
-    return node->eval();
+    return node->eval(caller);
   }
 }
 
-// PlusAsgBinaryNode::PlusAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _ADD);
-// }
-//
-// MinusAsgBinaryNode::MinusAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _MINUS);
-// }
-//
-// MultAsgBinaryNode::MultAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _MULT);
-// }
-//
-// DivAsgBinaryNode::DivAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _DIV);
-// }
-//
-// ModAsgBinaryNode::ModAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _MOD);
-// }
-//
-// IdivAsgBinaryNode::IdivAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _IDIV);
-// }
-//
-// PowAsgBinaryNode::PowAsgBinaryNode(Node* left, Node* right) :
-//   BinaryNode(left, right) {
-//   const Literal* res = right->eval();
-//   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-//   TableManager::getInstance().insert(n, res, _POW);
-// }
 
 // Add logic node
-const Literal* LessThanBianryNode::eval() const {
+const Literal* LessThanBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'<\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x<*y );
   return number;
 }
 
-const Literal* LessEqualBianryNode::eval() const {
+const Literal* LessEqualBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'<=\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x<=*y );
   return number;
 }
 
-const Literal* NotEqualBianryNode::eval() const {
+const Literal* NotEqualBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'!=\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x!=*y );
   return number;
 }
 
-const Literal* EqualBianryNode::eval() const {
+const Literal* EqualBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'==\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x==*y );
   return number;
 }
 
-const Literal* GreatEqualBianryNode::eval() const {
+const Literal* GreatEqualBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'>=\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x>=*y );
   return number;
 }
 
-const Literal* GreatThanBianryNode::eval() const {
+const Literal* GreatThanBianryNode::eval(std::string caller) const {
   if( !left || !right ) {
     throw std::string("\'>\' error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   const Literal* number = ( *x>*y );
   return number;
 }
 
-const Literal* IdentNode::eval() const {
+const Literal* IdentNode::eval(std::string caller) const {
+  caller.size();
   TableManager& tm = TableManager::getInstance();
   int scope = tm.getCurrentScope();
+  // const Literal* val = NULL;
+  // if( tm.checkSymbol(ident) ) {
+  //    val = tm.getSymbol(ident);
+  // }
+  // return val;
 
   while (tm.getCurrentScope() >= 0) {
     // std::cout << "scope: " << tm.getCurrentScope() << std::endl;
@@ -276,13 +250,14 @@ const Literal* IdentNode::eval() const {
     }
   }
   return NULL;
+
 }
 
-const Literal* UnaryNode::eval() const {
+const Literal* UnaryNode::eval(std::string caller) const {
   if (!num) {
     throw std::string("error");
   }
-  const Literal* x = num->eval();
+  const Literal* x = num->eval(caller);
   if( sngs == '-' ){
     return -(*x);
   }
@@ -290,11 +265,11 @@ const Literal* UnaryNode::eval() const {
   return +(*x);
 }
 
-const Literal* AsgBinaryNode::eval() const {
+const Literal* AsgBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* res = right->eval();
+  const Literal* res = right->eval(caller);
 
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
   // std::cout << "scope: "<< TableManager::getInstance() << "x=" << std::endl;
@@ -302,131 +277,68 @@ const Literal* AsgBinaryNode::eval() const {
   return res;
 }
 
-const Literal* PlusAsgBinaryNode::eval() const {
+
+const Literal* AddBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* MinusAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* MultAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* DivAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* ModAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* IdivAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* PowAsgBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  const Literal* res = TableManager::getInstance().getSymbol(n);
-  return res;
-}
-
-const Literal* AddBinaryNode::eval() const {
-  if (!left || !right) {
-    throw std::string("error");
-  }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   //return (*x+*y);
   return (*x).operator+(*y);
 }
 
-const Literal* SubBinaryNode::eval() const {
+const Literal* SubBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   return ((*x)-(*y));
 }
 
-const Literal* MulBinaryNode::eval() const {
+const Literal* MulBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   return ((*x)*(*y));
 }
 
-const Literal* DivBinaryNode::eval() const {
+const Literal* DivBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   return ((*x)/(*y));
 }
 
-const Literal* ModBinaryNode::eval() const {
+const Literal* ModBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
 
   return ((*x)%(*y));
 }
 
-const Literal* IdivBinaryNode::eval() const {
+const Literal* IdivBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   return ((*x).operatorIdiv(*y));
 }
 
-const Literal* PowBinaryNode::eval() const {
+const Literal* PowBinaryNode::eval(std::string caller) const {
   if (!left || !right) {
     throw std::string("error");
   }
-  const Literal* x = left->eval();
-  const Literal* y = right->eval();
+  const Literal* x = left->eval(caller);
+  const Literal* y = right->eval(caller);
   return ((*x).operatorPow(*y));
 }

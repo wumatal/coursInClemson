@@ -8,7 +8,7 @@ TableManager& TableManager::getInstance(){
 
 // Get the Symbol Entry
 const Literal* TableManager::getSymbol( const std::string& name ) {
-  
+
   SymbolTable& symbolTable = tables[currentScope];
 
   return symbolTable.getValue(name);
@@ -128,4 +128,12 @@ void TableManager::display() const {
   for ( FunctionTable f : functions ) {
     f.display();
   }
+  // for( int i=0; i<tables.size(); i++){
+  //   std::cout << "Sym of Scope " << i << std::endl;
+  //   tables[i].display();
+  // }
+  // for( int i=0; i<functions.size(); i++){
+  //   std::cout << "Fun of Scope " << i << std::endl;
+  //   functions[i].display();
+  // }
 }
