@@ -79,11 +79,11 @@ bool TableManager::checkSymbol(const std::string& name) const {
 // search this scope and above to trace a func
 // bool TableManager::checkFuncName(const std::string& name) const {
 int TableManager::checkFuncName(const std::string& name) const {
-
-  int i;
-  for( i=currentScope; i >= 0; i--) {
-    if( functions[i].found(name) )
-      return i;
+  unsigned int i;
+  for( i = currentScope + 1; i > 0; i--) {
+    if( i-1 >= functions.size() ) continue;
+    if( functions[i-1].found(name) )
+      return i-1;
   }
   return -1;
   // return functions[currentScope].found(name);

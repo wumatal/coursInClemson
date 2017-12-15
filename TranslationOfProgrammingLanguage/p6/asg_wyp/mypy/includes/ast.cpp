@@ -83,7 +83,6 @@ const Literal* CallNode::eval(std::string caller) const {
   const Literal* result = NULL;
   int startScope = tm.checkFuncName(ident);
 
-
   int currentScope = tm.getCurrentScope();
   // protect site
   if (startScope != -1) {

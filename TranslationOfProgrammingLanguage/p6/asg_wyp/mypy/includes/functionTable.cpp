@@ -9,6 +9,7 @@
 //     return -1;
 // }
 bool FunctionTable::found(const std::string& name) const {
+  if( functions.size() == 0 ) return false;
   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
   if ( it == functions.end() ){
     return false;
