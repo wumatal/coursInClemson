@@ -20,19 +20,21 @@ const Literal* IfNode::eval() const {
     const FloatLiteral* ftestptr = static_cast<const FloatLiteral*>(test->eval());
     testFlag = static_cast<int>(ftestptr->getValue());
   }
+  const Literal* res = NULL;
+
+
   if (testFlag) {
-    suite->eval();
+    res = suite->eval();
   }
-  else {
-    elseSuite->eval();
+  else if( elseSuite ){
+    res = elseSuite->eval();
   }
 
-
-  return NULL;
+  return res;
 }
 
 const Literal* FuncNode::eval() const {
-  TableManager::getInstance().insertFunction(ident, suite);
+  TableManager::getInstance().insertFunction(ident, para, suite);
   return NULL;
 }
 
@@ -66,15 +68,15 @@ const Literal* FmlParaNode::eval() const {
 const Literal* SuiteNode::eval() const {
   // std::cout << "suite" << std::endl;
   const Literal* result = NULL;
-  for (const Node* n : stmts) {
+  for (const Node* node : stmts) {
     // if(!n)
     // throw std::string("SuiteNode is nullptr");
-    if (n) {
+    if ( node ) {
       if (TableManager::getInstance().getReturned()) {
         break;
       }
-      result = n->eval();
-      const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(n);
+      result = node->eval();
+      const ReturnNode* ptr = dynamic_cast<const ReturnNode*>(node);
       if (ptr) {
         TableManager::getInstance().setReturned(true);
         break;
@@ -85,28 +87,55 @@ const Literal* SuiteNode::eval() const {
 }
 
 const Literal* CallNode::eval() const {
-  // std::cout << ident << std::endl;
   TableManager& tm = TableManager::getInstance();
-  // std::cout << tm.checkFuncName(ident) << std::endl;
-  // std::cout << ident << std::endl;
   // tm.display();
   const Literal* result = NULL;
   int startScope = tm.checkFuncName(ident);
-  // int temp = tm.getCurrentScope();
-  // std::cout << "startScope" << startScope << std::endl;
+  int currentScope = tm.getCurrentScope();
+  // protect site
+  // std::cout << ident<<"=callScope:"<<currentScope <<"|exeScope:"<<startScope<< std::endl;
   if (startScope != -1) {
+    std::vector<Node*> parameters;
+    // tm.display();
+    tm.setCurrentScope(startScope);
     tm.pushScope();
-    // std::cout << ident << " "<< startScope <<":" << std::endl;
-    result = tm.getSuite(ident, startScope)->eval();
+    const SuiteNode* stmts = static_cast<const SuiteNode*> (tm.getSuite(ident, startScope));
+    tm.protectStack(currentScope);
+    // std::vector<std::map<std::string, const Literal*>> recvTables = tm.protectStack(currentScope);
+    // tm.pushScope(ident);
+    if( tm.getPara( ident, startScope ) ) {
+
+      parameters = static_cast<const FmlParaNode*>(tm.getPara(ident, startScope))->getValue();
+      std::vector<Node*> argVec;
+      if (acts ) {
+        argVec = static_cast<const ActParaNode*>(acts)->getValue();
+      }
+      std::vector<const Literal*> augVal;
+      for (unsigned int i = 0; i < parameters.size(); i++) {
+        augVal.push_back(argVec[i]->eval());
+      }
+      for (unsigned int i = 0; i < parameters.size(); i++) {
+        const std::string n = static_cast<IdentNode*>(parameters[i])->getIdent();
+        TableManager::getInstance().insertSymbol(n, augVal[i]);
+
+      }
+    }
+    result = stmts->eval();
+
     tm.setReturned(false);
-    // const Literal* returnLit = tm.getSymbol("__RETURN__");
+    tm.restoreStack(currentScope);
+    // tm.restoreStack(currentScope, recvTables);
     tm.popScope();
+    tm.setCurrentScope(currentScope);
   }
   return result;
 }
 
 const Literal* PrintNode::eval() const {
-  const Literal* temp = node->eval();
+  const Literal* temp = NULL;
+  if (node) {
+    temp = node->eval();
+  }
   if (temp) {
     temp->print();
   }

@@ -21,6 +21,10 @@ void FunctionTable::insert(const std::string& name, const Node* suite) {
   functions[name] = suite;
 }
 
+void FunctionTable::insertPara(const std::string& name, const Node* para) {
+  parameters[name] = para;
+}
+
 const Node* FunctionTable::getValue(const std::string& name) const {
   std::map<std::string, const Node*>::const_iterator it = functions.find(name);
   if ( it == functions.end() )
@@ -29,6 +33,15 @@ const Node* FunctionTable::getValue(const std::string& name) const {
   else
     return it->second;
 }
+
+
+const Node* FunctionTable::getPara(const std::string& name) const {
+  std::map<std::string, const Node*>::const_iterator it = parameters.find(name);
+  if (it == parameters.end()) return NULL;
+  return it->second;
+}
+
+
 void FunctionTable::display() const{
   std::map<std::string, const Node*>::const_iterator it = functions.begin();
   while (it != functions.end()) {

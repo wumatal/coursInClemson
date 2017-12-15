@@ -94,7 +94,7 @@ decorated // Used in: compound_stmt
 	;
 funcdef // Used in: decorated, compound_stmt
 	: DEF NAME parameters COLON suite {
-			$$ = new FuncNode( $2, $5, $3 );
+			$$ = new FuncNode( $2, $3, $5 );
 			pool.add($$);
 			delete [] $2;
 	}
@@ -102,7 +102,8 @@ funcdef // Used in: decorated, compound_stmt
 parameters // Used in: funcdef
 	: LPAR varargslist RPAR
 		{
-			$$ = new FmlParaNode(*$2);
+			$$ = new FmlParaNode($2);
+			delete $2;
 			pool.add($$);
 		}
 	| LPAR RPAR
@@ -835,7 +836,7 @@ power // Used in: factor
 			if($2 != NULL) {
 				// int s = $1->getIdent();
 				std::string n = reinterpret_cast<IdentNode*>($1)->getIdent();
-				$$ = new CallNode(n);
+				$$ = new CallNode(n, $2);
 				pool.add($$);
 			}
 			else {

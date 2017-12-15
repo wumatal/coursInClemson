@@ -9,16 +9,7 @@ def g():
     print x+10
   h()
   f()
-  k()
 
-def k():
-  print x
-  def j():
-    print x*3
-  j()
-  f()
 
 g()
-
-k()
 f()

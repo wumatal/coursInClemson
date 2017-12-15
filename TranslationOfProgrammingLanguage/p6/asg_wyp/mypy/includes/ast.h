@@ -24,11 +24,19 @@ private:
   std::string ident;
 };
 
+class SuiteNode : public Node {
+public:
+  SuiteNode(const std::vector<Node*>& vec) : Node(), stmts(vec) {}
+  // virtual ~SuiteNode() {}
+  virtual const Literal* eval() const;
+private:
+  std::vector<Node*> stmts;
+};
 
 class IfNode : public Node {
 public:
   IfNode ( Node* n, Node* ts, Node* es )
-    : Node(), test(n), suite(ts), elseSuite(es) {}
+    : Node(), test(n), suite(static_cast<SuiteNode*> (ts)), elseSuite(static_cast<SuiteNode*> (es)) {}
   virtual const Literal* eval() const;
 private:
   Node* test;
@@ -51,19 +59,23 @@ private:
 
 class CallNode : public Node {
 public:
-  CallNode(const std::string& id)
-  : Node(), ident(id) {}
+  CallNode(const std::string& id, Node* args)
+  : Node(), ident(id), acts(args) {}
   // virtual ~CallNode() {}
   const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
+  Node* acts;
+
+  CallNode(const CallNode&);
+  CallNode& operator=(const CallNode&);
 };
 
 class FuncNode : public Node {
 public:
   FuncNode(const std::string& id, Node* s, Node* arg)
-    : Node(), ident(id), suite(s), para(arg),
+    : Node(), ident(id), para(arg), suite(s),
       createScope(TableManager::getInstance().getCurrentScope()){}
   // virtual ~FuncNode() {}
   const std::string getIdent() const { return ident;  }
@@ -72,8 +84,8 @@ public:
   virtual const Literal* eval() const;
 private:
   std::string ident;
-  Node* suite;
   Node* para;
+  Node* suite;
   int   createScope;
 
   FuncNode(const FuncNode&);
@@ -85,26 +97,20 @@ class ActParaNode : public Node {
 public:
   ActParaNode(const std::vector<Node*>& vec) : Node(), acts(vec) {}
   virtual const Literal* eval() const;
+  std::vector<Node*> getValue() const { return acts; }
 private:
   std::vector<Node*> acts;
 };
 
 class FmlParaNode : public Node {
 public:
-  FmlParaNode(const std::vector<Node*>& vec) : Node(), fmls(vec) {}
+  FmlParaNode(const std::vector<Node*>* vec) : Node(), fmls(*vec) {}
   virtual const Literal* eval() const;
+  std::vector<Node*> getValue() const { return fmls; }
 private:
   std::vector<Node*> fmls;
 };
 
-class SuiteNode : public Node {
-public:
-  SuiteNode(const std::vector<Node*>& vec) : Node(), stmts(vec) {}
-  // virtual ~SuiteNode() {}
-  virtual const Literal* eval() const;
-private:
-  std::vector<Node*> stmts;
-};
 
 class PrintNode : public Node {
 public:
@@ -116,17 +122,17 @@ private:
   PrintNode(const PrintNode&);
   PrintNode& operator=(const PrintNode&);
 };
-
-class ArgNode : public Node {
-public:
-  ArgNode(Node* n): Node(), arglist(n) {}
-  virtual const Literal* eval() const { return NULL; }
-private:
-  Node* arglist;
-
-  ArgNode& operator=(const ArgNode&);
-  ArgNode(const ArgNode&);
-};
+//
+// class ArgNode : public Node {
+// public:
+//   ArgNode(Node* n): Node(), arglist(n) {}
+//   virtual const Literal* eval() const { return NULL; }
+// private:
+//   Node* arglist;
+//
+//   ArgNode& operator=(const ArgNode&);
+//   ArgNode(const ArgNode&);
+// };
 
 class UnaryNode : public Node {
 public:

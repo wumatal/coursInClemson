@@ -47,24 +47,50 @@ const Node* TableManager::getSuite(const std::string& name, int startScope) {
   // return funcTable.getValue(name);
 }
 
+const Node* TableManager::getPara(const std::string& name, int scope) {
+  //scope = currentScope;
+  FunctionTable& funcTable = functions[scope];
+  // FunctionTable& funcTable = functions[currentScope];
+  // std::cout << "found? " << funcTable.found(name) << std::endl;
+  return funcTable.getPara(name);
+}
+
 // Record newly scaned symbol
 // Scope ++?
 void TableManager::insertSymbol(const std::string& name, const Literal* node) {
-  // std::cout << "scope " << currentScope << std::endl;
+  unsigned int test = (unsigned int)currentScope;
+  // std::cout << "Size of symbolTable:"<< tables.size() << std::endl;
+  if(test >= tables.size()){
+    for(int i=tables.size(); i<=currentScope+1; i++)
+      tables.push_back(SymbolTable());
+  }
+  // std::cout << "Size of symbolTable:"<< tables.size() << std::endl;
   SymbolTable& table = tables[currentScope];
+
   table.insert(name, node);
 }
 
 // Record newLy scaned function
 // Scope ++?
-void TableManager::insertFunction(const std::string& name, const Node* node) {
+void TableManager::insertFunction(const std::string& name, const Node* node, const Node* para) {
+  unsigned int test = (unsigned int)currentScope;
+  if(test >= tables.size()){
+    for(int i=tables.size(); i<=currentScope+1; i++)
+      tables.push_back(SymbolTable());
+  }
+  if(test >= functions.size()){
+    for(int i=functions.size(); i<=currentScope+1; i++)
+      functions.push_back(FunctionTable());
+  }
   FunctionTable& table = functions[currentScope];
-  SymbolTable symbTemp;
-  FunctionTable funcTemp;
-
+  // SymbolTable symbTemp;
+  // FunctionTable funcTemp;
   table.insert(name, node);
-  tables.push_back(symbTemp);
-  functions.push_back(funcTemp);
+  if (para) {
+    table.insertPara(name, para);
+  }
+  // tables.push_back(symbTemp);
+  // functions.push_back(funcTemp);
 }
 
 // search this scope and above to trace a symbol
@@ -91,13 +117,51 @@ int TableManager::checkFuncName(const std::string& name) const {
   // return functions[currentScope].found(name);
 }
 
+// When a function defined in higher scope is called,
+// the symbol in lower scopes need to be remove and stored in recvTables
+// std::vector<std::map<std::string, const Literal*>> TableManager::protectStack(int scope) {
+void TableManager::protectStack(int scope) {
+  //std::vector<std::map<std::string, const Literal*>> recvTables;
+  recvTables.reserve(currentScope + 1);
+  for( int i = currentScope; i <= scope; i++ ){
+    std::map<std::string, const Literal*> recvTable;
+    tables[i].moveTo(recvTable);
+    recvTables[i] = recvTable;
+  }
+  // return recvTables;
+}
+
+// After a higher scope function call, the symbol protected in recvTables
+// need to store back in current stack.
+// void TableManager::restoreStack(int scope, std::vector<std::map<std::string, const Literal*>> recvTables) {
+void TableManager::restoreStack(int scope) {
+  for( int i = currentScope; i <= scope; i++ ){
+    tables[i].recoverFrom(recvTables[i]);
+    // recvTables[i].swapTo(tables[i]);
+    // recvTables[i].getSymbolTable().clear();
+  }
+}
+
+
+// void TableManager::pushScope(const std::string& name) {
 void TableManager::pushScope() {
+  // SymbolTable temp;
+  // tables.push_back(temp);
+  //
+  // FunctionTable funcTemp;
+  // if (checkFuncName(name)) {
+  //   funcTemp = functions[currentScope];
+  //   //std::cout << "-------pushScope---3----" << std::endl;
+  // }
+  // functions.push_back(funcTemp);
   currentScope++;
 }
 
 void TableManager::popScope() {
   if (currentScope > 0) {
     currentScope--;
+    // tables.pop_back();
+    // functions.pop_back();
   }
 }
 

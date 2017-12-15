@@ -12,8 +12,9 @@ bool SymbolTable::found(const std::string& name) const {
 }
 
 void SymbolTable::insert(const std::string& name, const Literal* val) {
+  //display();
+  // std::cout << "Size of table:"<< symbolTable.size() <<" and emptys of table:"<< symbolTable.empty() << std::endl;
   symbolTable[name] = val;
-  // display();
 }
 
 const Literal* SymbolTable::getValue(const std::string& name) const {
@@ -22,6 +23,20 @@ const Literal* SymbolTable::getValue(const std::string& name) const {
     throw name+std::string(" not found");
   return it->second;
 }
+
+void SymbolTable::moveTo(std::map<std::string, const Literal*> t){
+  symbolTable.swap(t);
+}
+
+void SymbolTable::recoverFrom(std::map<std::string, const Literal*> t){
+  symbolTable.swap(t);
+  t.clear();
+}
+
+void SymbolTable::clearTable() {
+  symbolTable.clear();
+}
+
 void SymbolTable::display() const {
   std::map<std::string, const Literal*>::const_iterator it = symbolTable.begin();
   while (it != symbolTable.end()) {
