@@ -15,14 +15,40 @@ project, the easiest thing is to understand the mechanism of the parameter
 passing.
 
 Problems that I had in completing this project: The most difficult thing to deal
-with is matching the formal parameters with actual ones. In this project, I set
-up a new table to manage all the formals, which is called ParaTable. The eval()
-of ParaNode is to matching the actuals and make the function running.
+with is matching the formal parameters with actual ones. In this project, I try 
+to figure out the way python cope with functions in different scope. The example
+can be like this:
+x = 5
+def f():
+  print x
+  
+def g():
+  x = 10
+  f()
+  
+g()
+
+In class, we thought the result would be 10 while python gives 5. As I tried to solve
+this promblem, I came up with a idea from Operating System. We can store current stack
+and then clear it. For f() and g() are both defined in scope 0, when f() is called 
+within g(), we just store what g() has done and then move all of g() out of the stack 
+scope by scope. When we done with f(), we just restore the previous stck back and the
+correct result occures.
+
+Besides, mypy can receive several parameters and give correct answer, like:
+def f(x, y):
+	if x == y:
+		return x**y
+	else :
+	    return x%-y
+print f(7, 17)
+
+Also, recursion example can be seen in my cases/recursion.py file and no memory leaks.
 
 And I fixed all the problems in my project 5.
 
-As this is the last project, I'd express my sincerely gratitude to all the skills you taught in class.
-I'm getting more comfortable with both c++ and Python, and really enjoy to play
-with them.
+As this is the last project, I'd express my sincerely gratitude to all the skills you 
+taught in class. I'm getting more comfortable with both c++ and Python, and really enjoy 
+to play with them.
 
 At last, Merry Christmas and Happy New Year!

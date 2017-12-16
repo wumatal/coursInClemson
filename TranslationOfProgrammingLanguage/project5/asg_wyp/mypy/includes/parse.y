@@ -36,7 +36,7 @@
 %type<node> opt_yield_test pick_yield_expr_testlist_comp yield_expr
 %type<node> testlist_comp comp_for star_COMMA_test opt_COMMA testlist
 %type<node> compound_stmt simple_stmt if_stmt funcdef stmt suite
-%type<node> arglist star_trailer trailer flow_stmt return_stmt
+%type<node>  star_trailer trailer flow_stmt return_stmt
 %type<node> parameters fpdef opt_EQUAL_test
 
 %type<intNumber> pick_unop pick_multop pick_PLUS_MINUS
@@ -49,7 +49,7 @@
 %token<id> NAME
 %token<intNumber> INT
 %token<fltNumber> FLOAT
-%type<vec> plus_stmt varargslist star_fpdef_COMMA opt_arglist
+%type<vec> plus_stmt varargslist star_fpdef_COMMA opt_arglist arglist
 
 %start start
 
@@ -80,7 +80,7 @@ decorator // Used in: decorators
 	;
 opt_arglist // Used in: decorator, trailer
 	: arglist
-		{	$$->push_back($1);						 }
+		{	$$= $1;						 						 }
 	| %empty
 		{ $$ = new std::vector<Node*>(); }
 	;
@@ -94,7 +94,7 @@ decorated // Used in: compound_stmt
 	;
 funcdef // Used in: decorated, compound_stmt
 	: DEF NAME parameters COLON suite {
-			$$ = new FuncNode( $2, $5, $3 );
+			$$ = new FuncNode( $2, $3, $5 );
 			pool.add($$);
 			delete [] $2;
 	}
@@ -932,7 +932,10 @@ trailer // Used in: star_trailer
 	| LSQB subscriptlist RSQB
 		{ $$ = NULL;   		}
 	| DOT NAME
-		{ $$ = NULL;   		}
+		{
+			$$ = NULL;
+			delete [] $2;
+		}
 	;
 subscriptlist // Used in: trailer
 	: subscript star_COMMA_subscript COMMA
@@ -1020,7 +1023,14 @@ pick_argument // Used in: arglist
 	;
 argument // Used in: star_argument_COMMA, star_COMMA_argument, pick_argument
 	: test opt_comp_for
+		{
+			$$ = NULL;
+		}
 	| test EQUAL test
+		{
+			$$ = new AsgBinaryNode($1, $2);
+			pool.add($$);
+		}
 	;
 opt_comp_for // Used in: argument
 	: comp_for

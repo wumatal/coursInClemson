@@ -283,8 +283,8 @@ const Literal* AddBinaryNode::eval(std::string caller) const {
   }
   const Literal* x = left->eval(caller);
   const Literal* y = right->eval(caller);
-  //return (*x+*y);
-  return (*x).operator+(*y);
+  // return (*x).operator+(*y);
+  return (*x+*y);
 }
 
 const Literal* SubBinaryNode::eval(std::string caller) const {

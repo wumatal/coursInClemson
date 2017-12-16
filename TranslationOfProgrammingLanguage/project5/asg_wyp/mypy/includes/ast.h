@@ -61,8 +61,8 @@ private:
 
 class FuncNode : public Node {
 public:
-  FuncNode(const std::string& id, Node* s, Node* arg)
-    : Node(), ident(id), suite(s), para(arg){}
+  FuncNode(const std::string& id, Node* arg, Node* s)
+    : Node(), ident(id), para(arg), suite(s){}
   // virtual ~FuncNode() {}
   const std::string getIdent() const { return ident;  }
   // void  setCreateScope( int s ) { createScope = s;    }
@@ -70,8 +70,8 @@ public:
   virtual const Literal* eval() const;
 private:
   std::string ident;
-  Node* suite;
   Node* para;
+  Node* suite;
   // int   createScope;
 
   FuncNode(const FuncNode&);
