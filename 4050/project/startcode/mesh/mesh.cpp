@@ -82,12 +82,10 @@ void Mesh::setVertices(Array<Vertex*>* vs){
 void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
   // create the triangle
   Triangle *t = new Triangle();
-
   // create the edges
   Edge *ea = new Edge(a,t);
   Edge *eb = new Edge(b,t);
   Edge *ec = new Edge(c,t);
-
   // Add new info for vertices by Wolfgang
   if( a->getEdge() == NULL ){
     a->setEdge(ea);
@@ -98,14 +96,13 @@ void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
   if( c->getEdge() == NULL ){
     c->setEdge(ec);
   }
-
   // point the triangle to one of its edges
   t->setEdge(ea);
-
   // connect the edges to each other
   ea->setNext(ec);
   eb->setNext(ea);
   ec->setNext(eb);
+  // check if edges are sharp
 
   // add them to the master list
   edges->Add(ea);
@@ -236,7 +233,8 @@ void Mesh::Load(const char *input_file) {
       vert_count++;
       sscanf (line, "%s %f %f %f\n",token,&x,&y,&z);
       // 0 stands for the first generation of vertices
-      addVertex( -1, 0, Vec3f(x,y,z) );
+      Vertex* v = addVertex( -1, 0, Vec3f(x,y,z) );
+      // delete v;
     } else if (!strcmp(token,"f")) {
       int num = sscanf (line, "%s %s %s %s %s %s\n",token,
 			atoken,btoken,ctoken,dtoken,etoken);
@@ -267,12 +265,17 @@ void Mesh::Load(const char *input_file) {
       else sscanf (ctoken,"%f",&x);
       Vertex *va = getVertex(a);
       Vertex *vb = getVertex(b);
-      Edge *ab = getEdge(va,vb);
-      Edge *ba = getEdge(vb,va);
+      Edge   *ab = getEdge(va,vb);
+      Edge   *ba = getEdge(vb,va);
       assert (ab != NULL);
       assert (ba != NULL);
       ab->setCrease(x);
       ba->setCrease(x);
+
+      delete va;
+      delete vb;
+      delete ab;
+      delete ba;
     } else if (!strcmp(token,"vt")) {
     } else if (!strcmp(token,"vn")) {
     } else if (token[0] == '#') {  // Iterate all edges
@@ -447,12 +450,31 @@ void Mesh::LoopSubdivision(int level) {
     mesh->addTriangle(vb,  vbc, vab);
     mesh->addTriangle(vab, vca, va );
     mesh->addTriangle(vbc, vc,  vca);
+    // Get sharp edge
+    // int sharp_a  = ea->getCrease();
+    // int sharp_b  = eb->getCrease();
+    // int sharp_c  = ec->getCrease();
+    // // set sharp edge
+    // if( sharp_a > 0 ) {
+    //   mesh->getEdge(va,  vab)->setCrease(sharp_a);
+    //   mesh->getEdge(vab, vb )->setCrease(sharp_a);
+    // }
+    // if( sharp_b > 0 ) {
+    //   mesh->getEdge(vb,  vbc)->setCrease(sharp_a);
+    //   mesh->getEdge(vbc, vc )->setCrease(sharp_a);
+    // }
+    // if( sharp_c > 0 ) {
+    //   mesh->getEdge(vc,  vca)->setCrease(sharp_a);
+    //   mesh->getEdge(vca, va )->setCrease(sharp_a);
+    // }
   }
   triangles->EndIteration(titer);
-
+  // vertices->Print();
   setTriangles(mesh->getTriangles());
   setEdges    (mesh->getEdges());
   setVertices (mesh->getVertices());
+  // vertices->Print();
+
   delete mesh;
 }
 // =================================================================
@@ -486,11 +508,12 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
   Edge* ea_op;
   Edge* ec_op;
   int  tri_n = 1;  // record the number of triangles adjacent to a
-  int      n = 2;      // record the number of vertices adjacet to a
-  Edge*   le = ea;  // record current left edge
-  Edge*   re = ec;  // record current right edge
-  Vertex* lv = b; // record current left vertex
-  Vertex* rv = c; // record current right vertex
+  int      n = 2;  // record the number of vertices adjacet to a
+  int sharps = 0;  // record the number of sharp edges adjacet to a
+  Edge*   le = ea; // record current left edge
+  Edge*   re = ec; // record current right edge
+  Vertex* lv = b;  // record current left vertex
+  Vertex* rv = c;  // record current right vertex
   Vec3f newPosition = b->get() + c->get();
 
   // get all vertices left to b

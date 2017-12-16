@@ -18,17 +18,17 @@ public:
   // ========================
   // CONSTRUCTOR & DESTRUCTOR
   // Alert this CONSTRUCTOR a new field 'level'
-  Vertex(int i, const Vec3f &pos) : position(pos) { index = i; level = 0; visit=0;}
+  Vertex(int i, const Vec3f &pos) : position(pos) { index = i; level = 0; visit=0; }
   Vertex(int i, int l, const Vec3f &pos) : position(pos) { index = i; level = l; visit=0;}
   virtual ~Vertex() { }
 
   // =========
   // ACCESSORS
-  int getIndex() const { return index; }
+  int getIndex() const  { return index;   }
   // Add getLevel & getEdge accordingly by Wolfgang
-  int getLevel() const { return level; }
-  Edge* getEdge() const { return edge; }
-  int getVisit() const { return visit; }
+  int getLevel() const  { return level;   }
+  Edge* getEdge() const { return edge;    }
+  int getVisit() const  { return visit;   }
   double x() const { return position.x(); }
   double y() const { return position.y(); }
   double z() const { return position.z(); }
@@ -40,10 +40,9 @@ public:
   void set(double x, double y, double z) { position.Set(x,y,z); }
   // Add SetEdge func by Wolfgang
   void setEdge(Edge* e) { edge = e; }
-  void setVisit( int v = -1 ) { visit += v; }
-
+  void setVisit( int v = -1 ) { visit += v;   }
   // Add debug by Wolfgang
-  void Print() { std::cout << level << "-" << index << ":" << position << std::endl; }
+  void Print() { std::cout << level << "-" << index << ":" /*<< onSharp*/ << std::endl; }
 
 private:
 
