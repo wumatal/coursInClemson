@@ -65,6 +65,7 @@ public:
   //  to get all triangles of the mesh and set new triangles for the mesh
   Bag<Triangle*> * getTriangles() { return triangles; }
   void setTriangles(Bag<Triangle*> *triangles);
+  Vertex* setOddPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ab_op, int level );
   void setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec );
 
   // ===============
