@@ -12,6 +12,18 @@ class Edge;
 class Triangle;
 class VertexParent;
 
+// Set the mask by Wolfgang
+typedef enum {SMOOTH, DART, REG_CREASE, IRR_CREASE, CORNER} code;
+const float twopi = 6.28318530717958647692f;
+// This table is used for sharp edges
+static const int mask_table[5][5] =
+{
+    {1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1},
+    {1, 1, 2, 3, 3},
+    {1, 1, 3, 2, 2},
+    {1, 1, 3, 2, 2},
+};
 // ======================================================================
 // ======================================================================
 
@@ -76,6 +88,7 @@ public:
   // OTHER FUNCTIONS
   void Paint(ArgParser *args);
   void LoopSubdivision(int level);
+  void setVertexType( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec );
   //void Simplification(int target_tri_count);
 
 private:

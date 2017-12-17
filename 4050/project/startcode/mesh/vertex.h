@@ -41,6 +41,7 @@ public:
   // Add SetEdge func by Wolfgang
   void setEdge(Edge* e) { edge = e; }
   void setVisit( int v = -1 ) { visit += v; }
+  void setType( int t ) { type = t; }
 
   // Add debug by Wolfgang
   void Print() { std::cout << level << "-" << index << ":" << position << std::endl; }
@@ -67,6 +68,8 @@ private:
   Edge* edge;
   // record whether or not to compute
   int visit;
+  // vertex code
+  int type;
 
 
   // NOTE: the vertices don't know anything about adjacency.  In some
