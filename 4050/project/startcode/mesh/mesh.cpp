@@ -446,22 +446,22 @@ void Mesh::LoopSubdivision(int level) {
     mesh->addTriangle(vab, vca, va );
     mesh->addTriangle(vbc, vc,  vca);
     // Get sharp edge
-    // int sharp_a  = ea->getCrease();
-    // int sharp_b  = eb->getCrease();
-    // int sharp_c  = ec->getCrease();
-    // // set sharp edge
-    // if( sharp_a > 0 ) {
-    //   mesh->getEdge(va,  vab)->setCrease(sharp_a);
-    //   mesh->getEdge(vab, vb )->setCrease(sharp_a);
-    // }
-    // if( sharp_b > 0 ) {
-    //   mesh->getEdge(vb,  vbc)->setCrease(sharp_a);
-    //   mesh->getEdge(vbc, vc )->setCrease(sharp_a);
-    // }
-    // if( sharp_c > 0 ) {
-    //   mesh->getEdge(vc,  vca)->setCrease(sharp_a);
-    //   mesh->getEdge(vca, va )->setCrease(sharp_a);
-    // }
+    int sharp_a  = ea->getCrease();
+    int sharp_b  = eb->getCrease();
+    int sharp_c  = ec->getCrease();
+    // set sharp edge
+    if( sharp_a > 0 ) {
+      mesh->getEdge(va,  vab)->setCrease(sharp_a);
+      mesh->getEdge(vab, vb )->setCrease(sharp_a);
+    }
+    if( sharp_b > 0 ) {
+      mesh->getEdge(vb,  vbc)->setCrease(sharp_b);
+      mesh->getEdge(vbc, vc )->setCrease(sharp_b);
+    }
+    if( sharp_c > 0 ) {
+      mesh->getEdge(vc,  vca)->setCrease(sharp_c);
+      mesh->getEdge(vca, va )->setCrease(sharp_c);
+    }
   }
   triangles->EndIteration(titer);
   // vertices->Print();
