@@ -1,0 +1,44 @@
+Name: Yupeng Wu
+
+Course: CpSc 4160/6160: Data-Driven 2D Video Game Development
+
+Clemson Email Address: yupengw@clemson.edu
+
+Project no: 2
+
+Project due date: Feb. 8, 2018
+
+Project description: (Also, what image did you draw?) 
+Draw a picture by using SDL 2.0. The painting covers different types of 
+shapes and the implementation need to do in an object-oriented fashion.
+What I try to draw is the Starry Night by Vincent van Gogh.
+
+
+The easiest part of this project: 
+To draw a simple shape, such as a circle and triangle. And filling is kind of
+easy as well.
+
+Problems that I had in completing this project:
+For me, the most difficult shape is curve. Not only it is hard to code but also
+it took me a lot of efforts to measure on the picture I chose. 
+
+Another thing is the pattern I designed in this project. I wrote my main 
+painting function in singleton way and the implement shapes by using 
+polymorphism. It works fine since the functions of this project is not tough.
+However, it is still paintaking to make all these classes work.
+
+At last, I still have difficulty in overloading the operator of SDL_Point. I
+once attempt to do it like this:
+
+bool SDL_point::operator==(const SDL_Point &b){
+  return x == b.x && y == b.y;
+}
+bool SDL_point::operator<(const SDL_Point &b){
+  return (x < b.x) || (x == b.x && y < b.y);
+}
+
+However, these code can not survive the compiling. After doing some searching
+on Internet, I 'overloaded' them by 'inline'.
+
+I really want to draw my picture a bit better if time permits. While this great
+painting has a lot of measures to cope with, I hardly had time to do so.
