@@ -11,8 +11,14 @@ int main(void) {
   // Get the painter
   Painter painter = Painter::getInstance();
 
-  SDL_Window* window;
-  SDL_Renderer* renderer;
+  SDL_Window* window = nullptr;
+  SDL_Renderer* renderer = nullptr;
+
+  // if ( !painter.initSDL(renderer, window, NAME, WIDTH, HEIGHT)
+  //     || window == nullptr || renderer == nullptr ) {
+  //   std::cout << "Failed to initialize SDL2" << std::endl;
+  //   return EXIT_FAILURE;
+  // }
 
   if ( SDL_Init(SDL_INIT_VIDEO) != 0 ) {
     std::cout << "Failed to initialize SDL2" << std::endl;
@@ -23,13 +29,12 @@ int main(void) {
       SDL_WINDOWPOS_UNDEFINED,
       WIDTH, HEIGHT, SDL_WINDOW_SHOWN
   );
-  renderer = SDL_CreateRenderer( 
+  renderer = SDL_CreateRenderer(
     window, -1, SDL_RENDERER_ACCELERATED
   );
 
   SDL_SetRenderDrawColor( renderer, skyMain.r, skyMain.g, skyMain.b, 255 );
   SDL_RenderClear(renderer);
-  // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
   // Start painting.
   painter.drawStarryNight(renderer);
@@ -49,8 +54,10 @@ int main(void) {
       }
     }
   }
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  SDL_Quit();
+
+  painter.destSDL(renderer, window);
+  // SDL_DestroyRenderer(renderer);
+  // SDL_DestroyWindow(window);
+  // SDL_Quit();
   return EXIT_SUCCESS;
 }

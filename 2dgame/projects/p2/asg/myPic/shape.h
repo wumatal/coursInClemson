@@ -18,7 +18,7 @@ public:
  */
 class Circle : public Shape {
 public:
-  Circle(const SDL_Point p, const SDL_Color c, const int r) : 
+  Circle(const SDL_Point p, const SDL_Color c, const int r) :
     pos(p), color(c), radius(r) {}
   virtual void draw(SDL_Renderer* renderer);
 private:
@@ -32,7 +32,7 @@ private:
  */
 class Quadrangle : public Shape {
 public:
-  Quadrangle(SDL_Point p, SDL_Color c, int h, int w) : //, float a) : 
+  Quadrangle(SDL_Point p, SDL_Color c, int h, int w) : //, float a) :
     pos(p), color(c), height(h), width(w){}//, angle(a) {}
   virtual void draw(SDL_Renderer* renderer);
 private:
@@ -40,7 +40,7 @@ private:
   SDL_Color color;
   int height;
   int width;
-  // float angle; 
+  // float angle;
 };
 
 /**
@@ -48,7 +48,7 @@ private:
  */
 class Triange : public Shape {
 public:
-  Triange(SDL_Point a, SDL_Point b, SDL_Point c, SDL_Color cl) : 
+  Triange(SDL_Point a, SDL_Point b, SDL_Point c, SDL_Color cl) :
     pos_a(a), pos_b(b), pos_c(c), color(cl) {}
   virtual void draw(SDL_Renderer* renderer);
 private:
@@ -64,13 +64,13 @@ private:
 class Curve : public Shape {
 public:
   Curve(const SDL_Point p0, const SDL_Point p3,
-    SDL_Point p1, SDL_Point p2, SDL_Color c) : 
+    SDL_Point p1, SDL_Point p2, SDL_Color c) :
     startPos(p0), endPos(p3), fstPos(p1), sndPos(p2), color(c){}
-  Curve(const Curve& cv) : startPos(cv.startPos), endPos(cv.endPos), 
+  Curve(const Curve& cv) : startPos(cv.startPos), endPos(cv.endPos),
     fstPos(cv.fstPos), sndPos(cv.sndPos), color(cv.color){}
   void setColor(const SDL_Color c) { color = c;  }
   SDL_Point getStartPos() const { return startPos; }
-  SDL_Point getEndPos() const { return endPos; }  
+  SDL_Point getEndPos() const { return endPos; }
   SDL_Point getFstPos() const { return fstPos; }
   SDL_Point getSndPos() const { return sndPos; }
   virtual void draw(SDL_Renderer* renderer);
@@ -87,9 +87,10 @@ private:
  */
 class Branch : public Shape {
 public:
-  Branch(const Curve* l, const Curve* r) : 
+  Branch(const Curve* l, const Curve* r) :
     left(new Curve(*l)), right(new Curve(*r)) {}
   virtual void draw(SDL_Renderer* renderer);
+  ~Branch() { delete left; delete right; }
 private:
   Curve* left;
   Curve* right;

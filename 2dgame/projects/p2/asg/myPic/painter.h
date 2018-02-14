@@ -13,6 +13,35 @@ public:
 
   /**
    * <description>
+   * This function is used to init SDL environment.
+   * </description>
+   * <param type='SDL_Renderer*'>The renderer to be init.</param>
+   * <param type='SDL_Window*'>The window to be init.</param>
+   * <param type='std::string*'>The name of the window.</param>
+   * <param type='int'>The width of the window.</param>
+   * <param type='int'>The height of the window.</param>
+   * <return type=bool></return>
+   */
+  bool initSDL(SDL_Renderer*, SDL_Window*, std::string, int, int);
+
+  /**
+   * <description>
+   * This function is used to destroy SDL environment.
+   * </description>
+   * <param type='SDL_Renderer*'>The renderer to be destroy.</param>
+   * <param type='SDL_Window*'>The window to be destroy.</param>
+   * <return type=bool></return>
+   */
+  void destSDL(SDL_Renderer*, SDL_Window*);
+
+  // ~Painter() {
+  //   SDL_DestroyRenderer(renderer);
+  //   SDL_DestroyWindow(window);
+  //   SDL_Quit();
+  // }
+
+  /**
+   * <description>
    * This function is used to draw basic shapes, like circles, rectangles
    * or lines.
    * </description>
@@ -20,7 +49,11 @@ public:
    * <param type='SDL_Renderer*'>The renderer.</param>
    */
   void drawShape(Shape*, SDL_Renderer*);
-
+  // ~Painter() {
+  //   SDL_DestroyRenderer(renderer);
+  //   SDL_DestroyWindow(window);
+  //   SDL_Quit();
+  // }
   /**
    * <description>
    * This function is used to draw one star. These stars are comprised of manay
@@ -29,7 +62,7 @@ public:
    * <param type='int'>The number of loop in this star</param>
    * <param type='SDL_Renderer*'>The position of the star</param>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawAStar(int, SDL_Point, SDL_Renderer*);
 
   /**
@@ -37,7 +70,7 @@ public:
    * This function is used to draw stars by calling 'drawAStar' for many times.
    * </description>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawStars(SDL_Renderer*);
 
   /**
@@ -45,7 +78,7 @@ public:
    * This function is used to draw the moon comprised of tangential circle
    * </description>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawMoon(SDL_Renderer*);
 
   /**
@@ -54,7 +87,7 @@ public:
    * circles
    * </description>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawSky(SDL_Renderer*);
 
   /**
@@ -63,16 +96,16 @@ public:
    * circles
    * </description>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawClouds(SDL_Renderer*);
 
   /**
    * <description>
-   * This function is used to draw the lights over the mountains, which is 
+   * This function is used to draw the lights over the mountains, which is
    * comprised of curves.
    * </description>
    * <param type='SDL_Renderer*'>The renderer.</param>
-   */  
+   */
   void drawLight(SDL_Renderer*);
 
   /**
@@ -112,6 +145,8 @@ public:
    */
   void drawStarryNight(SDL_Renderer*);
 private:
+  // SDL_Renderer* renderer;
+  // SDL_Window* window;
   Painter() {}
 };
 
