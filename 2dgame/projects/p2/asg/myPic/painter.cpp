@@ -6,7 +6,18 @@ Painter& Painter::getInstance() {
   return instance;
 }
 
-bool Painter::initSDL(SDL_Renderer*& renderer, SDL_Window*& window, std::string n, int w, int h) {
+Painter::~Painter() {
+  std::cout << "size of shapes: " <<  shapes.size() << std::endl;
+  for( Shape* s : shapes ) {
+    delete s;
+  }
+
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
+}
+
+bool Painter::initSDL(std::string n, int w, int h) {
   if ( SDL_Init(SDL_INIT_VIDEO) != 0 ) {
     return false;
   }
@@ -22,79 +33,74 @@ bool Painter::initSDL(SDL_Renderer*& renderer, SDL_Window*& window, std::string 
   SDL_SetRenderDrawColor( renderer, skyMain.r, skyMain.g, skyMain.b, 255 );
   SDL_RenderClear(renderer);
 
+  shapes.reserve(575);
   return true;
 }
 
-void Painter::destSDL(SDL_Renderer*& renderer, SDL_Window*& window) {
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  SDL_Quit();
-}
-
-void Painter::drawShape(Shape* shape, SDL_Renderer* renderer) {
-  shape->draw(renderer);
-}
-
-void Painter::drawAStar(int loop,
-  SDL_Point     pos,
-  SDL_Renderer* renderer)
-{
-  Circle center(pos, starLoop, 2);
+void Painter::drawAStar(int loop, SDL_Point pos) {
+  Shape* center = new Circle(pos, starLoop, 2);
   for( int i=loop; i>0; i-- ) {
-    Circle loop( pos, starLoop,     i*loopWid + loopOffset );
-    Circle mid ( pos, starMid,  (i-1)*loopWid + loopOffset + edgeWid*2 );
-    Circle edge( pos, starEdge, (i-1)*loopWid + loopOffset + edgeWid);
+    Shape* loop = new Circle( pos, starLoop,     i*loopWid + loopOffset );
+    Shape* mid  = new Circle( pos, starMid,  (i-1)*loopWid + loopOffset + edgeWid*2 );
+    Shape* edge = new Circle( pos, starEdge, (i-1)*loopWid + loopOffset + edgeWid);
 
-    drawShape(&loop, renderer);
-    drawShape(&mid,  renderer);
-    drawShape(&edge, renderer);
+    loop->draw(renderer);
+    mid->draw(renderer);
+    edge->draw(renderer);
+
+    shapes.push_back(loop);
+    shapes.push_back(mid );
+    shapes.push_back(edge);
   }
-  drawShape(&center, renderer);
+  center->draw(renderer);
+  shapes.push_back(center);
 }
 
-void Painter::drawStars(SDL_Renderer* renderer) {
+void Painter::drawStars() {
   for(auto star : stars)
-    drawAStar(star.second, star.first, renderer);
+    drawAStar(star.second, star.first);
 }
 
-void Painter::drawMoon(SDL_Renderer* renderer) {
+void Painter::drawMoon() {
   Shape* moonOut = new Circle(moonOutPos, moonColor, moonOutRadius);
   Shape* moonIn  = new Circle(moonInPos,  starLoop,  moonInRadius );
 
   // Draw halo
-  drawAStar( 7, moonOutPos, renderer);
+  drawAStar( 7, moonOutPos);
   // Draw outer moon
   moonOut->draw(renderer);
   // Draw inner moon
   moonIn->draw(renderer);
 
-  delete moonIn;
-  delete moonOut;
+  shapes.push_back(moonOut);
+  shapes.push_back(moonIn);
 }
 
 // void Painter::drawSky(SDL_Renderer* renderer) {
 
 // }
 
-void Painter::drawClouds(SDL_Renderer* renderer) {
+void Painter::drawClouds() {
   int radius;
   for(auto cloud : clouds) {
     radius = cloud.second;
 
     for( int i=0; i<3; i++) {
-      Circle edge(cloud.first, cloudEdge, radius);
+      Shape* edge = new Circle(cloud.first, cloudEdge, radius);
       radius -= cloudEdgeWid;
-      Circle main(cloud.first, cloudMain, radius);
+      Shape* main = new Circle(cloud.first, cloudMain, radius);
       radius -= cloudMainWid;
 
-      drawShape(&edge, renderer);
-      drawShape(&main, renderer);
+      edge->draw(renderer);
+      main->draw(renderer);
 
+      shapes.push_back(edge);
+      shapes.push_back(main);
     }
   }
 }
 
-void Painter::drawLight(SDL_Renderer* renderer) {
+void Painter::drawLight() {
   SDL_Point p0, p1, p2, p3;
   int j;
   for(unsigned long int i = 0; i<lights.size(); i++) {
@@ -105,55 +111,58 @@ void Painter::drawLight(SDL_Renderer* renderer) {
 
     for( int k=0; k<5; k++) {
       for(j = 0; j < lightEdgeWid; j++ ) {
-        Curve c ( p0, p3, p1, p2, starLoop);
-        c.draw(renderer);
+        Shape* c = new Curve( p0, p3, p1, p2, starLoop);
+        c->draw(renderer);
+        shapes.push_back(c);
         p0.y++; p1.y++; p2.y++; p3.y++;
       }
       for(j = 0; j < lightAreaWid; j++ ) {
-        Curve c ( p0, p3, p1, p2, starMid);
-        c.draw(renderer);
+        Shape* c = new Curve( p0, p3, p1, p2, starMid);
+        c->draw(renderer);
+        shapes.push_back(c);
         p0.y++; p1.y++; p2.y++; p3.y++;
       }
       for(j = 0; j < lightEdgeWid; j++ ) {
-        Curve c ( p0, p3, p1, p2, starEdge);
-        c.draw(renderer);
+        Shape* c = new Curve( p0, p3, p1, p2, starEdge);
+        c->draw(renderer);
+        shapes.push_back(c);
         p0.y++; p1.y++; p2.y++; p3.y++;
       }
     }
   }
 }
 
-void Painter::drawBranch(SDL_Renderer* renderer, const Curve* left, const Curve* right){
-  Branch b(left, right);
-  drawShape(&b, renderer);
+void Painter::drawBranch(const Curve* left, const Curve* right) {
+  Shape* b = new Branch(left, right);
+  b->draw(renderer);
+  shapes.push_back(b);
 }
 
-void Painter::drawTree(SDL_Renderer* renderer){
+void Painter::drawTree() {
   for(unsigned long int i = 0; i<branches.size(); i++) {
     Curve left (branches[i][0], branches[i][3],
       branches[i][1], branches[i][2], branchArea);
     Curve right(branches[i][4], branches[i][7],
       branches[i][5], branches[i][6], branchArea);
-    drawBranch (renderer, &left, &right);
+    drawBranch (&left, &right);
   }
 }
 
-void Painter::drawHouses(SDL_Renderer* renderer){
-
+void Painter::drawHouses() {
   for(int i=0; i<3; i++){
-    Triange roof(roofA, roofB, roofC, lightwall);
-    drawShape(&roof, renderer);
-
+    Shape* roof = new Triange(roofA, roofB, roofC, lightwall);
+    roof->draw(renderer);
+    shapes.push_back(roof);
   }
 }
 
-void Painter::drawStarryNight(SDL_Renderer* renderer) {
+void Painter::drawStarryNight() {
+  drawStars ();
+  drawMoon  ();
+  drawLight ();
+  drawClouds();
+  drawHouses();
+  drawTree  ();
 
-  drawStars (renderer);
-  drawMoon  (renderer);
-  drawLight (renderer);
-  drawClouds(renderer);
-  drawHouses(renderer);
-  drawTree  (renderer);
-
+  SDL_RenderPresent(renderer);
 }

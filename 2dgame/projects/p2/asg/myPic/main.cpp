@@ -11,22 +11,20 @@ int main(void) {
   // Get the painter
   Painter painter = Painter::getInstance();
 
-  SDL_Window* window = nullptr;
-  SDL_Renderer* renderer = nullptr;
-
-  if ( !painter.initSDL(renderer, window, NAME, WIDTH, HEIGHT)
-      || window == nullptr || renderer == nullptr ) {
+  // Initialize the SDL.
+  if ( !painter.initSDL(NAME, WIDTH, HEIGHT) ) {
     std::cout << "Failed to initialize SDL2" << std::endl;
     return EXIT_FAILURE;
   }
 
   // Start painting.
-  painter.drawStarryNight(renderer);
+  painter.drawStarryNight();
 
-  SDL_RenderPresent(renderer);
-  FrameGenerator frameGen(renderer, window, WIDTH, HEIGHT, NAME);
+  // Generate the frame.
+  FrameGenerator frameGen(painter.getRenderer(), painter.getWindow(), WIDTH, HEIGHT, NAME);
   frameGen.makeFrame();
 
+  // Get keyboard inputs.
   SDL_Event event;
   const Uint8* keystate;
   while ( true ) {
@@ -39,6 +37,5 @@ int main(void) {
     }
   }
 
-  painter.destSDL(renderer, window);
   return EXIT_SUCCESS;
 }
