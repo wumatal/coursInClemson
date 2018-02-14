@@ -1,0 +1,48 @@
+Name: Yupeng Wu
+
+Clemson Email Address: yupengw@clemson.edu
+
+Project no: 5
+
+Project due date: December 8th, 2017
+
+Project description: This project requires us to enhance mypy so that it can
+parse non-paremeter functions and some basic clause like if.
+
+The easiest part of this project: Comparing to perceiving the logic of Python
+and figuring out the flows among different nodes, coding is absolutely the
+"easiest" part, believe it or not.
+
+Problems that I had in completing this project:
+It took a lot of efforts and time to understand how mypy works.
+
+I had difficulty in the implementation of function node and return node. Thanks
+to the records of our class, I picked my way through most of them!
+
+For another, when it comes to ifNode, I stuck at an example discovered with
+Hui Ma, that is,
+x = 7
+def f():
+  if x == 7:
+    y = 14
+  else:
+    z = 21
+  print y
+  print z
+f()
+In this case, y will be printed while z will cast a report saying "local
+variable 'z' referenced before assignment".
+
+Mod function was fixed according to the rule discussed in the last class, which
+is x % y = x - floor( x / y ) * y. In addition, shifting operations are also
+implemented in this project.
+
+At last, I want to declare some silly mistakes in my project 4. First, for
+all prints of Literals, I put the type, like "INT:" and "FLOAT:", in the
+beginning of each line. Second, I should have commented out the message "Program
+syntactically correct", which confused me myself when I was doing this project.
+Having all my test cases pass, I had to add those two things into each of my
+.out files by hand, which I should not! By doing so, the result may be like
+this: all my own test cases passed, while most, even all, of yours failed. So in
+this project, I comment out the message "Program syntactically correct" and
+decouple the type in test.py script. Hope it will gain a desired result.
