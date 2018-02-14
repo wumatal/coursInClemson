@@ -6,7 +6,7 @@ Painter& Painter::getInstance() {
   return instance;
 }
 
-bool Painter::initSDL(SDL_Renderer* renderer, SDL_Window* window, std::string n, int w, int h) {
+bool Painter::initSDL(SDL_Renderer*& renderer, SDL_Window*& window, std::string n, int w, int h) {
   if ( SDL_Init(SDL_INIT_VIDEO) != 0 ) {
     return false;
   }
@@ -25,7 +25,7 @@ bool Painter::initSDL(SDL_Renderer* renderer, SDL_Window* window, std::string n,
   return true;
 }
 
-void Painter::destSDL(SDL_Renderer* renderer, SDL_Window* window) {
+void Painter::destSDL(SDL_Renderer*& renderer, SDL_Window*& window) {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
@@ -58,18 +58,18 @@ void Painter::drawStars(SDL_Renderer* renderer) {
 }
 
 void Painter::drawMoon(SDL_Renderer* renderer) {
-  Circle moonOut(moonOutPos, moonColor, moonOutRadius);
-  Circle moonIn (moonInPos,  starLoop,  moonInRadius );
-  // Shape* moonIn = new Circle(moonInPos,  starLoop,  moonInRadius );
+  Shape* moonOut = new Circle(moonOutPos, moonColor, moonOutRadius);
+  Shape* moonIn  = new Circle(moonInPos,  starLoop,  moonInRadius );
 
   // Draw halo
   drawAStar( 7, moonOutPos, renderer);
   // Draw outer moon
-  drawShape(&moonOut, renderer);
+  moonOut->draw(renderer);
   // Draw inner moon
-  drawShape(&moonIn, renderer);
-  // moonIn->draw(renderer);
-  // delete moonIn
+  moonIn->draw(renderer);
+
+  delete moonIn;
+  delete moonOut;
 }
 
 // void Painter::drawSky(SDL_Renderer* renderer) {

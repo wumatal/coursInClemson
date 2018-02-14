@@ -22,7 +22,7 @@ public:
    * <param type='int'>The height of the window.</param>
    * <return type=bool></return>
    */
-  bool initSDL(SDL_Renderer*, SDL_Window*, std::string, int, int);
+  bool initSDL(SDL_Renderer*&, SDL_Window*&, std::string, int, int);
 
   /**
    * <description>
@@ -32,7 +32,7 @@ public:
    * <param type='SDL_Window*'>The window to be destroy.</param>
    * <return type=bool></return>
    */
-  void destSDL(SDL_Renderer*, SDL_Window*);
+  void destSDL(SDL_Renderer*&, SDL_Window*&);
 
   // ~Painter() {
   //   SDL_DestroyRenderer(renderer);
