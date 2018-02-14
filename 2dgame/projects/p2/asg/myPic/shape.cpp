@@ -44,12 +44,12 @@ int CalculateBezierPoint(float t,
   float uu = u * u;
   float uuu = uu * u;
   float ttt = tt * t;
- 
+
   float p = uuu * p0; //first term
   p += 3 * uu * t * p1; //second term
   p += 3 * u * tt * p2; //third term
   p += ttt * p3; //fourth term
- 
+
   return static_cast<int>(p);
 }
 
@@ -61,7 +61,7 @@ void Curve::draw(SDL_Renderer* renderer) {
   int q1;
   float t;
   int distance = endPos.x - startPos.x;
-   
+
   for(int i = 1; i <= distance; i++)
   {
     t = i / (float) distance;
@@ -86,7 +86,7 @@ void Branch::draw(SDL_Renderer* renderer) {
 
   float t;
 
-  int distance = left->getEndPos().y > right->getEndPos().y ? 
+  int distance = left->getEndPos().y > right->getEndPos().y ?
                  left->getEndPos().y : right->getEndPos().y;
   distance -= y;
 
