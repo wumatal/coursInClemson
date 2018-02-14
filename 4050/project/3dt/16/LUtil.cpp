@@ -1,9 +1,12 @@
 #include "LUtil.h"
 
+GLunit texture;
+
 bool initGL( void ) {
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_LIGHTING );
   glEnable( GL_LIGHT0 );
+  glEnable( GL_TEXTURE_2D );
 
   GLenum error = glGetError();
   if( error != GL_NO_ERROR ) {
@@ -13,6 +16,8 @@ bool initGL( void ) {
 }
 
 void display( void ) {
+  texture = LoadTexture( "Walls/wall-7-granite/wall-7-granite-TEX.jpg", 2048, 2048 );
+
   glClearColor( 0.f, 0.f, 0.f, 1.f );
   glClearDepth( 1.f );
 

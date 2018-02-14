@@ -363,7 +363,7 @@ void keyboard(unsigned char key, int x, int y)
 
 			break;
 		case 'l': //subdivide level
-			cout << "Subdivided!" << endl;
+			//cout << "Subdivided!" << endl;
 			subCount++;
 			if(subCount > 3) {
 				coords.clear(); coords2.clear(); coordsTemp.clear();
@@ -389,11 +389,11 @@ void keyboard(unsigned char key, int x, int y)
 			helpOdd(faceVertices2);
 			break;
 		case 'r': //rotate
-			cout << "Rotate Mode:" << endl;
+			//cout << "Rotate Mode:" << endl;
 			lastKey = 'r';
 			break;
 		case 't': //translate
-			cout << "Translate Mode:" << endl;
+			//cout << "Translate Mode:" << endl;
 			lastKey = 't';
 			break;
 		case 'w': //up
@@ -414,7 +414,7 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 'i': //ray-trace rendering
 			lastKey = 'i';
-			cout << "Rendering image..." << endl;
+			//cout << "Rendering image..." << endl;
 			break;
 	}
 }
@@ -429,7 +429,7 @@ void GLInit(int* argc, char** argv)
 	// ...
 	// Complete this function
 	// ...
-	glutCreateWindow("CS 130 - Jonathan An");
+	glutCreateWindow("CPSC6050 Subdivision");
 
 	// The default view coordinates is (-1.0, -1.0) bottom left & (1.0, 1.0) top right.
 	// For the purposes of this lab, this is set to the number of pixels
@@ -446,7 +446,8 @@ void GLInit(int* argc, char** argv)
 /**********************************************************************/
 int main(int argc, char** argv)
 {
-	fileName = argv[1];
+	//fileName = argv[1];
+	fileName = (char*)"samplediamond.txt";
 	readFile(fileName);
 	faceVertices2 = faceVertices;
 	coords2 = coords;

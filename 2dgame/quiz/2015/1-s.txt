@@ -1,0 +1,35 @@
+1.
+convert
+convert
+destructor
+destructor
+
+2.
+2
+8
+
+3.
+convert
+copy
+destructor
+destructor
+
+4.
+1)This is caused by shallow copy so that b->buf points to the same space
+as a->buf.
+2) add copy constructor as followed:
+string(const string& s) : buf(new char[strlen(s.buf) + 1]) {
+  strcpy(buf, s.buf);
+}
+
+5.(w)
+std::ostream& operator<<(std::ostream out, const string& s) {
+  return out<< s.getBuf();
+}
+
+6.(w)
+std::cout << star << std::endl
+// star << std::cout << std::endl;
+
+7.
+dont know singlton

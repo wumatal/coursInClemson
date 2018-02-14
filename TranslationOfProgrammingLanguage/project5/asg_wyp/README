@@ -1,0 +1,28 @@
+Name: Yupeng Wu
+
+Clemson Email Address: yupengw@clemson.edu
+
+Project no: 6
+
+Project due date: December 13th, 2017
+
+Project description: As the final project, this project requires mypy to perform
+propagation of parameters, including actual parameters and formal parameters, so
+that recursion can be implemented as well.
+
+The easiest part of this project: Based on the structure implemented in previous
+project, the easiest thing is to understand the mechanism of the parameter
+passing.
+
+Problems that I had in completing this project: The most difficult thing to deal
+with is matching the formal parameters with actual ones. In this project, I set
+up a new table to manage all the formals, which is called ParaTable. The eval()
+of ParaNode is to matching the actuals and make the function running.
+
+And I fixed all the problems in my project 5.
+
+As this is the last project, I'd express my sincerely gratitude to all the skills you taught in class.
+I'm getting more comfortable with both c++ and Python, and really enjoy to play
+with them.
+
+At last, Merry Christmas and Happy New Year!
