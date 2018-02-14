@@ -15,7 +15,7 @@ SRCS 	 	= basic/main.cpp \
 
 LIBS            = -lm -lGL -lGLU -lglut -L/usr/X11R6/lib
 CC		= g++ -I/usr/X11R6/include -I/usr/local/include
-EXE 	  	= adjacency
+EXE 	  	= run
 OBJS =  $(SRCS:.cpp=.o)
 
 # ===============================================================

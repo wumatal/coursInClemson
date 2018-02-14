@@ -280,6 +280,24 @@ void Mesh::Load(const char *input_file) {
       printf ("LINE: '%s'",line);
     }
   }
+  // set the type of vertex
+  Iterator<Triangle*> *iter = triangles->StartIteration();
+  while (Triangle *t = iter->GetNext()) {
+    Vertex* va = (*t)[0];
+    Vertex* vb = (*t)[1];
+    Vertex* vc = (*t)[2];
+
+    Edge* ea    =  t->getEdge();
+    Edge* ec    = ea->getNext();
+    Edge* eb    = ec->getNext();
+    // Calc each even of a triangle
+    setVertexType(va, vb, vc, ea, ec);
+    setVertexType(vb, vc, va, eb, ea);
+    setVertexType(vc, va, vb, ec, eb);
+    // Set visit to avoid recomputing
+    va ->setVisit();  vb ->setVisit();  vc ->setVisit();
+  }
+  triangles->EndIteration(iter);
 }
 
 // =======================================================================
@@ -446,22 +464,22 @@ void Mesh::LoopSubdivision(int level) {
     mesh->addTriangle(vab, vca, va );
     mesh->addTriangle(vbc, vc,  vca);
     // Get sharp edge
-    // int sharp_a  = ea->getCrease();
-    // int sharp_b  = eb->getCrease();
-    // int sharp_c  = ec->getCrease();
-    // // set sharp edge
-    // if( sharp_a > 0 ) {
-    //   mesh->getEdge(va,  vab)->setCrease(sharp_a);
-    //   mesh->getEdge(vab, vb )->setCrease(sharp_a);
-    // }
-    // if( sharp_b > 0 ) {
-    //   mesh->getEdge(vb,  vbc)->setCrease(sharp_a);
-    //   mesh->getEdge(vbc, vc )->setCrease(sharp_a);
-    // }
-    // if( sharp_c > 0 ) {
-    //   mesh->getEdge(vc,  vca)->setCrease(sharp_a);
-    //   mesh->getEdge(vca, va )->setCrease(sharp_a);
-    // }
+    int sharp_a  = ea->getCrease();
+    int sharp_b  = eb->getCrease();
+    int sharp_c  = ec->getCrease();
+    // set sharp edge
+    if( sharp_a > 0 ) {
+      mesh->getEdge(va,  vab)->setCrease(sharp_a);
+      mesh->getEdge(vab, vb )->setCrease(sharp_a);
+    }
+    if( sharp_b > 0 ) {
+      mesh->getEdge(vb,  vbc)->setCrease(sharp_b);
+      mesh->getEdge(vbc, vc )->setCrease(sharp_b);
+    }
+    if( sharp_c > 0 ) {
+      mesh->getEdge(vc,  vca)->setCrease(sharp_c);
+      mesh->getEdge(vca, va )->setCrease(sharp_c);
+    }
   }
   triangles->EndIteration(titer);
   // vertices->Print();
@@ -500,11 +518,10 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
   // if a has been visited, just return.
   if( a->getVisit() > 0 ) return;
 
-  Edge* ea_op;
-  Edge* ec_op;
+  Edge*  ea_op;
+  Edge*  ec_op;
+  int nghbor = 2;  // record the number of vertices adjacet to a
   int  tri_n = 1;  // record the number of triangles adjacent to a
-  int      n = 2;  // record the number of vertices adjacet to a
-  int sharps = 0;  // record the number of sharp edges adjacet to a
   Edge*   le = ea; // record current left edge
   Edge*   re = ec; // record current right edge
   Vertex* lv = b;  // record current left vertex
@@ -522,7 +539,7 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
       newPosition += lv->get();
       ea = le->getNext();
       tri_n++;
-      n++;
+      nghbor++;
     }
     // When eb doesnot meet ec, keep going.
     if( ec_op != ea ) {
@@ -532,16 +549,15 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
       newPosition += rv->get();
       ec = re;
       tri_n++;
-      n++;
+      nghbor++;
     }
     // When the two edges meet, Calc the result and put it in mesh.
     if( ec_op == ea || ea_op == ec ) {
-      n--;
-      if (n >= alphaCount) growAlpha();
-
+      nghbor--;
+      if (nghbor >= alphaCount) growAlpha();
       newPosition -= rv->get();
-      Vec3f::AddScale( newPosition, newPosition, a->get(), alpha[n] );
-      Vec3f::CopyScale( newPosition, newPosition, 1.f / ( n+ alpha[n] ) );
+      Vec3f::AddScale( newPosition, newPosition, a->get(), alpha[nghbor] );
+      Vec3f::CopyScale( newPosition, newPosition, 1.f / ( nghbor+ alpha[nghbor] ) );
       break;
     }
   }
@@ -553,7 +569,7 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
       lv = le->getVertex();
       ea = le->getNext();
       tri_n++;
-      n++;
+      nghbor++;
     }
     // To the right border
     while( (ec_op = ec->getOpposite()) != NULL ){
@@ -561,7 +577,7 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
       rv = re->getVertex();
       ec = re;
       tri_n++;
-      n++;
+      nghbor++;
     }
 
     newPosition = BD_EVEN_MID * a->get() +
@@ -569,6 +585,102 @@ void Mesh::setEvenPosition( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec)
   }
 
   addVertex(a->getIndex(), a->getLevel(), newPosition);
+  a->setVisit(tri_n);
+}
+
+void Mesh::setVertexType( Vertex* a, Vertex* b, Vertex* c, Edge* ea, Edge* ec ) {
+  // if a has been visited, just return.
+  if( a->getVisit() > 0 ) return;
+
+  Edge*  ea_op;
+  Edge*  ec_op;
+  int    sngb[2];
+  int  ngbId = 0;
+  int nghbor = 2;  // record the number of vertices adjacet to a
+  int sharps = 0;  // record the number of sharp edges adjacet to a
+  int  tri_n = 1;  // record the number of triangles adjacent to a
+  // get all vertices left to b
+  while( (ea_op = ea->getOpposite()) != NULL
+        && (ec_op = ec->getOpposite()) != NULL ){
+    // When ec doesnot meet eb, keep going.
+    if( ea_op != ec ) {
+      // check sharps
+      if( ea->getCrease() > 0 )
+        sngb[sharps++] = ngbId++;
+
+      ea = ea_op->getNext()->getNext();
+      nghbor++;
+      tri_n++;
+    }
+    // When eb doesnot meet ec, keep going.
+    if( ec_op != ea ) {
+      // check sharps
+      if( ec->getCrease() > 0 )
+        sngb[sharps++] = ngbId++;
+
+      ec = ec_op->getNext();
+      nghbor++;
+      tri_n++;
+    }
+    // When the two edges meet, Calc the result and put it in mesh.
+    if( ec_op == ea || ea_op == ec ) {
+      nghbor--;
+
+      if( ea->getCrease() > 0 || ec->getCrease() > 0 )
+        sngb[sharps++] = ngbId++;
+
+      if( sharps == 0 ){
+        a->setType(SMOOTH);
+        break;
+      }
+      if( sharps == 1 ){
+        a->setType(DART);
+        break;
+      }
+      if( sharps > 2 ){
+        a->setType(CORNER);
+        break;
+      }
+
+      if( nghbor == 6 ){
+        if( sngb[0] + sngb[1] == 5){
+          a->setType(REG_CREASE);
+          break;
+        }
+      }
+
+      a->setType(IRR_CREASE);
+      break;
+    }
+  }
+  // if either side is null, then get till the both borders
+  if( ec_op == NULL || ea_op == NULL ) {
+    // To the left border
+    while( (ea_op = ea->getOpposite()) != NULL ){
+      if( ea->getCrease() > 0 )
+        sharps++;
+
+      ea = ea_op->getNext()->getNext();
+      nghbor++;
+      tri_n++;
+    }
+    // To the right border
+    while( (ec_op = ec->getOpposite()) != NULL ){
+      if( ec->getCrease() > 0 )
+        sharps++;
+
+      ec = ec_op->getNext();
+      nghbor++;
+      tri_n++;
+    }
+
+    if( nghbor == 4 && sharps == 0)
+      a->setType(REG_CREASE);
+    else if( sharps > 0 )
+      a->setType(CORNER);
+    else
+      a->setType(IRR_CREASE);
+  }
   a->setVisit(tri_n);
 }
 
