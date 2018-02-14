@@ -1,0 +1,5 @@
+/home/yupengw/Course/coursInClemson/4050/project/p2/build/application/CMakeFiles/application.dir
+/home/yupengw/Course/coursInClemson/4050/project/p2/build/math/CMakeFiles/math.dir
+/home/yupengw/Course/coursInClemson/4050/project/p2/build/p2/CMakeFiles/p2.dir
+/home/yupengw/Course/coursInClemson/4050/project/p2/build/scene/CMakeFiles/scene.dir
+/home/yupengw/Course/coursInClemson/4050/project/p2/build/tinyxml/CMakeFiles/tinyxml.dir
