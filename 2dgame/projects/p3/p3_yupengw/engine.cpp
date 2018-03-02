@@ -31,17 +31,17 @@ Engine::Engine() :
   bamboo2("bamboo2", Gamedata::getInstance().getXmlInt("bamboo2/factor") ),
   grass("grass", Gamedata::getInstance().getXmlInt("grass/factor") ),
   viewport( Viewport::getInstance() ),
-  // star(new Sprite("YellowStar")),
-  // spinningStar(new MultiSprite("SpinningStar")),
+  // star(new Sprite("Shuriken")),
+  // spinningStar(new MultiSprite("Rival")),
   sprites({new TwowaySprite("Warrior")}),
   currentSprite(0),
   makeVideo( false )
 {
-  int msQuantity = Gamedata::getInstance().getXmlInt("YellowStar/quantity");
+  sprites.push_back(new MultiSprite("Rival"));
+  int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
   for( int i=0; i < msQuantity; ++i){
-    sprites.push_back(new Sprite("YellowStar"));
+    sprites.push_back(new Sprite("Shuriken"));
   }
-  sprites.push_back(new MultiSprite("SpinningStar"));
   Viewport::getInstance().setObjectToTrack(sprites[0]);
   std::cout << "Loading complete" << std::endl;
 }
@@ -113,6 +113,10 @@ void Engine::play() {
         }
         if ( keystate[SDL_SCANCODE_T] ) {
           switchSprite();
+        }
+        // You may press 'F' to track hero directly
+        if ( keystate[SDL_SCANCODE_F] ) {
+          Viewport::getInstance().setObjectToTrack(sprites[0]);
         }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
           std::cout << "Initiating frame capture" << std::endl;

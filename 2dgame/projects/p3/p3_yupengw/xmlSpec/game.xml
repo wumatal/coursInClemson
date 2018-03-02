@@ -61,38 +61,38 @@
 </font>
 
 <Warrior>
-  <file>assets/walkForward.png</file>
+  <file>assets/warrior.png</file>
   <startLoc x="0" y="510"/>
   <frames>8</frames>
   <imageWidth>94</imageWidth>
   <imageHeight>113</imageHeight>
   <frameInterval>94</frameInterval>
-  <speedX>150</speedX>
+  <speedX>750</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
 </Warrior>
 
-<SpinningStar>
-  <file>assets/spinstar.png</file>
-  <startLoc x="50" y="140"/>
+<Rival>
+  <file>assets/rival.png</file>
+  <startLoc x="1500" y="510"/>
   <frames>4</frames>
-  <imageWidth>32</imageWidth>
-  <imageHeight>32</imageHeight>
-  <frameInterval>50</frameInterval>
-  <speedX>200</speedX>
-  <speedY>200</speedY>
+  <imageWidth>137</imageWidth>
+  <imageHeight>95</imageHeight>
+  <frameInterval>137</frameInterval>
+  <speedX>-300</speedX>
+  <speedY>0</speedY>
   <transparency>false</transparency>
-</SpinningStar>
+</Rival>
 
-<YellowStar>
-  <file>assets/yellowstar32.png</file>
+<Shuriken>
+  <file>assets/shuriken.png</file>
   <startLoc x="227" y="240"/>
   <speedX>300</speedX>
   <speedY>300</speedY>
-  <quantity>7</quantity>
+  <quantity>1</quantity>
   <velOffset>50</velOffset>
   <transparency>false</transparency>
-</YellowStar>
+</Shuriken>
 
 <fps>
   <positionX>30</positionX>

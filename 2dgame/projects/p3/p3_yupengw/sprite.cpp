@@ -6,7 +6,7 @@
 #include "imageFactory.h"
 
 Vector2f Sprite::makeVelocity(int vx, int vy) const {
-  int offset = Gamedata::getInstance().getXmlInt("YellowStar/velOffset");
+  int offset = Gamedata::getInstance().getXmlInt("Shuriken/velOffset");
   float newvx = Gamedata::getInstance().getRandFloat(vx-offset,vx+offset);;
   float newvy = Gamedata::getInstance().getRandFloat(vy-offset,vy+offset);;
   newvx *= [](){ if(rand()%2) return -1; else return 1; }();

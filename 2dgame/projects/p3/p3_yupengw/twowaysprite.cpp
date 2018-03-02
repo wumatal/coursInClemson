@@ -1,6 +1,6 @@
 #include "twowaysprite.h"
 #include "gamedata.h"
-#include "imageFactory.h"
+#include "renderContext.h"
 
 void TwowaySprite::advanceFrame(Uint32 ticks) {
 	timeSinceLastFrame += ticks;
@@ -72,6 +72,9 @@ void TwowaySprite::update(Uint32 ticks) {
   }
   if ( getX() > worldWidth-getScaledWidth()) {
     setVelocityX( -fabs( getVelocityX() ) );
+    SDL_RenderCopyEx(RenderContext::getInstance()->getRenderer(), getImage()->getTexture(),
+      NULL, NULL, 0.0, NULL, SDL_FLIP_HORIZONTAL);
+
   }
 
 }
