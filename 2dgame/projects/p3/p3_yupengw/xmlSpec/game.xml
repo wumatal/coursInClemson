@@ -63,11 +63,11 @@
 <Warrior>
   <file>assets/warrior.png</file>
   <startLoc x="0" y="510"/>
-  <frames>8</frames>
+  <frames>16</frames>
   <imageWidth>94</imageWidth>
   <imageHeight>113</imageHeight>
   <frameInterval>94</frameInterval>
-  <speedX>750</speedX>
+  <speedX>200</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
 </Warrior>
@@ -89,7 +89,7 @@
   <startLoc x="227" y="240"/>
   <speedX>300</speedX>
   <speedY>300</speedY>
-  <quantity>1</quantity>
+  <quantity>7</quantity>
   <velOffset>50</velOffset>
   <transparency>false</transparency>
 </Shuriken>

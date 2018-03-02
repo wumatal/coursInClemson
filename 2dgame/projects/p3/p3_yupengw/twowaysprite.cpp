@@ -3,11 +3,18 @@
 #include "renderContext.h"
 
 void TwowaySprite::advanceFrame(Uint32 ticks) {
-	timeSinceLastFrame += ticks;
-	if (timeSinceLastFrame > frameInterval) {
-    currentFrame = (currentFrame+1) % numberOfFrames;
-		timeSinceLastFrame = 0;
-	}
+  timeSinceLastFrame += ticks;
+
+
+  if (timeSinceLastFrame > frameInterval) {
+    if( toLeft ) {
+      currentFrame = (currentFrame+1) % (numberOfFrames / 2);
+    }
+    else {
+      currentFrame = (currentFrame+1) % (numberOfFrames / 2) + numberOfFrames / 2;
+    }
+    timeSinceLastFrame = 0;
+  }
 }
 
 TwowaySprite::TwowaySprite( const std::string& name) :
@@ -18,7 +25,7 @@ TwowaySprite::TwowaySprite( const std::string& name) :
                     Gamedata::getInstance().getXmlInt(name+"/speedY"))
            ),
   images( ImageFactory::getInstance().getImages(name) ),
-
+  toLeft(true),
   currentFrame(0),
   numberOfFrames( Gamedata::getInstance().getXmlInt(name+"/frames") ),
   frameInterval( Gamedata::getInstance().getXmlInt(name+"/frameInterval")),
@@ -30,6 +37,7 @@ TwowaySprite::TwowaySprite( const std::string& name) :
 TwowaySprite::TwowaySprite(const TwowaySprite& s) :
   Drawable(s),
   images(s.images),
+  toLeft(s.toLeft),
   currentFrame(s.currentFrame),
   numberOfFrames( s.numberOfFrames ),
   frameInterval( s.frameInterval ),
@@ -41,6 +49,7 @@ TwowaySprite::TwowaySprite(const TwowaySprite& s) :
 TwowaySprite& TwowaySprite::operator=(const TwowaySprite& s) {
   Drawable::operator=(s);
   images = (s.images);
+  toLeft = (s.toLeft);
   currentFrame = (s.currentFrame);
   numberOfFrames = ( s.numberOfFrames );
   frameInterval = ( s.frameInterval );
@@ -69,12 +78,11 @@ void TwowaySprite::update(Uint32 ticks) {
 
   if ( getX() < 0) {
     setVelocityX( fabs( getVelocityX() ) );
+    toLeft = true;
   }
   if ( getX() > worldWidth-getScaledWidth()) {
     setVelocityX( -fabs( getVelocityX() ) );
-    SDL_RenderCopyEx(RenderContext::getInstance()->getRenderer(), getImage()->getTexture(),
-      NULL, NULL, 0.0, NULL, SDL_FLIP_HORIZONTAL);
-
+    toLeft = false;
   }
 
 }

@@ -27,6 +27,7 @@ public:
   }
 protected:
   std::vector<Image *> images;
+  bool toLeft;
 
   unsigned currentFrame;
   unsigned numberOfFrames;

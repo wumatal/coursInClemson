@@ -102,6 +102,7 @@ std::vector<Image*> ImageFactory::getImages(const std::string& name) {
   int width = spriteSurface->w/numberOfFrames;
   int height = spriteSurface->h;
 
+
   if(  gdata.checkTag(name+"/imageWidth")
     && gdata.checkTag(name+"/imageHeight") ){
     width  = gdata.getXmlInt(name+"/imageWidth");
@@ -121,6 +122,7 @@ std::vector<Image*> ImageFactory::getImages(const std::string& name) {
     surfaces.push_back( surface );
     textures.push_back( texture );
     images.push_back( new Image(surface) );
+
   }
   multiSurfaces[name] = surfaces;
   multiTextures[name] = textures;
