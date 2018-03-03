@@ -10,10 +10,45 @@ Project due date: March 2nd, 2018
 
 Project description:
 
-What sprite did I repeat at least 7 times?
+The sprite I set to repeat at least 7 times is called Shuriken, which is an instance
+of class Sprite. 
 
-What sprite (not Sprite or MultiSprite) did I design?
+And an instance of MultiSprite called Rival, who is the enemy my hero gonna fight. 
+I set this Rival repeatedly running from right to left rather than bouncing back when 
+he hit the left edge, for I will build a home on the left edge in a later project for 
+Rival to destroy.
+
+What I designed is TwowaySprite class. I will apply this class to create Warrior who 
+is the hero in my game. Comparing with Rival, Warrior will turnaround when he hit the 
+right frame.
+
+Images from the Internet:
+shuriken.png  http://freevector.co/vector-icons/weapons/ninja-shuriken-2.html
+rival.png     https://www.spriters-resource.com/neo_geo_ngcd/samuraishodown5special/
+warrior.png   https://www.spriters-resource.com/neo_geo_ngcd/samuraishodown5special/
+
+Images I draw from scratch:
+bamboo2.png bamboo3.png bamboo4.png grass.png sky.png
+[Reference: http://pdablog.org/arcade/ninja-arashi-not-shadow-fight-3-still-cool.html]
 
 The easiest part of this project:
 
+I will vote for video making.
+
 Problems that I had in completing this project:
+
+I stuck in task 9, which took me a whole day and whole night to work it out and I 
+should not underestimate it. Initially, I applied the function SDL_RenderCopyEx 
+introduced in Lazy Foo's tutorial website (http://lazyfoo.net/tutorials/SDL/
+15_rotation_and_flipping/index.php) but failed. Then I tried to flip the view and 
+surface but in vain. After that, I extended the warrior.png with its invert picture
+and assigned different frame range with the different orientation. Fortunately, it 
+worked!
+However, I still believe the best solution should be SDL_RenderCopyEx and I wish I
+can figure it out afterward.
+
+Another thing is to make the animation perform smoothly. Although sprite sheets are
+available easily, but the boundaries and intervals still need to be carefully 
+calculated. What I did is to set a box with maximum width and height in these frames. 
+Then draw an array of such boxes adjacent to each other and put each frame in it. At 
+last, I will adjust each frame attaching to the right and bottom of the box. 

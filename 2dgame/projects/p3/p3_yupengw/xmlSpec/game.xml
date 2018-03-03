@@ -23,15 +23,23 @@
 
 <sky>
   <file>assets/sky.jpg</file>
-  <factor>5</factor>
+  <factor>6</factor>
   <transparency>false</transparency>
 </sky>
 
 <bamboo4>
   <file>assets/bamboo4.png</file>
-  <factor>4</factor>
+  <factor>5</factor>
   <transparency>false</transparency>
 </bamboo4>
+
+<CloudFar>
+  <file>assets/cloud.png</file>
+  <startLoc x="150" y="320"/>
+  <speedX>30</speedX>
+  <speedY>0</speedY>
+  <transparency>true</transparency>
+</CloudFar>
 
 <bamboo3>
   <file>assets/bamboo3.png</file>
@@ -50,6 +58,14 @@
   <factor>1</factor>
   <transparency>false</transparency>
 </grass>
+
+<Cloud>
+  <file>assets/cloud.png</file>
+  <startLoc x="150" y="420"/>
+  <speedX>-300</speedX>
+  <speedY>0</speedY>
+  <transparency>true</transparency>
+</Cloud>
 
 <font name="font">
   <file>fonts/againts.ttf</file>
@@ -74,7 +90,7 @@
 
 <Rival>
   <file>assets/rival.png</file>
-  <startLoc x="1500" y="510"/>
+  <startLoc x="1500" y="520"/>
   <frames>4</frames>
   <imageWidth>137</imageWidth>
   <imageHeight>95</imageHeight>
