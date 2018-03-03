@@ -20,7 +20,8 @@ Rival to destroy.
 
 What I designed is TwowaySprite class. I will apply this class to create Warrior who 
 is the hero in my game. Comparing with Rival, Warrior will turnaround when he hit the 
-right frame.
+right frame. And an EnvrmtSprite class to create animating backgroud, such as clouds
+in this project.
 
 Besides 'T', if you want to track the sprite of my created class directly, just hit 'F'
 to focus.

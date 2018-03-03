@@ -30,6 +30,8 @@ Engine::Engine() :
   bamboo3("bamboo3", Gamedata::getInstance().getXmlInt("bamboo3/factor") ),
   bamboo2("bamboo2", Gamedata::getInstance().getXmlInt("bamboo2/factor") ),
   grass("grass", Gamedata::getInstance().getXmlInt("grass/factor") ),
+  // cloud("Cloud"),
+  // cloudFar("CloudFar"),
   viewport( Viewport::getInstance() ),
   // star(new Sprite("Shuriken")),
   // spinningStar(new MultiSprite("Rival")),
@@ -37,6 +39,9 @@ Engine::Engine() :
   currentSprite(0),
   makeVideo( false )
 {
+  sprites.push_back(new EnvrmtSprite("Cloud"));
+  sprites.push_back(new EnvrmtSprite("CloudFar"));
+  
   sprites.push_back(new MultiSprite("Rival"));
   int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
   for( int i=0; i < msQuantity; ++i){
@@ -49,31 +54,40 @@ Engine::Engine() :
 void Engine::draw() const {
   sky.draw();
   bamboo4.draw();
+  sprites[2]->draw();
   bamboo3.draw();
   bamboo2.draw();
 
   for( Drawable* d : sprites ){
     // star->draw();
     // spinningStar->draw();
-    d->draw();
+    if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
+        std::strcmp( d->getName().c_str(), "CloudFar" ) )
+      d->draw();
   }
   grass.draw();
+  sprites[1]->draw();
 
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
 
 void Engine::update(Uint32 ticks) {
+  sky.update();
+  bamboo4.update();
+  sprites[2]->update(ticks);
+  bamboo3.update();
+  bamboo2.update();
   for( Drawable* d : sprites ) {
     // star->update(ticks);
     // spinningStar->update(ticks);
-    d->update(ticks);
+    if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
+    std::strcmp( d->getName().c_str(), "CloudFar" ) )
+      d->update(ticks);
   }
-  sky.update();
-  bamboo4.update();
-  bamboo3.update();
-  bamboo2.update();
   grass.update();
+  sprites[1]->update(ticks);
+
   viewport.update(); // always update viewport last
 }
 

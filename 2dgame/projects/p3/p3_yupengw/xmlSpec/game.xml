@@ -35,10 +35,11 @@
 
 <CloudFar>
   <file>assets/cloud.png</file>
-  <startLoc x="150" y="320"/>
-  <speedX>30</speedX>
+  <startLoc x="1560" y="200"/>
+  <speedX>-70</speedX>
   <speedY>0</speedY>
-  <transparency>true</transparency>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
 </CloudFar>
 
 <bamboo3>
@@ -61,10 +62,11 @@
 
 <Cloud>
   <file>assets/cloud.png</file>
-  <startLoc x="150" y="420"/>
-  <speedX>-300</speedX>
+  <startLoc x="150" y="320"/>
+  <speedX>-100</speedX>
   <speedY>0</speedY>
-  <transparency>true</transparency>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
 </Cloud>
 
 <font name="font">
