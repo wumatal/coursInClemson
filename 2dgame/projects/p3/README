@@ -22,6 +22,12 @@ What I designed is TwowaySprite class. I will apply this class to create Warrior
 is the hero in my game. Comparing with Rival, Warrior will turnaround when he hit the 
 right frame.
 
+Besides 'T', if you want to track the sprite of my created class directly, just hit 'F'
+to focus.
+
+If you want to change the font color, you can access to either tag <myName> or tag 
+<font>.
+
 Images from the Internet:
 shuriken.png  http://freevector.co/vector-icons/weapons/ninja-shuriken-2.html
 rival.png     https://www.spriters-resource.com/neo_geo_ngcd/samuraishodown5special/
