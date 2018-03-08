@@ -71,6 +71,7 @@ default
 convert
 assign
 destructor
+destructor
 
 7.
 std::vector<int>::const_iterator it = numbers.begin();
