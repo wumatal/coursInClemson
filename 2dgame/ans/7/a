@@ -1,0 +1,103 @@
+1.
+12
+I'm B
+77
+I'm B
+deleting A
+w:deleting B
+w:deleting A
+w:deleting B
+w:deleting A
+w:deleting B
+
+2.
+
+3.
+conversion
+copy
+conversion
+copy
+conversion
+copy
+copy
+copy
+size: 3
+capa: 4
+
+4.
+class Clock {
+public:
+w:  Clock& getInstance() {
+  static Clock& getInstance() {
+    static Clock instance;
+    return instance;
+  }
+  int getTicks() const { return ticks; }
+  void update() { ++ticks;  }
+private :
+  int ticks;
+  Clock () {}
+};
+
+int main () {
+  Clock& clock = getInstance();
+  ...
+}
+
+5.
+class Clock {
+public:
+  static Clock* getInstance() {
+    if( instance == nullptr ) {
+      instance = new Clock;
+    }
+    return instance;
+  }
+  ...
+private:
+  static Clock instance;
+  Clock() {}
+}
+
+Clock* Clock::instance = nullptr;
+
+int main() {
+  Clock* p = Clock::getInstance();
+  ...
+}
+
+6.
+default
+convert
+assign
+destructor
+
+7.
+std::vector<int>::const_iterator it = numbers.begin();
+while( it != numbers.end() ) {
+  std::cout << it->first << std::endl;
+  ++it;
+}
+
+8.
+Student(const Student& s) : study(new char[strlen(s.study) + 1]) {
+  strcpy(study, s.study);
+}
+
+Student& operator=(const Student& s) {
+  if(this == &s) {
+    return *this;
+  }
+  delete [] study;
+  study = new char[strlen(s.srtudy) + 1];
+  strcpy(study, s.study);
+  return *this;
+}
+
+9.
+char* getName() const { return name; }
+std::ostream& operator<<(std::ostream& out, const Pokemon& p) {
+  return out << p.getName();
+}
+
+10.
