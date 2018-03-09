@@ -1,0 +1,130 @@
+<?xml version = "1.0"?>
+<GameData>
+<!-- screenTitle is also used to identify you and your animation.
+     So make sure to include your name as part of the screenTitle -->
+<title>The Tracker Framework</title>
+<maxStringSize>50</maxStringSize>
+
+<frameCapOn>true</frameCapOn>
+<period>17</period>
+
+<maxFrames>300</maxFrames>
+<username>yupengw</username>
+
+<view>
+  <width>854</width>
+  <height>600</height>
+</view>
+
+<world>
+  <width>2000</width>
+  <height>700</height>
+</world>
+
+<sky>
+  <file>assets/sky.jpg</file>
+  <factor>6</factor>
+  <transparency>false</transparency>
+</sky>
+
+<bamboo4>
+  <file>assets/bamboo4.png</file>
+  <factor>5</factor>
+  <transparency>false</transparency>
+</bamboo4>
+
+<CloudFar>
+  <file>assets/cloud.png</file>
+  <startLoc x="1560" y="200"/>
+  <speedX>-70</speedX>
+  <speedY>0</speedY>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
+</CloudFar>
+
+<bamboo3>
+  <file>assets/bamboo3.png</file>
+  <factor>3</factor>
+  <transparency>false</transparency>
+</bamboo3>
+
+<bamboo2>
+  <file>assets/bamboo2.png</file>
+  <factor>2</factor>
+  <transparency>false</transparency>
+</bamboo2>
+
+<grass>
+  <file>assets/grass.png</file>
+  <factor>1</factor>
+  <transparency>false</transparency>
+</grass>
+
+<Cloud>
+  <file>assets/cloud.png</file>
+  <startLoc x="150" y="320"/>
+  <speedX>-100</speedX>
+  <speedY>0</speedY>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
+</Cloud>
+
+<font name="font">
+  <file>fonts/againts.ttf</file>
+  <size>27</size>
+  <red>176</red>
+  <green>228</green>
+  <blue>197</blue>
+  <alpha>0</alpha>
+</font>
+
+<Warrior>
+  <file>assets/warrior.png</file>
+  <startLoc x="0" y="510"/>
+  <frames>16</frames>
+  <imageWidth>94</imageWidth>
+  <imageHeight>113</imageHeight>
+  <frameInterval>94</frameInterval>
+  <speedX>200</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</Warrior>
+
+<Rival>
+  <file>assets/rival.png</file>
+  <startLoc x="1500" y="520"/>
+  <frames>4</frames>
+  <imageWidth>137</imageWidth>
+  <imageHeight>95</imageHeight>
+  <frameInterval>137</frameInterval>
+  <speedX>-300</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</Rival>
+
+<Shuriken>
+  <file>assets/shuriken.png</file>
+  <startLoc x="227" y="240"/>
+  <speedX>300</speedX>
+  <speedY>300</speedY>
+  <quantity>7</quantity>
+  <velOffset>50</velOffset>
+  <transparency>false</transparency>
+</Shuriken>
+
+<fps>
+  <positionX>30</positionX>
+  <positionY>60</positionY>
+</fps>
+
+<myName>
+  <name>Yupeng Wu</name>
+  <positionX>30</positionX>
+  <positionY>-60</positionY>
+  <red>255</red>
+  <green>255</green>
+  <blue>255</blue>
+  <alpha>0</alpha>
+</myName>
+
+</GameData>
