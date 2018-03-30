@@ -31,6 +31,7 @@ private:
   // EnvrmtSprite cloudFar;
   Viewport& viewport;
 
+  // Drawable* player;
   std::vector<Drawable*> sprites;
   // Drawable* star;
   // Drawable* spinningStar;

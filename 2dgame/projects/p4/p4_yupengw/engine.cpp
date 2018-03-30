@@ -6,15 +6,13 @@
 #include <iomanip>
 #include "sprite.h"
 #include "multisprite.h"
-#include "twowaysprite.h"
+#include "player.h"
 #include "gamedata.h"
 #include "engine.h"
 #include "frameGenerator.h"
 
 Engine::~Engine() {
   for( Drawable* d : sprites ){
-    // delete star;
-    // delete spinningStar;
     delete d;
   }
   std::cout << "Terminating program" << std::endl;
@@ -30,23 +28,20 @@ Engine::Engine() :
   bamboo3("bamboo3", Gamedata::getInstance().getXmlInt("bamboo3/factor") ),
   bamboo2("bamboo2", Gamedata::getInstance().getXmlInt("bamboo2/factor") ),
   grass("grass", Gamedata::getInstance().getXmlInt("grass/factor") ),
-  // cloud("Cloud"),
-  // cloudFar("CloudFar"),
   viewport( Viewport::getInstance() ),
-  // star(new Sprite("Shuriken")),
-  // spinningStar(new MultiSprite("Rival")),
-  sprites({new TwowaySprite("Warrior")}),
+  // player(new Player("Player")),
+  sprites({new Player("Player")}),
   currentSprite(0),
   makeVideo( false )
 {
   sprites.push_back(new EnvrmtSprite("Cloud"));
   sprites.push_back(new EnvrmtSprite("CloudFar"));
-  
-  sprites.push_back(new MultiSprite("Rival"));
-  int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
-  for( int i=0; i < msQuantity; ++i){
-    sprites.push_back(new Sprite("Shuriken"));
-  }
+
+  // sprites.push_back(new MultiSprite("Rival"));
+  // int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
+  // for( int i=0; i < msQuantity; ++i){
+    // sprites.push_back(new Sprite("Shuriken"));
+  // }
   Viewport::getInstance().setObjectToTrack(sprites[0]);
   std::cout << "Loading complete" << std::endl;
 }
@@ -117,6 +112,7 @@ void Engine::play() {
       keystate = SDL_GetKeyboardState(NULL);
       if (event.type ==  SDL_QUIT) { done = true; break; }
       if(event.type == SDL_KEYDOWN) {
+
         if (keystate[SDL_SCANCODE_ESCAPE] || keystate[SDL_SCANCODE_Q]) {
           done = true;
           break;
@@ -144,10 +140,31 @@ void Engine::play() {
     }
 
     // In this section of the event loop we allow key bounce:
-
     ticks = clock.getElapsedTicks();
     if ( ticks > 0 ) {
       clock.incrFrame();
+      if (keystate[SDL_SCANCODE_A]) {
+        static_cast<Player*>(sprites[0])->turnRight();
+        static_cast<Player*>(sprites[0])->walk();
+      }
+      if (keystate[SDL_SCANCODE_D]) {
+        static_cast<Player*>(sprites[0])->turnLeft();
+        static_cast<Player*>(sprites[0])->walk();
+      }
+      // if (keystate[SDL_SCANCODE_W]) {
+      //   static_cast<Player*>(sprites[0])->jump(v);
+      // }
+      if (keystate[SDL_SCANCODE_S]) {
+        static_cast<Player*>(sprites[0])->knee();
+      }
+      if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
+        static_cast<Player*>(sprites[0])->turnRight();
+        static_cast<Player*>(sprites[0])->roll();
+      }
+      if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
+        static_cast<Player*>(sprites[0])->turnLeft();
+        static_cast<Player*>(sprites[0])->roll();
+      }
       draw();
       update(ticks);
       if ( makeVideo ) {

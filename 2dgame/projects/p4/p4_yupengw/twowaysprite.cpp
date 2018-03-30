@@ -8,7 +8,8 @@ void TwowaySprite::advanceFrame(Uint32 ticks) {
 
   if (timeSinceLastFrame > frameInterval) {
     if( toLeft ) {
-      currentFrame = (currentFrame+1) % (numberOfFrames / 2);
+      currentFrame = (currentFrame+1) % numberOfFrames;
+      // currentFrame = (currentFrame+1) % (numberOfFrames / 2);
     }
     else {
       currentFrame = (currentFrame+1) % (numberOfFrames / 2) + numberOfFrames / 2;

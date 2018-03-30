@@ -78,17 +78,98 @@
   <alpha>0</alpha>
 </font>
 
-<Warrior>
-  <file>assets/warrior.png</file>
-  <startLoc x="0" y="510"/>
-  <frames>16</frames>
-  <imageWidth>94</imageWidth>
-  <imageHeight>113</imageHeight>
-  <frameInterval>94</frameInterval>
-  <speedX>200</speedX>
+<Player>
+  <file>assets/player/ready91x120.png</file>
+  <startLoc x="70" y="510"/>
+  <frames>10</frames>
+  <imageWidth>91</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>91</frameInterval>
+  <speedX>0</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
-</Warrior>
+</Player>
+<PlayerRight>
+  <file>assets/player/ready91x120right.png</file>
+  <frames>10</frames>
+  <imageWidth>91</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>91</frameInterval>
+  <transparency>false</transparency>
+</PlayerRight>
+<PlayerWalk>
+  <file>assets/player/walk103x113.png</file>
+  <frames>8</frames>
+  <imageWidth>103</imageWidth>
+  <imageHeight>113</imageHeight>
+  <frameInterval>103</frameInterval>
+  <speedX>170</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerWalk>
+<PlayerWalkRight>
+  <file>assets/player/walk103x113right.png</file>
+  <frames>8</frames>
+  <imageWidth>103</imageWidth>
+  <imageHeight>113</imageHeight>
+  <frameInterval>103</frameInterval>
+  <transparency>false</transparency>
+</PlayerWalkRight>
+<PlayerJump>
+  <file>assets/player/jump93x110.png</file>
+  <frames>8</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>110</imageHeight>
+  <frameInterval>93</frameInterval>
+  <speedX>0</speedX>
+  <speedY>210</speedY>
+  <grav>-70</grav>
+  <transparency>false</transparency>
+</PlayerJump>
+<PlayerJumpRight>
+  <file>assets/player/jump93x110right.png</file>
+  <frames>8</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>110</imageHeight>
+  <frameInterval>93</frameInterval>
+  <transparency>false</transparency>
+</PlayerJumpRight>
+<PlayerKnee>
+  <file>assets/player/knee.png</file>
+  <frames>1</frames>
+  <imageWidth>112</imageWidth>
+  <imageHeight>111</imageHeight>
+  <frameInterval>112</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerKnee>
+<PlayerKneeRight>
+  <file>assets/player/kneeright.png</file>
+  <frames>1</frames>
+  <imageWidth>112</imageWidth>
+  <imageHeight>111</imageHeight>
+  <frameInterval>112</frameInterval>
+  <transparency>false</transparency>
+</PlayerKneeRight>
+<PlayerRoll>
+  <file>assets/player/roll116x122.png</file>
+  <frames>5</frames>
+  <imageWidth>116</imageWidth>
+  <imageHeight>122</imageHeight>
+  <frameInterval>116</frameInterval>
+  <speedX>270</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerRoll>
+<PlayerRollRight>
+  <file>assets/player/roll116x122right.png</file>
+  <frames>5</frames>
+  <imageWidth>116</imageWidth>
+  <imageHeight>122</imageHeight>
+  <frameInterval>116</frameInterval>
+  <transparency>false</transparency>
+</PlayerRollRight>
 
 <Rival>
   <file>assets/rival.png</file>
