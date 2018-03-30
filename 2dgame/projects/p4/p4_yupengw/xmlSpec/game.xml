@@ -122,7 +122,7 @@
   <imageHeight>110</imageHeight>
   <frameInterval>93</frameInterval>
   <speedX>0</speedX>
-  <speedY>210</speedY>
+  <speedY>280</speedY>
   <grav>-70</grav>
   <transparency>false</transparency>
 </PlayerJump>

@@ -151,9 +151,14 @@ void Engine::play() {
         static_cast<Player*>(sprites[0])->turnLeft();
         static_cast<Player*>(sprites[0])->walk();
       }
-      // if (keystate[SDL_SCANCODE_W]) {
-      //   static_cast<Player*>(sprites[0])->jump(v);
-      // }
+      if (keystate[SDL_SCANCODE_W]) {
+        if ( static_cast<Player*>(sprites[0])->isInAir () ) {
+
+        }
+        else {
+          static_cast<Player*>(sprites[0])->jump(0);
+        }
+      }
       if (keystate[SDL_SCANCODE_S]) {
         static_cast<Player*>(sprites[0])->knee();
       }

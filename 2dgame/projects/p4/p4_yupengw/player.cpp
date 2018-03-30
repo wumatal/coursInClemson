@@ -19,7 +19,10 @@ Player::Player ( const std::string& name ) :
   inAir(false),
   toLeft(true),
   collision(false),
-  initialVelocity(getVelocity())
+  initialVelocity(getVelocity()),
+  jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
+                           Gamedata::getInstance().getXmlInt(name+"Jump/speedY")),
+  gravity(Gamedata::getInstance().getXmlInt(name+"Jump/grav"))
 { }
 
 Player::Player ( const Player& s ) :
@@ -39,7 +42,9 @@ Player::Player ( const Player& s ) :
   inAir( s.inAir ),
   toLeft( s.toLeft ),
   collision(s.collision),
-  initialVelocity(s.getVelocity())
+  initialVelocity( s.getVelocity()),
+  jumpingVelocity( s.jumpingVelocity ),
+  gravity( s.gravity )
 { }
 
 Player& Player::operator=( const Player& s ) {
@@ -62,6 +67,9 @@ Player& Player::operator=( const Player& s ) {
   collision = s.collision;
 
   initialVelocity = s.initialVelocity;
+  jumpingVelocity = s.jumpingVelocity;
+  gravity = s.gravity;
+
   return *this;
 }
 
@@ -97,18 +105,20 @@ void Player::walk()   {
 //     setVelocityX(-initialVelocity[0]);
 //   }
 // }
-void Player::jump(Vector2f v)   {
-  if( v[1] != 0 ) {
+void Player::jump(int v)   {
+  if( v[1] != -210 ) {
     inAir = true;
     frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Jump/frameInterval");
     numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Jump/frames");
     if ( toLeft ) {
       images = jumpImgs;
-      setVelocityY(v);
+      setVelocityX(v[0]);
+      setVelocityY(v[1]);
     }
     else {
       images = jumpRImgs;
-      setVelocityY(v);
+      setVelocityX(v[0]);
+      setVelocityY(v[1]);
     }
   }
   else

@@ -13,14 +13,15 @@ public:
   void missed()   { collision = false;  }
   void turnLeft() { toLeft    = true;   }
   void turnRight(){ toLeft    = false;  }
-  void inAir()    { inAir     = true;   }
-  void land()     { inAir     = false;  }
+  void jumping()  { inAir     = true;   }
+  void landing()  { inAir     = false;  }
+  bool isInAir() const { return inAir; }
   Player& operator=( const Player& );
 
   void ready();
   void walk();
   // void run();
-  void jump(Vector2f);
+  void jump(int);
   void roll();
   void knee();
 
@@ -43,5 +44,7 @@ private:
   bool toLeft;
   bool collision;
   Vector2f initialVelocity;
+  Vector2f jumpingVelocity;
+  int gravity;
 };
 #endif
