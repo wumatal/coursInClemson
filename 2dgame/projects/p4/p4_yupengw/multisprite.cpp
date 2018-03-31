@@ -67,13 +67,11 @@ void MultiSprite::update(Uint32 ticks) {
     setVelocityY( -fabs( getVelocityY() ) );
   }
 
-  if ( getX() < 0) {
-    // setVelocityX( fabs( getVelocityX() ) );
-    setX(3000);
-  }
-  // if ( getX() > worldWidth-getScaledWidth()) {
-  //   setVelocityX( -fabs( getVelocityX() ) );
-		
-  // }
+	if ( getX() < 0) {
+		setVelocityX( fabs( getVelocityX() ) );
+	}
+	if ( getX() > worldWidth-getScaledWidth()) {
+		setVelocityX( -fabs( getVelocityX() ) );
+	}
 
 }

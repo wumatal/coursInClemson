@@ -58,10 +58,4 @@ void Viewport::update() {
   if (position[1] > (worldHeight - viewHeight)) {
     position[1] = worldHeight-viewHeight;
   }
-
-  // fps calculation
-  // deltaclock = SDL_GetTicks() - startclock;
-  // startclock = SDL_GetTicks();
-  // if ( deltaclock != 0 )
-  //   currentFPS = 1000 / deltaclock;
 }

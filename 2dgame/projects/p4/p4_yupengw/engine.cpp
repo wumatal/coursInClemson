@@ -77,7 +77,7 @@ void Engine::update(Uint32 ticks) {
     // star->update(ticks);
     // spinningStar->update(ticks);
     if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
-    std::strcmp( d->getName().c_str(), "CloudFar" ) )
+        std::strcmp( d->getName().c_str(), "CloudFar" ) )
       d->update(ticks);
   }
   grass.update();
@@ -90,13 +90,6 @@ void Engine::switchSprite(){
   ++currentSprite;
   currentSprite = currentSprite % sprites.size();
   Viewport::getInstance().setObjectToTrack(sprites[currentSprite]);
-  // currentSprite = currentSprite % 2;
-  // if ( currentSprite ) {
-  //   Viewport::getInstance().setObjectToTrack(sprites[1]);
-  // }
-  // else {
-  //   Viewport::getInstance().setObjectToTrack(sprites[0]);
-  // }
 }
 
 void Engine::play() {
@@ -143,32 +136,47 @@ void Engine::play() {
     ticks = clock.getElapsedTicks();
     if ( ticks > 0 ) {
       clock.incrFrame();
-      if (keystate[SDL_SCANCODE_A]) {
-        static_cast<Player*>(sprites[0])->turnRight();
-        static_cast<Player*>(sprites[0])->walk();
-      }
-      if (keystate[SDL_SCANCODE_D]) {
-        static_cast<Player*>(sprites[0])->turnLeft();
-        static_cast<Player*>(sprites[0])->walk();
-      }
-      if (keystate[SDL_SCANCODE_W]) {
-        if ( static_cast<Player*>(sprites[0])->isInAir () ) {
-
+      // If player is jumping, he can do nothing but turn, move and attack.
+      if ( static_cast<Player*>(sprites[0])->isJumping () ) {
+        if (keystate[SDL_SCANCODE_A]) {
+          static_cast<Player*>(sprites[0])->turnRight();
+          static_cast<Player*>(sprites[0])->jump(-200);
         }
-        else {
+        else if (keystate[SDL_SCANCODE_D]) {
+          static_cast<Player*>(sprites[0])->turnLeft();
+          static_cast<Player*>(sprites[0])->jump(200);
+        }
+        else
+          static_cast<Player*>(sprites[0])->jump(0);
+      }
+      else if ( static_cast<Player*>(sprites[0])->isLanding () ) {
+        static_cast<Player*>(sprites[0])->land();
+      }
+      // Only when the player standing on the ground can he perform other mvmts.
+      else {
+        if (keystate[SDL_SCANCODE_W]) {
+          static_cast<Player*>(sprites[0])->jumping();
           static_cast<Player*>(sprites[0])->jump(0);
         }
-      }
-      if (keystate[SDL_SCANCODE_S]) {
-        static_cast<Player*>(sprites[0])->knee();
-      }
-      if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
-        static_cast<Player*>(sprites[0])->turnRight();
-        static_cast<Player*>(sprites[0])->roll();
-      }
-      if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
-        static_cast<Player*>(sprites[0])->turnLeft();
-        static_cast<Player*>(sprites[0])->roll();
+        if (keystate[SDL_SCANCODE_A]) {
+          static_cast<Player*>(sprites[0])->turnRight();
+          static_cast<Player*>(sprites[0])->walk();
+        }
+        if (keystate[SDL_SCANCODE_D]) {
+          static_cast<Player*>(sprites[0])->turnLeft();
+          static_cast<Player*>(sprites[0])->walk();
+        }
+        if (keystate[SDL_SCANCODE_S]) {
+          static_cast<Player*>(sprites[0])->knee();
+        }
+        if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
+          static_cast<Player*>(sprites[0])->turnRight();
+          static_cast<Player*>(sprites[0])->roll();
+        }
+        if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
+          static_cast<Player*>(sprites[0])->turnLeft();
+          static_cast<Player*>(sprites[0])->roll();
+        }
       }
       draw();
       update(ticks);

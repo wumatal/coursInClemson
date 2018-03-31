@@ -6,75 +6,83 @@ Player::Player ( const std::string& name ) :
   MultiSprite(name),
   walkImgs( ImageFactory::getInstance().getImages(name+"Walk") ),
   readyImgs( ImageFactory::getInstance().getImages(name)),
-  // runImgs( ImageFactory::getInstance().getImages(name+"")),
+  landImgs( ImageFactory::getInstance().getImages(name+"Land")),
   jumpImgs( ImageFactory::getInstance().getImages(name+"Jump")),
   rollImgs( ImageFactory::getInstance().getImages(name+"Roll")),
   kneeImgs( ImageFactory::getInstance().getImages(name+"Knee")),
   walkRImgs( ImageFactory::getInstance().getImages(name+"WalkRight")),
   readyRImgs( ImageFactory::getInstance().getImages(name+"Right")),
-  // runRImgs( ImageFactory::getInstance().getImages(name+"")),
+  landRImgs( ImageFactory::getInstance().getImages(name+"LandRight")),
   jumpRImgs( ImageFactory::getInstance().getImages(name+"JumpRight")),
   rollRImgs( ImageFactory::getInstance().getImages(name+"RollRight")),
   kneeRImgs( ImageFactory::getInstance().getImages(name+"KneeRight")),
-  inAir(false),
-  toLeft(true),
-  collision(false),
-  initialVelocity(getVelocity()),
+  inAir(false), landed(false), toLeft(true), collision(false),
+  initialPosition(getPosition()), initialVelocity(getVelocity()),
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
-                           Gamedata::getInstance().getXmlInt(name+"Jump/speedY")),
-  gravity(Gamedata::getInstance().getXmlInt(name+"Jump/grav"))
+                           Gamedata::getInstance().getXmlInt(name+"Jump/speedY"))),
+  gravity( Gamedata::getInstance().getXmlInt(name+"Jump/grav") ),
+  jLastFrame( 0 )
 { }
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
   walkImgs( s.walkImgs ),
   readyImgs( s.readyImgs ),
-  // runImgs( ImageFactory::getInstance().getImages(name+"")),
+  landImgs( s.landImgs ),
   jumpImgs( s.jumpImgs ),
   rollImgs( s.rollImgs ),
   kneeImgs( s.kneeImgs ),
   walkRImgs( s.walkRImgs ),
   readyRImgs( s.readyRImgs ),
-  // runRImgs( ImageFactory::getInstance().getImages(name+"")),
+  landRImgs( s.landRImgs ),
   jumpRImgs( s.jumpRImgs ),
   rollRImgs( s.rollRImgs ),
   kneeRImgs( s.kneeRImgs ),
   inAir( s.inAir ),
+  landed( s.landed ),
   toLeft( s.toLeft ),
   collision(s.collision),
-  initialVelocity( s.getVelocity()),
+  initialPosition( s.initialPosition ),
+  initialVelocity( s.getVelocity() ),
   jumpingVelocity( s.jumpingVelocity ),
-  gravity( s.gravity )
+  gravity( s.gravity ),
+  jLastFrame( s.jLastFrame )
 { }
 
 Player& Player::operator=( const Player& s ) {
   MultiSprite::operator=(s);
   walkImgs  = s.walkImgs;
   readyImgs = s.readyImgs;
-  // runImgs( ImageFactory::getInstance().getImages(name+"")),
+  landImgs  = s.landImgs;
   jumpImgs  = s.jumpImgs;
   rollImgs  = s.rollImgs;
   kneeImgs  = s.kneeImgs;
   walkRImgs = s.walkRImgs;
-  readyRImgs = s.readyRImgs;
-  // runRImgs( ImageFactory::getInstance().getImages(name+"")),
+  readyRImgs= s.readyRImgs;
+  landRImgs = s.landImgs;
   jumpRImgs = s.jumpRImgs;
   rollRImgs = s.rollRImgs;
   kneeRImgs = s.kneeRImgs;
 
-  inAir = s.inAir;
-  toLeft = s.toLeft;
+  inAir   = s.inAir;
+  landed = s.landed;
+  toLeft  = s.toLeft;
   collision = s.collision;
 
+  initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
   jumpingVelocity = s.jumpingVelocity;
   gravity = s.gravity;
+  jLastFrame = s.jLastFrame;
 
   return *this;
 }
 
 
 void Player::ready()  {
+  if( getY() != initialPosition[1]) {
+    setY(initialPosition[1]);
+  }
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"/frames");
   if( toLeft ) {
@@ -93,48 +101,75 @@ void Player::walk()   {
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Walk/frames");
   if ( toLeft ) {
     images = walkImgs;
-    setVelocityX(v);
+    if ( getX() < worldWidth-getScaledWidth())
+      setVelocityX(v);
   }
   else {
     images = walkRImgs;
-    setVelocityX(-v);
+    if ( getX() > 0)
+      setVelocityX(-v);
   }
 }
-// void Player::run()    {
-//   if ( getX() > 0) {
-//     setVelocityX(-initialVelocity[0]);
-//   }
-// }
+void Player::land()    {
+  frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Land/frameInterval");
+  numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Land/frames");
+  if( getY() != initialPosition[1]) {
+    setY(initialPosition[1]);
+  }
+  if( currentFrame  >= jLastFrame ) {
+    jLastFrame = currentFrame;
+    if ( toLeft ) {
+      images = landImgs;
+    }
+    else {
+      images = landRImgs;
+    }
+  }
+  else {
+    landed = false;
+    jLastFrame = 0;
+  }
+  setVelocityX(0);
+  setVelocityY(0);
+}
 void Player::jump(int v)   {
-  if( v[1] != -210 ) {
-    inAir = true;
-    frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Jump/frameInterval");
-    numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Jump/frames");
+  jumpingVelocity[0] = v;
+  frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Jump/frameInterval");
+  numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Jump/frames");
+  if( currentFrame  >= jLastFrame ) {
+    jLastFrame = currentFrame;
     if ( toLeft ) {
       images = jumpImgs;
-      setVelocityX(v[0]);
-      setVelocityY(v[1]);
     }
     else {
       images = jumpRImgs;
-      setVelocityX(v[0]);
-      setVelocityY(v[1]);
     }
+    jumpingVelocity[1] = (float)(gravity / 6.0) + jumpingVelocity[1];
+    setVelocityX(v);
+    setVelocityY(jumpingVelocity[1]);
   }
-  else
-    inAir = false;
+  else {
+    // inAir = false;
+    jLastFrame = 0;
+    jumpingVelocity[1] = Gamedata::getInstance().getXmlInt(getName()+"Jump/speedY");
+    landing();
+  }
 }
 void Player::roll()   {
-  int v = Gamedata::getInstance().getXmlInt(getName()+"Roll/speedX");
+  int v = 0;
+  if ( getX() < worldWidth-getScaledWidth() && getX() > 0)
+    v = Gamedata::getInstance().getXmlInt(getName()+"Roll/speedX");
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Roll/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Roll/frames");
   if ( toLeft ) {
     images = rollImgs;
-    setVelocityX(v);
+    if ( getX() < worldWidth-getScaledWidth())
+      setVelocityX(v);
   }
   else {
     images = rollRImgs;
-    setVelocityX(-v);
+    if ( getX() > 0)
+      setVelocityX(-v);
   }
 }
 void Player::knee()   {
@@ -152,5 +187,5 @@ void Player::knee()   {
 
 void Player::update(Uint32 ticks) {
   if ( !collision ) MultiSprite::update(ticks);
-  ready();
+  if ( !isJumping() )  ready();
 }

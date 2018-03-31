@@ -27,14 +27,9 @@ private:
   World bamboo3;
   World bamboo2;
   World grass;
-  // EnvrmtSprite cloud;
-  // EnvrmtSprite cloudFar;
   Viewport& viewport;
 
-  // Drawable* player;
   std::vector<Drawable*> sprites;
-  // Drawable* star;
-  // Drawable* spinningStar;
   int currentSprite;
 
   bool makeVideo;

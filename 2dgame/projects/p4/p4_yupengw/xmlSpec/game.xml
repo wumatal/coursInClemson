@@ -98,47 +98,65 @@
   <transparency>false</transparency>
 </PlayerRight>
 <PlayerWalk>
-  <file>assets/player/walk103x113.png</file>
+  <file>assets/player/walk103x120.png</file>
   <frames>8</frames>
   <imageWidth>103</imageWidth>
-  <imageHeight>113</imageHeight>
+  <imageHeight>120</imageHeight>
   <frameInterval>103</frameInterval>
   <speedX>170</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
 </PlayerWalk>
 <PlayerWalkRight>
-  <file>assets/player/walk103x113right.png</file>
+  <file>assets/player/walk103x120right.png</file>
   <frames>8</frames>
   <imageWidth>103</imageWidth>
-  <imageHeight>113</imageHeight>
+  <imageHeight>120</imageHeight>
   <frameInterval>103</frameInterval>
   <transparency>false</transparency>
 </PlayerWalkRight>
 <PlayerJump>
   <file>assets/player/jump93x110.png</file>
-  <frames>8</frames>
+  <frames>5</frames>
   <imageWidth>93</imageWidth>
   <imageHeight>110</imageHeight>
   <frameInterval>93</frameInterval>
   <speedX>0</speedX>
-  <speedY>280</speedY>
-  <grav>-70</grav>
+  <speedY>-924</speedY>
+  <grav>308</grav>
   <transparency>false</transparency>
 </PlayerJump>
 <PlayerJumpRight>
   <file>assets/player/jump93x110right.png</file>
-  <frames>8</frames>
+  <frames>5</frames>
   <imageWidth>93</imageWidth>
   <imageHeight>110</imageHeight>
   <frameInterval>93</frameInterval>
   <transparency>false</transparency>
 </PlayerJumpRight>
+<PlayerLand>
+  <file>assets/player/land93x120.png</file>
+  <frames>4</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>93</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerLand>
+<PlayerLandRight>
+  <file>assets/player/land93x120right.png</file>
+  <frames>4</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>93</frameInterval>
+  <transparency>false</transparency>
+</PlayerLandRight>
 <PlayerKnee>
   <file>assets/player/knee.png</file>
   <frames>1</frames>
   <imageWidth>112</imageWidth>
-  <imageHeight>111</imageHeight>
+  <imageHeight>120</imageHeight>
   <frameInterval>112</frameInterval>
   <speedX>0</speedX>
   <speedY>0</speedY>
@@ -148,25 +166,25 @@
   <file>assets/player/kneeright.png</file>
   <frames>1</frames>
   <imageWidth>112</imageWidth>
-  <imageHeight>111</imageHeight>
+  <imageHeight>120</imageHeight>
   <frameInterval>112</frameInterval>
   <transparency>false</transparency>
 </PlayerKneeRight>
 <PlayerRoll>
-  <file>assets/player/roll116x122.png</file>
+  <file>assets/player/roll116x125.png</file>
   <frames>5</frames>
   <imageWidth>116</imageWidth>
-  <imageHeight>122</imageHeight>
+  <imageHeight>125</imageHeight>
   <frameInterval>116</frameInterval>
   <speedX>270</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
 </PlayerRoll>
 <PlayerRollRight>
-  <file>assets/player/roll116x122right.png</file>
+  <file>assets/player/roll116x125right.png</file>
   <frames>5</frames>
   <imageWidth>116</imageWidth>
-  <imageHeight>122</imageHeight>
+  <imageHeight>125</imageHeight>
   <frameInterval>116</frameInterval>
   <transparency>false</transparency>
 </PlayerRollRight>
