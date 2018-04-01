@@ -28,14 +28,14 @@ public:
 
 private:
   // The frames of all motions of the player
-  std::vector<Image *> walkImgs;
   std::vector<Image *> readyImgs;
+  std::vector<Image *> walkImgs;
   std::vector<Image *> landImgs;
   std::vector<Image *> jumpImgs;
   std::vector<Image *> rollImgs;
   std::vector<Image *> kneeImgs;
-  std::vector<Image *> walkRImgs;
   std::vector<Image *> readyRImgs;
+  std::vector<Image *> walkRImgs;
   std::vector<Image *> landRImgs;
   std::vector<Image *> jumpRImgs;
   std::vector<Image *> rollRImgs;

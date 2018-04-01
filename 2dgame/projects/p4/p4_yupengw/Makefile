@@ -19,6 +19,7 @@ OBJS = \
 	sprite.o \
 	multisprite.o \
 	player.o \
+	rival.o \
 	envrmtsprite.o \
 	vector2f.o \
 	clock.o \

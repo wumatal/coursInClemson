@@ -37,7 +37,7 @@ Engine::Engine() :
   sprites.push_back(new EnvrmtSprite("Cloud"));
   sprites.push_back(new EnvrmtSprite("CloudFar"));
 
-  // sprites.push_back(new MultiSprite("Rival"));
+  sprites.push_back(new MultiSprite("Blade"));
   // int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
   // for( int i=0; i < msQuantity; ++i){
     // sprites.push_back(new Sprite("Shuriken"));
@@ -54,8 +54,6 @@ void Engine::draw() const {
   bamboo2.draw();
 
   for( Drawable* d : sprites ){
-    // star->draw();
-    // spinningStar->draw();
     if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
         std::strcmp( d->getName().c_str(), "CloudFar" ) )
       d->draw();

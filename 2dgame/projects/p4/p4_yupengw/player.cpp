@@ -4,14 +4,14 @@
 
 Player::Player ( const std::string& name ) :
   MultiSprite(name),
+  readyImgs( images ),
   walkImgs( ImageFactory::getInstance().getImages(name+"Walk") ),
-  readyImgs( ImageFactory::getInstance().getImages(name)),
   landImgs( ImageFactory::getInstance().getImages(name+"Land")),
   jumpImgs( ImageFactory::getInstance().getImages(name+"Jump")),
   rollImgs( ImageFactory::getInstance().getImages(name+"Roll")),
   kneeImgs( ImageFactory::getInstance().getImages(name+"Knee")),
-  walkRImgs( ImageFactory::getInstance().getImages(name+"WalkRight")),
   readyRImgs( ImageFactory::getInstance().getImages(name+"Right")),
+  walkRImgs( ImageFactory::getInstance().getImages(name+"WalkRight")),
   landRImgs( ImageFactory::getInstance().getImages(name+"LandRight")),
   jumpRImgs( ImageFactory::getInstance().getImages(name+"JumpRight")),
   rollRImgs( ImageFactory::getInstance().getImages(name+"RollRight")),
@@ -26,14 +26,14 @@ Player::Player ( const std::string& name ) :
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
-  walkImgs( s.walkImgs ),
   readyImgs( s.readyImgs ),
+  walkImgs( s.walkImgs ),
   landImgs( s.landImgs ),
   jumpImgs( s.jumpImgs ),
   rollImgs( s.rollImgs ),
   kneeImgs( s.kneeImgs ),
-  walkRImgs( s.walkRImgs ),
   readyRImgs( s.readyRImgs ),
+  walkRImgs( s.walkRImgs ),
   landRImgs( s.landRImgs ),
   jumpRImgs( s.jumpRImgs ),
   rollRImgs( s.rollRImgs ),

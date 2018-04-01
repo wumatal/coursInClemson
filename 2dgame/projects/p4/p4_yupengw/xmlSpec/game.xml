@@ -189,9 +189,41 @@
   <transparency>false</transparency>
 </PlayerRollRight>
 
+<Blade>
+  <file>assets/rivals/blade/normal/walk162x141.png</file>
+  <startLoc x="1700" y="485"/>
+  <frames>8</frames>
+  <imageWidth>162</imageWidth>
+  <imageHeight>141</imageHeight>
+  <frameInterval>162</frameInterval>
+  <speedX>-170</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</Blade>
+<BladeAttack>
+  <file>assets/rivals/blade/normal/attack152x170.png</file>
+  <frames>11</frames>
+  <imageWidth>152</imageWidth>
+  <imageHeight>170</imageHeight>
+  <frameInterval>152</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</BladeAttack>
+<BladeFallBwd>
+  <file>assets/rivals/blade/normal/fallbwd165x120.png</file>
+  <frames>8</frames>
+  <imageWidth>165</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>165</frameInterval>
+  <speedX>10</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</BladeFallBwd>
+
 <Rival>
   <file>assets/rival.png</file>
-  <startLoc x="1500" y="520"/>
+  <startLoc x="1500" y="200"/>
   <frames>4</frames>
   <imageWidth>137</imageWidth>
   <imageHeight>95</imageHeight>
