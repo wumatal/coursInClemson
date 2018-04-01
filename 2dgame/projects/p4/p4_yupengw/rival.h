@@ -18,6 +18,7 @@ public:
   void fallbwd();
 
 private:
+  enum MODE { ADVANCE, ATTACK, DIE };
   // The frames of all motions of the Rival
   std::vector<Image *> walkImgs;
   std::vector<Image *> attackImgs;

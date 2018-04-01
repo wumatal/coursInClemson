@@ -1,6 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <string>
+#include <list>
+#include <cmath>
 #include "multisprite.h"
 
 class Player : public MultiSprite {
@@ -8,6 +11,9 @@ public:
   Player( const std::string& );
   Player( const Player& );
   virtual void update( Uint32 ticks );
+
+  void attach( Rival* o ) { observers.push_back(o); }
+  void detach( Rival* o );
 
   void collided() { collision = true;   }
   void missed()   { collision = false;  }
@@ -27,6 +33,7 @@ public:
   void knee();
 
 private:
+  std::list<Rival*> observers;
   // The frames of all motions of the player
   std::vector<Image *> readyImgs;
   std::vector<Image *> walkImgs;
@@ -49,6 +56,6 @@ private:
   Vector2f initialVelocity;
   Vector2f jumpingVelocity;
   int gravity;
-  unsigned jLastFrame;
+  unsigned lastFrame;
 };
 #endif

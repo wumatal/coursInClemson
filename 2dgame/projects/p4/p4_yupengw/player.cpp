@@ -4,6 +4,7 @@
 
 Player::Player ( const std::string& name ) :
   MultiSprite(name),
+  observers()
   readyImgs( images ),
   walkImgs( ImageFactory::getInstance().getImages(name+"Walk") ),
   landImgs( ImageFactory::getInstance().getImages(name+"Land")),
@@ -21,11 +22,12 @@ Player::Player ( const std::string& name ) :
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
                            Gamedata::getInstance().getXmlInt(name+"Jump/speedY"))),
   gravity( Gamedata::getInstance().getXmlInt(name+"Jump/grav") ),
-  jLastFrame( 0 )
+  lastFrame( 0 )
 { }
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
+  observers( s.observers )
   readyImgs( s.readyImgs ),
   walkImgs( s.walkImgs ),
   landImgs( s.landImgs ),
@@ -46,11 +48,12 @@ Player::Player ( const Player& s ) :
   initialVelocity( s.getVelocity() ),
   jumpingVelocity( s.jumpingVelocity ),
   gravity( s.gravity ),
-  jLastFrame( s.jLastFrame )
+  lastFrame( s.lastFrame )
 { }
 
 Player& Player::operator=( const Player& s ) {
   MultiSprite::operator=(s);
+  observers = s.observers;
   walkImgs  = s.walkImgs;
   readyImgs = s.readyImgs;
   landImgs  = s.landImgs;
@@ -65,7 +68,7 @@ Player& Player::operator=( const Player& s ) {
   kneeRImgs = s.kneeRImgs;
 
   inAir   = s.inAir;
-  landed = s.landed;
+  landed  = s.landed;
   toLeft  = s.toLeft;
   collision = s.collision;
 
@@ -73,7 +76,7 @@ Player& Player::operator=( const Player& s ) {
   initialVelocity = s.initialVelocity;
   jumpingVelocity = s.jumpingVelocity;
   gravity = s.gravity;
-  jLastFrame = s.jLastFrame;
+  lastFrame = s.lastFrame;
 
   return *this;
 }
@@ -116,8 +119,8 @@ void Player::land()    {
   if( getY() != initialPosition[1]) {
     setY(initialPosition[1]);
   }
-  if( currentFrame  >= jLastFrame ) {
-    jLastFrame = currentFrame;
+  if( currentFrame  >= lastFrame ) {
+    lastFrame = currentFrame;
     if ( toLeft ) {
       images = landImgs;
     }
@@ -127,7 +130,7 @@ void Player::land()    {
   }
   else {
     landed = false;
-    jLastFrame = 0;
+    lastFrame = 0;
   }
   setVelocityX(0);
   setVelocityY(0);
@@ -136,8 +139,8 @@ void Player::jump(int v)   {
   jumpingVelocity[0] = v;
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Jump/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Jump/frames");
-  if( currentFrame  >= jLastFrame ) {
-    jLastFrame = currentFrame;
+  if( currentFrame  >= lastFrame ) {
+    lastFrame = currentFrame;
     if ( toLeft ) {
       images = jumpImgs;
     }
@@ -150,7 +153,7 @@ void Player::jump(int v)   {
   }
   else {
     // inAir = false;
-    jLastFrame = 0;
+    lastFrame = 0;
     jumpingVelocity[1] = Gamedata::getInstance().getXmlInt(getName()+"Jump/speedY");
     landing();
   }
