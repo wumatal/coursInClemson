@@ -10,10 +10,15 @@
 #include "gamedata.h"
 #include "engine.h"
 #include "frameGenerator.h"
+#include "collisionStrategy.h"
 
 Engine::~Engine() {
+  delete player;
   for( Drawable* d : sprites ){
     delete d;
+  }
+  for ( CollisionStrategy* strategy : strategies ) {
+    delete strategy;
   }
   std::cout << "Terminating program" << std::endl;
 }
@@ -29,65 +34,100 @@ Engine::Engine() :
   bamboo2("bamboo2", Gamedata::getInstance().getXmlInt("bamboo2/factor") ),
   grass("grass", Gamedata::getInstance().getXmlInt("grass/factor") ),
   viewport( Viewport::getInstance() ),
-  // player(new Player("Player")),
-  sprites({new Player("Player")}),
-  currentSprite(0),
+  player( new Player("Player") ),
+  sprites(), currentSprite(0),
+  strategies(), currentStrategy(0),
+  collision(false),
   makeVideo( false )
 {
-  sprites.push_back(new EnvrmtSprite("Cloud"));
-  sprites.push_back(new EnvrmtSprite("CloudFar"));
+  Vector2f pos = player->getPosition();
+  int w = player->getScaledWidth();
 
-  sprites.push_back(new MultiSprite("Blade"));
-  // int msQuantity = Gamedata::getInstance().getXmlInt("Shuriken/quantity");
-  // for( int i=0; i < msQuantity; ++i){
-    // sprites.push_back(new Sprite("Shuriken"));
-  // }
-  Viewport::getInstance().setObjectToTrack(sprites[0]);
+  int h = player->getScaledHeight();
+  int n = Gamedata::getInstance().getXmlInt("Blade/quantity");
+  sprites.reserve(n);
+  for (int i = 0; i < n; ++i) {
+    sprites.push_back( new Rival("Blade", pos, w, h) );
+    player->attach( static_cast<Rival*>(sprites[i]) );
+  }
+
+  strategies.push_back( new RectangularCollisionStrategy );
+  strategies.push_back( new PerPixelCollisionStrategy );
+  strategies.push_back( new MidPointCollisionStrategy );
+
+  Viewport::getInstance().setObjectToTrack(player);
   std::cout << "Loading complete" << std::endl;
 }
 
 void Engine::draw() const {
   sky.draw();
   bamboo4.draw();
-  sprites[2]->draw();
+  // cloudFar->draw();
   bamboo3.draw();
   bamboo2.draw();
 
+  io.writeText("Press m to change strategy", 500, 60);
   for( Drawable* d : sprites ){
-    if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
-        std::strcmp( d->getName().c_str(), "CloudFar" ) )
       d->draw();
   }
+
+  strategies[currentStrategy]->draw();
+  if ( collision ) {
+    io.writeText("Oops: Collision", 500, 90);
+  }
+
+  player->draw();
   grass.draw();
-  sprites[1]->draw();
+  // cloud->draw();
 
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
 
+void Engine::checkForCollisions() {
+  auto it = sprites.begin();
+  while ( it != sprites.end() ) {
+    Rival* doa = static_cast<Rival*>(*it);
+    if ( strategies[currentStrategy]->execute(*player, **it) ) {
+      if( doa->getMode() != 1)  doa->attacking();
+      // player->detach(doa);
+      // delete doa;
+      // it = sprites.erase(it);
+    }
+    else {
+      if( doa->getMode() != 0)
+        doa->walking();
+    }
+    ++it;
+  }
+}
+
 void Engine::update(Uint32 ticks) {
   sky.update();
   bamboo4.update();
-  sprites[2]->update(ticks);
+  // cloudFar->update(ticks);
   bamboo3.update();
   bamboo2.update();
+
+  checkForCollisions();
   for( Drawable* d : sprites ) {
-    // star->update(ticks);
-    // spinningStar->update(ticks);
-    if( std::strcmp( d->getName().c_str(), "Cloud" ) &&
-        std::strcmp( d->getName().c_str(), "CloudFar" ) )
       d->update(ticks);
   }
+  player->update(ticks);
   grass.update();
-  sprites[1]->update(ticks);
+  // cloud->update(ticks);
 
   viewport.update(); // always update viewport last
 }
 
 void Engine::switchSprite(){
-  ++currentSprite;
-  currentSprite = currentSprite % sprites.size();
-  Viewport::getInstance().setObjectToTrack(sprites[currentSprite]);
+  if( currentSprite == sprites.size()) {
+    Viewport::getInstance().setObjectToTrack(player);
+    currentSprite = 0;
+  }
+  else {
+    Viewport::getInstance().setObjectToTrack(sprites[currentSprite++]);
+  }
 }
 
 void Engine::play() {
@@ -115,9 +155,12 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_T] ) {
           switchSprite();
         }
+        if ( keystate[SDL_SCANCODE_M] ) {
+          currentStrategy = (1 + currentStrategy) % strategies.size();
+        }
         // You may press 'F' to track hero directly
         if ( keystate[SDL_SCANCODE_F] ) {
-          Viewport::getInstance().setObjectToTrack(sprites[0]);
+          Viewport::getInstance().setObjectToTrack(player);
         }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
           std::cout << "Initiating frame capture" << std::endl;
@@ -135,45 +178,45 @@ void Engine::play() {
     if ( ticks > 0 ) {
       clock.incrFrame();
       // If player is jumping, he can do nothing but turn, move and attack.
-      if ( static_cast<Player*>(sprites[0])->isJumping () ) {
+      if ( static_cast<Player*>(player)->isJumping () ) {
         if (keystate[SDL_SCANCODE_A]) {
-          static_cast<Player*>(sprites[0])->turnRight();
-          static_cast<Player*>(sprites[0])->jump(-200);
+          static_cast<Player*>(player)->turnRight();
+          static_cast<Player*>(player)->jump(-200);
         }
         else if (keystate[SDL_SCANCODE_D]) {
-          static_cast<Player*>(sprites[0])->turnLeft();
-          static_cast<Player*>(sprites[0])->jump(200);
+          static_cast<Player*>(player)->turnLeft();
+          static_cast<Player*>(player)->jump(200);
         }
         else
-          static_cast<Player*>(sprites[0])->jump(0);
+          static_cast<Player*>(player)->jump(0);
       }
-      else if ( static_cast<Player*>(sprites[0])->isLanding () ) {
-        static_cast<Player*>(sprites[0])->land();
+      else if ( static_cast<Player*>(player)->isLanding () ) {
+        static_cast<Player*>(player)->land();
       }
       // Only when the player standing on the ground can he perform other mvmts.
       else {
         if (keystate[SDL_SCANCODE_W]) {
-          static_cast<Player*>(sprites[0])->jumping();
-          static_cast<Player*>(sprites[0])->jump(0);
+          static_cast<Player*>(player)->jumping();
+          static_cast<Player*>(player)->jump(0);
         }
         if (keystate[SDL_SCANCODE_A]) {
-          static_cast<Player*>(sprites[0])->turnRight();
-          static_cast<Player*>(sprites[0])->walk();
+          static_cast<Player*>(player)->turnRight();
+          static_cast<Player*>(player)->walk();
         }
         if (keystate[SDL_SCANCODE_D]) {
-          static_cast<Player*>(sprites[0])->turnLeft();
-          static_cast<Player*>(sprites[0])->walk();
+          static_cast<Player*>(player)->turnLeft();
+          static_cast<Player*>(player)->walk();
         }
         if (keystate[SDL_SCANCODE_S]) {
-          static_cast<Player*>(sprites[0])->knee();
+          static_cast<Player*>(player)->knee();
         }
         if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
-          static_cast<Player*>(sprites[0])->turnRight();
-          static_cast<Player*>(sprites[0])->roll();
+          static_cast<Player*>(player)->turnRight();
+          static_cast<Player*>(player)->roll();
         }
         if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
-          static_cast<Player*>(sprites[0])->turnLeft();
-          static_cast<Player*>(sprites[0])->roll();
+          static_cast<Player*>(player)->turnLeft();
+          static_cast<Player*>(player)->roll();
         }
       }
       draw();

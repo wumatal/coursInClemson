@@ -1,37 +1,34 @@
+#include <cmath>
+#include <random>
+#include <functional>
 #include "rival.h"
 #include "gamedata.h"
 #include "imageFactory.h"
 
-Rival::Rival ( const std::string& name ) :
-  MultiSprite( name ),
+Rival::Rival ( const std::string& name, const Vector2f& pos, int w, int h ) :
+  SmartSprite( name, pos, w, h ),
   walkImgs( images ),
   attackImgs ( ImageFactory::getInstance().getImages(name+"Attack") ),
   fallbwdImgs( ImageFactory::getInstance().getImages(name+"FallBwd")),
-  collision(false),
-  initialPosition( getPosition()),
   initialVelocity( getVelocity()),
   lastFrame( 0 )
 { }
 
 Rival::Rival ( const Rival& s ) :
-  MultiSprite(s),
+  SmartSprite(s),
   walkImgs( s.walkImgs ),
   attackImgs( s.attackImgs ),
   fallbwdImgs( s.fallbwdImgs ),
-  collision(s.collision),
-  initialPosition( s.initialPosition ),
   initialVelocity( s.getVelocity() ),
   lastFrame( s.lastFrame )
 { }
 
 Rival& Rival::operator=( const Rival& s ) {
-  MultiSprite::operator=(s);
+  SmartSprite::operator=(s);
   walkImgs  = s.walkImgs;
   attackImgs = s.attackImgs;
   fallbwdImgs  = s.fallbwdImgs;
 
-  collision = s.collision;
-  initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
   lastFrame = s.lastFrame;
 
@@ -44,14 +41,11 @@ void Rival::walk()   {
   images = walkImgs;
   if ( getX() < worldWidth-getScaledWidth())
     setVelocityX(initialVelocity[0]);
-
 }
-void Rival::fallbwd()    {
+void Rival::fall()    {
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"FallBwd/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"FallBwd/frames");
-  if( getY() != initialPosition[1]) {
-    setY(initialPosition[1]);
-  }
+
   if( currentFrame  >= lastFrame ) {
     lastFrame = currentFrame;
     images = fallbwdImgs;
@@ -78,8 +72,7 @@ void Rival::attack()   {
   }
 }
 
-
 void Rival::update(Uint32 ticks) {
-  if ( !collision ) MultiSprite::update(ticks);
-  walk();
+  SmartSprite::update(2 * ticks);
+  // walk();
 }

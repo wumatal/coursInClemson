@@ -122,8 +122,8 @@
   <imageHeight>110</imageHeight>
   <frameInterval>93</frameInterval>
   <speedX>0</speedX>
-  <speedY>-924</speedY>
-  <grav>308</grav>
+  <speedY>-1050</speedY>
+  <grav>350</grav>
   <transparency>false</transparency>
 </PlayerJump>
 <PlayerJumpRight>
@@ -190,18 +190,20 @@
 </PlayerRollRight>
 
 <Blade>
-  <file>assets/rivals/blade/normal/walk162x141.png</file>
+  <file>assets/rivals/blade/black/walk162x141.png</file>
   <startLoc x="1700" y="485"/>
   <frames>8</frames>
   <imageWidth>162</imageWidth>
   <imageHeight>141</imageHeight>
   <frameInterval>162</frameInterval>
-  <speedX>-170</speedX>
+  <speedX>-64</speedX>
   <speedY>0</speedY>
+  <quantity>1</quantity>
+  <safeDistance>128</safeDistance>
   <transparency>false</transparency>
 </Blade>
 <BladeAttack>
-  <file>assets/rivals/blade/normal/attack152x170.png</file>
+  <file>assets/rivals/blade/black/attack152x170.png</file>
   <frames>11</frames>
   <imageWidth>152</imageWidth>
   <imageHeight>170</imageHeight>
@@ -211,7 +213,7 @@
   <transparency>false</transparency>
 </BladeAttack>
 <BladeFallBwd>
-  <file>assets/rivals/blade/normal/fallbwd165x120.png</file>
+  <file>assets/rivals/blade/black/fallbwd165x120.png</file>
   <frames>8</frames>
   <imageWidth>165</imageWidth>
   <imageHeight>120</imageHeight>

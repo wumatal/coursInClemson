@@ -4,7 +4,7 @@
 
 Player::Player ( const std::string& name ) :
   MultiSprite(name),
-  observers()
+  observers(),
   readyImgs( images ),
   walkImgs( ImageFactory::getInstance().getImages(name+"Walk") ),
   landImgs( ImageFactory::getInstance().getImages(name+"Land")),
@@ -27,7 +27,7 @@ Player::Player ( const std::string& name ) :
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
-  observers( s.observers )
+  observers( s.observers ),
   readyImgs( s.readyImgs ),
   walkImgs( s.walkImgs ),
   landImgs( s.landImgs ),
@@ -81,6 +81,16 @@ Player& Player::operator=( const Player& s ) {
   return *this;
 }
 
+void Player::detach( Rival* o ) {
+  std::list<Rival*>::iterator ptr = observers.begin();
+  while ( ptr != observers.end() ) {
+    if ( *ptr == o ) {
+      ptr = observers.erase(ptr);
+      return;
+    }
+    ++ptr;
+  }
+}
 
 void Player::ready()  {
   if( getY() != initialPosition[1]) {
@@ -136,20 +146,23 @@ void Player::land()    {
   setVelocityY(0);
 }
 void Player::jump(int v)   {
-  jumpingVelocity[0] = v;
+  jumpingVelocity[0] = 0;
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Jump/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Jump/frames");
   if( currentFrame  >= lastFrame ) {
     lastFrame = currentFrame;
     if ( toLeft ) {
       images = jumpImgs;
+      if ( getX() < worldWidth-getScaledWidth())
+        jumpingVelocity[0] = v;
     }
     else {
       images = jumpRImgs;
+      if ( getX() > 0)
+        jumpingVelocity[0] = v;
     }
     jumpingVelocity[1] = (float)(gravity / 6.0) + jumpingVelocity[1];
-    setVelocityX(v);
-    setVelocityY(jumpingVelocity[1]);
+    setVelocity(jumpingVelocity);
   }
   else {
     // inAir = false;
@@ -159,9 +172,7 @@ void Player::jump(int v)   {
   }
 }
 void Player::roll()   {
-  int v = 0;
-  if ( getX() < worldWidth-getScaledWidth() && getX() > 0)
-    v = Gamedata::getInstance().getXmlInt(getName()+"Roll/speedX");
+  int v = Gamedata::getInstance().getXmlInt(getName()+"Roll/speedX");
   frameInterval = Gamedata::getInstance().getXmlInt(getName()+"Roll/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Roll/frames");
   if ( toLeft ) {
@@ -191,4 +202,9 @@ void Player::knee()   {
 void Player::update(Uint32 ticks) {
   if ( !collision ) MultiSprite::update(ticks);
   if ( !isJumping() )  ready();
+  std::list<Rival*>::iterator ptr = observers.begin();
+  while ( ptr != observers.end() ) {
+    (*ptr)->setPlayerPos( getPosition() );
+    ++ptr;
+  }
 }

@@ -18,10 +18,12 @@ OBJS = \
 	frameGenerator.o \
 	sprite.o \
 	multisprite.o \
+	smartSprite.o \
 	player.o \
 	rival.o \
 	envrmtsprite.o \
 	vector2f.o \
+	collisionStrategy.o \
 	clock.o \
 	engine.o \
 	main.o

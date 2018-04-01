@@ -5,7 +5,9 @@
 #include "clock.h"
 #include "world.h"
 #include "viewport.h"
-#include "envrmtsprite.h"
+
+class CollisionStrategy;
+class Player;
 
 class Engine {
 public:
@@ -27,10 +29,16 @@ private:
   World bamboo3;
   World bamboo2;
   World grass;
+  // EnvrmtSprite* cloud;
+  // EnvrmtSprite* cloudFar;
   Viewport& viewport;
 
+  Player* player;
   std::vector<Drawable*> sprites;
-  int currentSprite;
+  unsigned currentSprite;
+  std::vector<CollisionStrategy*> strategies;
+  int currentStrategy;
+  bool collision;
 
   bool makeVideo;
 

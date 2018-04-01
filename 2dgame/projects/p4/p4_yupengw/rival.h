@@ -1,32 +1,26 @@
 #ifndef RIVAL_H
 #define RIVAL_H
 
-#include "multisprite.h"
+#include "smartSprite.h"
 
-class Rival : public MultiSprite {
+class Rival : public SmartSprite {
 public:
-  Rival( const std::string& );
+  Rival( const std::string&, const Vector2f& pos, int w, int h );
   Rival( const Rival& );
-  virtual void update( Uint32 ticks );
-
-  void collided() { collision = true;   }
-  void missed()   { collision = false;  }
   Rival& operator=( const Rival& );
 
-  void walk();
-  void attack();
-  void fallbwd();
-
+  virtual void update(Uint32 ticks);
 private:
-  enum MODE { ADVANCE, ATTACK, DIE };
   // The frames of all motions of the Rival
   std::vector<Image *> walkImgs;
   std::vector<Image *> attackImgs;
   std::vector<Image *> fallbwdImgs;
-  // Indicate the orientation of the Rival
-  bool collision;
-  Vector2f initialPosition;
+
   Vector2f initialVelocity;
   unsigned lastFrame;
+
+  virtual void walk();
+  virtual void attack();
+  virtual void fall();
 };
 #endif

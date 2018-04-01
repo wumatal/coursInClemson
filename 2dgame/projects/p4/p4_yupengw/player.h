@@ -5,13 +5,16 @@
 #include <list>
 #include <cmath>
 #include "multisprite.h"
+#include "rival.h"
 
 class Player : public MultiSprite {
 public:
   Player( const std::string& );
   Player( const Player& );
-  virtual void update( Uint32 ticks );
+  Player& operator=( const Player& );
 
+  virtual void update( Uint32 ticks );
+  // Add collision
   void attach( Rival* o ) { observers.push_back(o); }
   void detach( Rival* o );
 
@@ -23,7 +26,6 @@ public:
   void landing()  { inAir = false; landed = true;    }
   bool isJumping() const { return inAir;  }
   bool isLanding() const { return landed; }
-  Player& operator=( const Player& );
 
   void ready();
   void walk();
