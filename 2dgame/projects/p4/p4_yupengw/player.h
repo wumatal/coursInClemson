@@ -18,14 +18,18 @@ public:
   void attach( Rival* o ) { observers.push_back(o); }
   void detach( Rival* o );
 
-  void collided() { collision = true;   }
-  void missed()   { collision = false;  }
-  void turnLeft() { toLeft    = true;   }
-  void turnRight(){ toLeft    = false;  }
-  void jumping()  { inAir = true;  currentFrame = 0; }
-  void landing()  { inAir = false; landed = true;    }
-  bool isJumping() const { return inAir;  }
-  bool isLanding() const { return landed; }
+  void collided()   { collision = true;   }
+  void missed()     { collision = false;  }
+  void turnLeft()   { toLeft    = true;   }
+  void turnRight()  { toLeft    = false;  }
+  void jumping()    { currentMode = JUMP;  currentFrame = 0; }
+  void landing()    { currentMode = LAND;  currentFrame = 0; }
+  void lattacking() { currentMode = ATCK;  currentFrame = 0; }
+  void blocking()   { currentMode = BLCK;  currentFrame = 0; }
+  void blockDone()  { currentMode = IDLE; }
+  // bool isJumping() const { return inAir;  }
+  // bool isLanding() const { return landed; }
+  int  getMode() const { return currentMode;   }
 
   void ready();
   void walk();
@@ -33,8 +37,11 @@ public:
   void jump(int);
   void roll();
   void knee();
+  void lattack();
+  void block();
 
 private:
+  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE, HIT};
   std::list<Rival*> observers;
   // The frames of all motions of the player
   std::vector<Image *> readyImgs;
@@ -43,21 +50,27 @@ private:
   std::vector<Image *> jumpImgs;
   std::vector<Image *> rollImgs;
   std::vector<Image *> kneeImgs;
+  std::vector<Image *> blockImgs;
+  std::vector<Image *> lattackImgs;
   std::vector<Image *> readyRImgs;
   std::vector<Image *> walkRImgs;
   std::vector<Image *> landRImgs;
   std::vector<Image *> jumpRImgs;
   std::vector<Image *> rollRImgs;
   std::vector<Image *> kneeRImgs;
+  std::vector<Image *> blockRImgs;
+  std::vector<Image *> lattackRImgs;
   // Indicate the orientation of the player
-  bool inAir;
-  bool landed;
+  // bool inAir;
+  // bool landed;
   bool toLeft;
   bool collision;
   Vector2f initialPosition;
   Vector2f initialVelocity;
   Vector2f jumpingVelocity;
-  int gravity;
+  MODE currentMode;
+  int  gravity;
   unsigned lastFrame;
+  unsigned hitFrame;
 };
 #endif

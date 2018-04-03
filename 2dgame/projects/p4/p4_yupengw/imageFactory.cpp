@@ -56,7 +56,7 @@ ImageFactory::~ImageFactory() {
 }
 
 Image* ImageFactory::getImage(const std::string& name) {
-    std::map<std::string, Image*>::const_iterator it = images.find(name);
+  std::map<std::string, Image*>::const_iterator it = images.find(name);
   if ( it == images.end() ) {
     SDL_Surface * const surface =
       IoMod::getInstance().readSurface( gdata.getXmlStr(name+"/file"));

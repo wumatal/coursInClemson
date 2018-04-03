@@ -7,6 +7,7 @@
 #include "viewport.h"
 
 class CollisionStrategy;
+class HomeSprite;
 class Player;
 
 class Engine {
@@ -33,9 +34,12 @@ private:
   // EnvrmtSprite* cloudFar;
   Viewport& viewport;
 
-  Player* player;
+  Drawable* home;
+  Drawable* gate;
+  Drawable* player;
   std::vector<Drawable*> sprites;
   unsigned currentSprite;
+
   std::vector<CollisionStrategy*> strategies;
   int currentStrategy;
   bool collision;

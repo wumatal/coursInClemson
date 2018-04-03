@@ -21,6 +21,7 @@ OBJS = \
 	smartSprite.o \
 	player.o \
 	rival.o \
+	homeSprite.o \
 	envrmtsprite.o \
 	vector2f.o \
 	collisionStrategy.o \

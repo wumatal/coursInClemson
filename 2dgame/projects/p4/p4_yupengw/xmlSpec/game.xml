@@ -54,6 +54,46 @@
   <transparency>false</transparency>
 </bamboo2>
 
+<home>
+  <file>assets/home.png</file>
+  <startLoc x="-70" y="300"/>
+  <frames>1</frames>
+  <imageWidth>329</imageWidth>
+  <imageHeight>326</imageHeight>
+  <frameInterval>329</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</home>
+<homeShake>
+  <file>assets/homeShake.png</file>
+  <frames>5</frames>
+  <imageWidth>385</imageWidth>
+  <imageHeight>326</imageHeight>
+  <frameInterval>385</frameInterval>
+  <transparency>false</transparency>
+</homeShake>
+
+<gate>
+  <file>assets/gate.png</file>
+  <startLoc x="1700" y="296"/>
+  <frames>1</frames>
+  <imageWidth>333</imageWidth>
+  <imageHeight>369</imageHeight>
+  <frameInterval>333</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</gate>
+<gateShake>
+  <file>assets/gateShake.png</file>
+  <frames>5</frames>
+  <imageWidth>367</imageWidth>
+  <imageHeight>369</imageHeight>
+  <frameInterval>367</frameInterval>
+  <transparency>false</transparency>
+</gateShake>
+
 <grass>
   <file>assets/grass.png</file>
   <factor>1</factor>
@@ -80,7 +120,7 @@
 
 <Player>
   <file>assets/player/ready91x120.png</file>
-  <startLoc x="70" y="510"/>
+  <startLoc x="110" y="510"/>
   <frames>10</frames>
   <imageWidth>91</imageWidth>
   <imageHeight>120</imageHeight>
@@ -188,9 +228,46 @@
   <frameInterval>116</frameInterval>
   <transparency>false</transparency>
 </PlayerRollRight>
+<PlayerLAttack>
+  <file>assets/player/lattack178x120.png</file>
+  <frames>6</frames>
+  <imageWidth>178</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>178</frameInterval>
+  <hitFrame>4</hitFrame>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerLAttack>
+<PlayerLAttackRight>
+  <file>assets/player/lattack178x120right.png</file>
+  <frames>6</frames>
+  <imageWidth>178</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>178</frameInterval>
+  <transparency>false</transparency>
+</PlayerLAttackRight>
+<PlayerBlock>
+  <file>assets/player/block86x120.png</file>
+  <frames>4</frames>
+  <imageWidth>86</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>86</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerBlock>
+<PlayerBlockRight>
+  <file>assets/player/block86x120right.png</file>
+  <frames>4</frames>
+  <imageWidth>86</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>86</frameInterval>
+  <transparency>false</transparency>
+</PlayerBlockRight>
 
 <Blade>
-  <file>assets/rivals/blade/black/walk162x141.png</file>
+  <file>assets/rivals/blade/normal/walk162x141.png</file>
   <startLoc x="1700" y="485"/>
   <frames>8</frames>
   <imageWidth>162</imageWidth>
@@ -198,25 +275,27 @@
   <frameInterval>162</frameInterval>
   <speedX>-64</speedX>
   <speedY>0</speedY>
-  <quantity>1</quantity>
-  <safeDistance>128</safeDistance>
+  <quantity>7</quantity>
+  <velOffset>10</velOffset>
+  <safeDistance>100</safeDistance>
   <transparency>false</transparency>
 </Blade>
 <BladeAttack>
-  <file>assets/rivals/blade/black/attack152x170.png</file>
-  <frames>11</frames>
+  <file>assets/rivals/blade/normal/attack152x170.png</file>
+  <frames>16</frames>
   <imageWidth>152</imageWidth>
   <imageHeight>170</imageHeight>
   <frameInterval>152</frameInterval>
+  <hitFrame>6</hitFrame>
   <speedX>0</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
 </BladeAttack>
 <BladeFallBwd>
-  <file>assets/rivals/blade/black/fallbwd165x120.png</file>
-  <frames>8</frames>
+  <file>assets/rivals/blade/normal/fallbwd165x170.png</file>
+  <frames>11</frames>
   <imageWidth>165</imageWidth>
-  <imageHeight>120</imageHeight>
+  <imageHeight>170</imageHeight>
   <frameInterval>165</frameInterval>
   <speedX>10</speedX>
   <speedY>0</speedY>

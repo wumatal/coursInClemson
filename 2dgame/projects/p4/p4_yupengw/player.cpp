@@ -6,77 +6,96 @@ Player::Player ( const std::string& name ) :
   MultiSprite(name),
   observers(),
   readyImgs( images ),
-  walkImgs( ImageFactory::getInstance().getImages(name+"Walk") ),
-  landImgs( ImageFactory::getInstance().getImages(name+"Land")),
-  jumpImgs( ImageFactory::getInstance().getImages(name+"Jump")),
-  rollImgs( ImageFactory::getInstance().getImages(name+"Roll")),
-  kneeImgs( ImageFactory::getInstance().getImages(name+"Knee")),
-  readyRImgs( ImageFactory::getInstance().getImages(name+"Right")),
-  walkRImgs( ImageFactory::getInstance().getImages(name+"WalkRight")),
-  landRImgs( ImageFactory::getInstance().getImages(name+"LandRight")),
-  jumpRImgs( ImageFactory::getInstance().getImages(name+"JumpRight")),
-  rollRImgs( ImageFactory::getInstance().getImages(name+"RollRight")),
-  kneeRImgs( ImageFactory::getInstance().getImages(name+"KneeRight")),
-  inAir(false), landed(false), toLeft(true), collision(false),
+  walkImgs    ( ImageFactory::getInstance().getImages(name+"Walk")      ),
+  landImgs    ( ImageFactory::getInstance().getImages(name+"Land")      ),
+  jumpImgs    ( ImageFactory::getInstance().getImages(name+"Jump")      ),
+  rollImgs    ( ImageFactory::getInstance().getImages(name+"Roll")      ),
+  kneeImgs    ( ImageFactory::getInstance().getImages(name+"Knee")      ),
+  blockImgs   ( ImageFactory::getInstance().getImages(name+"Block")     ),
+  lattackImgs ( ImageFactory::getInstance().getImages(name+"LAttack")   ),
+  readyRImgs  ( ImageFactory::getInstance().getImages(name+"Right")     ),
+  walkRImgs   ( ImageFactory::getInstance().getImages(name+"WalkRight") ),
+  landRImgs   ( ImageFactory::getInstance().getImages(name+"LandRight") ),
+  jumpRImgs   ( ImageFactory::getInstance().getImages(name+"JumpRight") ),
+  rollRImgs   ( ImageFactory::getInstance().getImages(name+"RollRight") ),
+  kneeRImgs   ( ImageFactory::getInstance().getImages(name+"KneeRight") ),
+  blockRImgs  ( ImageFactory::getInstance().getImages(name+"BlockRight")),
+  lattackRImgs( ImageFactory::getInstance().getImages(name+"LAttackRight")),
+  // inAir(false), landed(false),
+  toLeft(true), collision(false),
   initialPosition(getPosition()), initialVelocity(getVelocity()),
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
                            Gamedata::getInstance().getXmlInt(name+"Jump/speedY"))),
-  gravity( Gamedata::getInstance().getXmlInt(name+"Jump/grav") ),
-  lastFrame( 0 )
+  currentMode ( IDLE ),
+  gravity     ( Gamedata::getInstance().getXmlInt(name+"Jump/grav") ),
+  lastFrame   ( 0 ),
+  hitFrame( Gamedata::getInstance().getXmlInt(getName()+"LAttack/hitFrame")-1 )
 { }
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
-  observers( s.observers ),
-  readyImgs( s.readyImgs ),
-  walkImgs( s.walkImgs ),
-  landImgs( s.landImgs ),
-  jumpImgs( s.jumpImgs ),
-  rollImgs( s.rollImgs ),
-  kneeImgs( s.kneeImgs ),
-  readyRImgs( s.readyRImgs ),
-  walkRImgs( s.walkRImgs ),
-  landRImgs( s.landRImgs ),
-  jumpRImgs( s.jumpRImgs ),
-  rollRImgs( s.rollRImgs ),
-  kneeRImgs( s.kneeRImgs ),
-  inAir( s.inAir ),
-  landed( s.landed ),
+  observers  ( s.observers ),
+  readyImgs  ( s.readyImgs ),
+  walkImgs   ( s.walkImgs ),
+  landImgs   ( s.landImgs ),
+  jumpImgs   ( s.jumpImgs ),
+  rollImgs   ( s.rollImgs ),
+  kneeImgs   ( s.kneeImgs ),
+  blockImgs  ( s.blockImgs),
+  lattackImgs( s.lattackImgs),
+  readyRImgs ( s.readyRImgs ),
+  walkRImgs  ( s.walkRImgs ),
+  landRImgs  ( s.landRImgs ),
+  jumpRImgs  ( s.jumpRImgs ),
+  rollRImgs  ( s.rollRImgs ),
+  kneeRImgs  ( s.kneeRImgs ),
+  blockRImgs  ( s.blockImgs),
+  lattackRImgs( s.lattackImgs),
+  // inAir ( s.inAir ),
+  // landed( s.landed ),
   toLeft( s.toLeft ),
   collision(s.collision),
   initialPosition( s.initialPosition ),
   initialVelocity( s.getVelocity() ),
   jumpingVelocity( s.jumpingVelocity ),
+  currentMode( s.currentMode ),
   gravity( s.gravity ),
-  lastFrame( s.lastFrame )
+  lastFrame( s.lastFrame ),
+  hitFrame( s.hitFrame )
 { }
 
 Player& Player::operator=( const Player& s ) {
   MultiSprite::operator=(s);
-  observers = s.observers;
-  walkImgs  = s.walkImgs;
-  readyImgs = s.readyImgs;
-  landImgs  = s.landImgs;
-  jumpImgs  = s.jumpImgs;
-  rollImgs  = s.rollImgs;
-  kneeImgs  = s.kneeImgs;
-  walkRImgs = s.walkRImgs;
-  readyRImgs= s.readyRImgs;
-  landRImgs = s.landImgs;
-  jumpRImgs = s.jumpRImgs;
-  rollRImgs = s.rollRImgs;
-  kneeRImgs = s.kneeRImgs;
+  observers  = s.observers;
+  walkImgs   = s.walkImgs;
+  readyImgs  = s.readyImgs;
+  landImgs   = s.landImgs;
+  jumpImgs   = s.jumpImgs;
+  rollImgs   = s.rollImgs;
+  kneeImgs   = s.kneeImgs;
+  blockImgs  = s.blockImgs;
+  lattackImgs= s.lattackImgs;
+  walkRImgs  = s.walkRImgs;
+  readyRImgs = s.readyRImgs;
+  landRImgs  = s.landImgs;
+  jumpRImgs  = s.jumpRImgs;
+  rollRImgs  = s.rollRImgs;
+  kneeRImgs  = s.kneeRImgs;
+  blockImgs   = s.blockImgs;
+  lattackImgs = s.lattackImgs;
 
-  inAir   = s.inAir;
-  landed  = s.landed;
+  // inAir   = s.inAir;
+  // landed  = s.landed;
   toLeft  = s.toLeft;
   collision = s.collision;
 
   initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
   jumpingVelocity = s.jumpingVelocity;
+  currentMode = s.currentMode;
   gravity = s.gravity;
   lastFrame = s.lastFrame;
+  hitFrame  = s.hitFrame;
 
   return *this;
 }
@@ -139,7 +158,8 @@ void Player::land()    {
     }
   }
   else {
-    landed = false;
+    // landed = false;
+    currentMode = IDLE;
     lastFrame = 0;
   }
   setVelocityX(0);
@@ -195,13 +215,57 @@ void Player::knee()   {
   }
   else {
     images = kneeRImgs;
+  std::vector<Image *> lattackImgs;
     setVelocityX(0);
   }
 }
+void Player::lattack() {
+  frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frameInterval");
+  numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frames");
+  if( currentFrame == hitFrame )
+    currentMode = HIT;
+  else
+    currentMode = ATCK;
+  if( currentFrame  >= lastFrame ) {
+    lastFrame = currentFrame;
+    if ( toLeft ) {
+      images = lattackImgs;
+    }
+    else {
+      images = lattackRImgs;
+    }
+  }
+  else {
+    // inAir = false;
+    currentMode = IDLE;
+    lastFrame = 0;
+  }
+  setVelocityX(0);
+  setVelocityY(0);
+}
+void Player::block() {
+  frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"Block/frameInterval");
+  numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Block/frames");
+  if( currentFrame  != (numberOfFrames-1) ) {
+    if ( toLeft ) {
+      images = blockImgs;
+    }
+    else {
+      images = blockRImgs;
+    }
+  }
+  else {
+    currentMode = DFND;
+    --currentFrame;
+  }
+  setVelocityX(0);
+  setVelocityY(0);
+}
 
 void Player::update(Uint32 ticks) {
+  if ( currentMode == ATCK ) ticks *= 2;
   if ( !collision ) MultiSprite::update(ticks);
-  if ( !isJumping() )  ready();
+  if ( currentMode == IDLE )  ready();
   std::list<Rival*>::iterator ptr = observers.begin();
   while ( ptr != observers.end() ) {
     (*ptr)->setPlayerPos( getPosition() );
