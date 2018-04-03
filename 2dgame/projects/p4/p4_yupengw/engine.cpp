@@ -20,9 +20,10 @@ Engine::~Engine() {
   for( Drawable* d : sprites ){
     delete d;
   }
-  for ( CollisionStrategy* strategy : strategies ) {
-    delete strategy;
-  }
+  // for ( CollisionStrategy* strategy : strategies ) {
+    // delete strategy;
+  // }
+  delete strategy;
   std::cout << "Terminating program" << std::endl;
 }
 
@@ -31,18 +32,20 @@ Engine::Engine() :
   io( IoMod::getInstance() ),
   clock( Clock::getInstance() ),
   renderer( rc->getRenderer() ),
-  sky("sky", Gamedata::getInstance().getXmlInt("sky/factor") ),
+  sky    ("sky",     Gamedata::getInstance().getXmlInt("sky/factor")     ),
   bamboo4("bamboo4", Gamedata::getInstance().getXmlInt("bamboo4/factor") ),
   bamboo3("bamboo3", Gamedata::getInstance().getXmlInt("bamboo3/factor") ),
   bamboo2("bamboo2", Gamedata::getInstance().getXmlInt("bamboo2/factor") ),
-  grass("grass", Gamedata::getInstance().getXmlInt("grass/factor") ),
+  grass  ("grass",   Gamedata::getInstance().getXmlInt("grass/factor")   ),
   viewport( Viewport::getInstance() ),
-  home( new HomeSprite("home") ),
-  gate( new HomeSprite("gate") ),
+  home  ( new HomeSprite("home") ),
+  gate  ( new HomeSprite("gate") ),
   player( new Player("Player") ),
   sprites(), currentSprite(0),
-  strategies(), currentStrategy(0),
-  collision(false),
+  // strategies(), currentStrategy(0),
+  strategy( new PerPixelCollisionStrategy ),
+  collision( false ),
+  // pause    ( false ),
   makeVideo( false )
 {
   Vector2f pos = player->getPosition();
@@ -61,9 +64,9 @@ Engine::Engine() :
     p->attach( static_cast<Rival*>(sprites[i]) );
   }
 
-  strategies.push_back( new PerPixelCollisionStrategy );
-  strategies.push_back( new RectangularCollisionStrategy );
-  strategies.push_back( new MidPointCollisionStrategy );
+  // strategies.push_back( new PerPixelCollisionStrategy );
+  // strategies.push_back( new RectangularCollisionStrategy );
+  // strategies.push_back( new MidPointCollisionStrategy );
 
   Viewport::getInstance().setObjectToTrack(player);
   std::cout << "Loading complete" << std::endl;
@@ -83,7 +86,8 @@ void Engine::draw() const {
       d->draw();
   }
 
-  strategies[currentStrategy]->draw();
+  // strategies[currentStrategy]->draw();
+  strategy->draw();
 
   player->draw();
   grass.draw();
@@ -101,7 +105,8 @@ void Engine::checkForCollisions() {
     Rival* doa = static_cast<Rival*>(*it);
     Player* p  = static_cast<Player*>(player);
     // Check if player is collided with rival.
-    if ( strategies[currentStrategy]->execute(*p, **it) ) {
+    // if ( strategies[currentStrategy]->execute(*p, **it) ) {
+    if ( strategy->execute(*p, **it) ) {
       // If the rival is attacking, check if the player defends or not.
       if( doa->getMode() == 1) {
       }
@@ -191,9 +196,9 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_T] ) {
           switchSprite();
         }
-        if ( keystate[SDL_SCANCODE_M] ) {
-          currentStrategy = (1 + currentStrategy) % strategies.size();
-        }
+        // if ( keystate[SDL_SCANCODE_M] ) {
+        //   currentStrategy = (1 + currentStrategy) % strategies.size();
+        // }
         // You may press 'F' to track hero directly
         if ( keystate[SDL_SCANCODE_F] ) {
           Viewport::getInstance().setObjectToTrack(player);
