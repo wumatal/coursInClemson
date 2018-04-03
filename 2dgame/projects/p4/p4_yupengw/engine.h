@@ -40,9 +40,11 @@ private:
   std::vector<Drawable*> sprites;
   unsigned currentSprite;
 
-  std::vector<CollisionStrategy*> strategies;
-  int currentStrategy;
+  // std::vector<CollisionStrategy*> strategies;
+  CollisionStrategy* strategy;
+  // int  currentStrategy;
   bool collision;
+  // bool paused;
 
   bool makeVideo;
 
