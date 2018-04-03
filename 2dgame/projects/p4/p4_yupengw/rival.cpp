@@ -89,6 +89,7 @@ void Rival::attack()   {
 }
 
 void Rival::update(Uint32 ticks) {
+  if( getMode() == 1) ticks *= 2;
   SmartSprite::update(2 * ticks);
   // walk();
 }

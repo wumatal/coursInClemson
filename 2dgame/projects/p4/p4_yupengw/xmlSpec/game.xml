@@ -277,7 +277,7 @@
   <speedY>0</speedY>
   <quantity>7</quantity>
   <velOffset>10</velOffset>
-  <safeDistance>100</safeDistance>
+  <safeDistance>80</safeDistance>
   <transparency>false</transparency>
 </Blade>
 <BladeAttack>
