@@ -162,8 +162,8 @@
   <imageHeight>110</imageHeight>
   <frameInterval>93</frameInterval>
   <speedX>0</speedX>
-  <speedY>-1050</speedY>
-  <grav>350</grav>
+  <speedY>-1470</speedY>
+  <grav>490</grav>
   <transparency>false</transparency>
 </PlayerJump>
 <PlayerJumpRight>
@@ -323,6 +323,25 @@
   <velOffset>50</velOffset>
   <transparency>false</transparency>
 </Shuriken>
+
+<hud>
+  <positionX>30</positionX>
+  <positionY>60</positionY>
+  <width>329</width>
+  <height>326</height>
+  <keyA>Move left</keyA>
+  <keyS>Crouch</keyS>
+  <keyD>Move right</keyD>
+  <keyW>Jump</keyW>
+  <keyJ>Light attack</keyJ>
+  <keySAD>Roll left and right</keySAD>
+  <keyF1>Show this instructions</keyF1>
+  <keySHIFT>Block</keySHIFT>
+  <red>255</red>
+  <green>255</green>
+  <blue>255</blue>
+  <alpha>0</alpha>
+</hud>
 
 <fps>
   <positionX>30</positionX>

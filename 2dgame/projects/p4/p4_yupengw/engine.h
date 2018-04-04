@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include "ioMod.h"
 #include "renderContext.h"
+#include "hud.h"
 #include "clock.h"
 #include "world.h"
 #include "viewport.h"
@@ -21,7 +22,8 @@ public:
 
 private:
   const RenderContext* rc;
-  const IoMod& io;
+  const IoMod&         io;
+  Hud&           hud;
   Clock& clock;
 
   SDL_Renderer * const renderer;
@@ -44,7 +46,6 @@ private:
   CollisionStrategy* strategy;
   // int  currentStrategy;
   bool collision;
-  // bool paused;
 
   bool makeVideo;
 

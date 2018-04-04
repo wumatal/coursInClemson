@@ -28,8 +28,9 @@ Engine::~Engine() {
 }
 
 Engine::Engine() :
-  rc( RenderContext::getInstance() ),
-  io( IoMod::getInstance() ),
+  rc   ( RenderContext::getInstance() ),
+  io   ( IoMod::getInstance() ),
+  hud  ( Hud::getInstance() ),
   clock( Clock::getInstance() ),
   renderer( rc->getRenderer() ),
   sky    ("sky",     Gamedata::getInstance().getXmlInt("sky/factor")     ),
@@ -45,7 +46,6 @@ Engine::Engine() :
   // strategies(), currentStrategy(0),
   strategy( new PerPixelCollisionStrategy ),
   collision( false ),
-  // pause    ( false ),
   makeVideo( false )
 {
   Vector2f pos = player->getPosition();
@@ -92,7 +92,7 @@ void Engine::draw() const {
   player->draw();
   grass.draw();
   // cloud->draw();
-
+  hud.draw();
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
@@ -203,8 +203,18 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_F] ) {
           Viewport::getInstance().setObjectToTrack(player);
         }
+        // Press F1 to bring the game pause and show the instructions
+        if ( keystate[SDL_SCANCODE_F1] ) {
+          if ( clock.isPaused() ) {
+            clock.unpause();
+          }
+          else {
+            hud.showInstructions(renderer);
+            clock.pause();
+          }
+        }
         if (keystate[SDL_SCANCODE_F4] && !makeVideo) {
-          std::cout << "Initiating frame capture" << std::endl;
+          std::cout << "Initiating frame capturshowHintse" << std::endl;
           makeVideo = true;
         }
         else if (keystate[SDL_SCANCODE_F4] && makeVideo) {
@@ -225,11 +235,11 @@ void Engine::play() {
         case 0:
           if (keystate[SDL_SCANCODE_A]) {
             p->turnRight();
-            p->jump(-200);
+            p->jump(-300);
           }
           else if (keystate[SDL_SCANCODE_D]) {
             p->turnLeft();
-            p->jump(200);
+            p->jump(300);
           }
           else
             p->jump(0);

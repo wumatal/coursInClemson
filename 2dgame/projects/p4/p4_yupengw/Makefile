@@ -8,6 +8,7 @@ LDFLAGS = `sdl2-config --libs` -lm -lexpat -lSDL2_ttf -lSDL2_image
 OBJS = \
   renderContext.o \
 	ioMod.o \
+	hud.o \
 	parseXML.o \
 	gamedata.o \
 	viewport.o \
