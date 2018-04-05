@@ -107,6 +107,10 @@ void Engine::checkForCollisions() {
     if ( strategy->execute(*player, **it) ) {
       // If the rival is attacking, check if the player defends or not.
       if( doa->isHit() == 1) {
+        // if( player->getMode() == 4 )
+          // player->setVelocityX(10);
+        // else
+          // player->jump();
       }
       // If the player is attacking, set the rival to fall.
       if( player->isHit() && doa->getMode() < 2 ) {
@@ -269,6 +273,10 @@ void Engine::play() {
           }
           else{
             player->blockDone();
+          }
+          if (keystate[SDL_SCANCODE_J]) {
+            player->lattacking();
+            player->lattack();
           }
           break;
         default:

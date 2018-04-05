@@ -6,7 +6,6 @@ class Hud {
 public:
   static Hud& getInstance();
   void showInstructions (SDL_Renderer*) ;
-  void draw() const;
 private:
 
   SDL_Rect rect;

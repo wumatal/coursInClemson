@@ -23,7 +23,7 @@ public:
 private:
   const RenderContext* rc;
   const IoMod&         io;
-  Hud&           hud;
+  Hud&  hud;
   Clock& clock;
 
   SDL_Renderer * const renderer;

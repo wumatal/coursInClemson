@@ -9,8 +9,8 @@ Hud& Hud::getInstance() {
 Hud::Hud() :
   rect    ({Gamedata::getInstance().getXmlInt("hud/positionX" ),
             Gamedata::getInstance().getXmlInt("hud/positionY" ),
-          854-2*Gamedata::getInstance().getXmlInt("hud/positionX"  ),
-          600-2*Gamedata::getInstance().getXmlInt("hud/positionY")}),
+            854-2*Gamedata::getInstance().getXmlInt("hud/positionX"  ),
+            600-2*Gamedata::getInstance().getXmlInt("hud/positionY")}),
   red     ( Gamedata::getInstance().getXmlInt("hud/red"       ) ),
   green   ( Gamedata::getInstance().getXmlInt("hud/green"     ) ),
   blue    ( Gamedata::getInstance().getXmlInt("hud/blue"      ) ),
