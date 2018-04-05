@@ -17,22 +17,24 @@ Vector2f Rival::makeVelocity(int vx) const {
 Rival::Rival ( const std::string& name, const Vector2f& pos,
   const Vector2f& bpos, int w, int h, int bw, int bh ) :
   SmartSprite( name, pos, bpos, w, h, bw, bh ),
-  walkImgs( images ),
+  walkImgs ( images ),
   attackImgs ( ImageFactory::getInstance().getImages(name+"Attack") ),
   fallbwdImgs( ImageFactory::getInstance().getImages(name+"FallBwd")),
   initialVelocity( makeVelocity(getVelocityX())),
   lastFrame( 0 ),
-  hitFrame( Gamedata::getInstance().getXmlInt(getName()+"Attack/hitFrame") )
+  hit      ( false ),
+  hitFrame ( Gamedata::getInstance().getXmlInt(getName()+"Attack/hitFrame") )
 { }
 
 Rival::Rival ( const Rival& s ) :
   SmartSprite(s),
-  walkImgs( s.walkImgs ),
-  attackImgs( s.attackImgs ),
+  walkImgs   ( s.walkImgs ),
+  attackImgs ( s.attackImgs ),
   fallbwdImgs( s.fallbwdImgs ),
   initialVelocity( s.getVelocity() ),
-  lastFrame( s.lastFrame ),
-  hitFrame( s.hitFrame )
+  lastFrame  ( s.lastFrame ),
+  hit        ( s.hit ),
+  hitFrame   ( s.hitFrame )
 { }
 
 Rival& Rival::operator=( const Rival& s ) {
@@ -43,6 +45,7 @@ Rival& Rival::operator=( const Rival& s ) {
 
   initialVelocity = s.initialVelocity;
   lastFrame    = s.lastFrame;
+  hit = s.hit;
   hitFrame = s.hitFrame;
 
   return *this;
@@ -76,6 +79,12 @@ void Rival::attack()   {
   frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"Attack/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Attack/frames");
   if( currentFrame  >= lastFrame ) {
+    if( hit )
+      hit = false;
+    
+    if( currentFrame == hitFrame )
+      hit = true;
+
     lastFrame = currentFrame;
     images = attackImgs;
 

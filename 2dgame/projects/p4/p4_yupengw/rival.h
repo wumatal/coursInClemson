@@ -10,6 +10,8 @@ public:
   Rival( const Rival& );
   Rival& operator=( const Rival& );
 
+  bool isHit() const { return hit; }
+
   virtual void falling()   { SmartSprite::falling(); lastFrame = 0;}
   virtual void update(Uint32 ticks);
 private:
@@ -20,7 +22,8 @@ private:
 
   Vector2f initialVelocity;
   unsigned lastFrame;
-  int hitFrame;
+  bool     hit;
+  unsigned hitFrame;
 
   virtual void walk();
   virtual void attack();

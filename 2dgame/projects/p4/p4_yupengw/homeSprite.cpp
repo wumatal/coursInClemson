@@ -51,6 +51,6 @@ void HomeSprite::shake(){
 }
 
 void HomeSprite::update(Uint32 ticks) {
-  if ( !collision ) MultiSprite::update(ticks);
+  if ( !collision ) MultiSprite::update(6*ticks);
   if ( !attacked )  stop();
 }

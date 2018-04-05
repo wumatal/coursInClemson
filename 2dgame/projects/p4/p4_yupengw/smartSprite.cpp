@@ -17,10 +17,6 @@ void SmartSprite::setMode( const std::string& mode ) {
   else if( mode == "FALL") currentMode = FALL;
   else currentMode = DEAD;
 }
-// void SmartSprite::walk()   { setVelocityX( -abs(getVelocityX()) );  }
-// void SmartSprite::attack() { setVelocityX( fabs(getVelocityX()) );  }
-// void SmartSprite::fall()   { setVelocityY( -fabs(getVelocityY()) ); }
-
 
 SmartSprite::SmartSprite(const std::string& name, const Vector2f& pos,
   const Vector2f& bpos, int w, int h, int bw, int bh) :

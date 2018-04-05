@@ -325,22 +325,21 @@
 </Shuriken>
 
 <hud>
-  <positionX>30</positionX>
-  <positionY>60</positionY>
-  <width>329</width>
-  <height>326</height>
-  <keyA>Move left</keyA>
-  <keyS>Crouch</keyS>
-  <keyD>Move right</keyD>
-  <keyW>Jump</keyW>
-  <keyJ>Light attack</keyJ>
-  <keySAD>Roll left and right</keySAD>
-  <keyF1>Show this instructions</keyF1>
-  <keySHIFT>Block</keySHIFT>
-  <red>255</red>
-  <green>255</green>
-  <blue>255</blue>
-  <alpha>0</alpha>
+  <positionX>160</positionX>
+  <positionY>120</positionY>
+  <keyAD>                          Move left or right.</keyAD>
+  <keyS>                               Crouch</keyS>
+  <keyW>                               Jump</keyW>
+  <keyJ>                               Light attack</keyJ>
+  <keySAD>                  Roll left or right</keySAD>
+  <keyF1>                               Show this instructions</keyF1>
+  <keySHIFT>                 Block</keySHIFT>
+  <resume>Press F1 to resume.</resume>
+  <offset>10</offset>
+  <red>70</red>
+  <green>70</green>
+  <blue>70</blue>
+  <alpha>10</alpha>
 </hud>
 
 <fps>

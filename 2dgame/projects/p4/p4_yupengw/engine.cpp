@@ -92,7 +92,6 @@ void Engine::draw() const {
   player->draw();
   grass.draw();
   // cloud->draw();
-  hud.draw();
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
@@ -111,7 +110,7 @@ void Engine::checkForCollisions() {
       if( doa->getMode() == 1) {
       }
       // If the player is attacking, set the rival to fall.
-      if( p->getMode() == 6 && doa->getMode() < 2 ) {
+      if( p->getMode() == 2 && doa->getMode() < 2 ) {
         doa->falling();
       }
     }

@@ -5,7 +5,6 @@
 class Hud {
 public:
   static Hud& getInstance();
-  void closeInstructions() ;
   void showInstructions (SDL_Renderer*) ;
   void draw() const;
 private:
@@ -15,7 +14,8 @@ private:
   Uint8 green;
   Uint8 blue;
   Uint8 alpha;
-  bool show;
+  int   fontSize;
+  int   offset;
 
   Hud();
   Hud(const Hud&);

@@ -32,8 +32,6 @@ private:
   World bamboo3;
   World bamboo2;
   World grass;
-  // EnvrmtSprite* cloud;
-  // EnvrmtSprite* cloudFar;
   Viewport& viewport;
 
   Drawable* home;

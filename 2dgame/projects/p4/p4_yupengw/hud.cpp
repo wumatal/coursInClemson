@@ -7,15 +7,16 @@ Hud& Hud::getInstance() {
 }
 
 Hud::Hud() :
-  rect  ({Gamedata::getInstance().getXmlInt("hud/positionX"),
-          Gamedata::getInstance().getXmlInt("hud/positionY"),
-          Gamedata::getInstance().getXmlInt("hud/width"     ),
-          Gamedata::getInstance().getXmlInt("hud/height"    )}),
-  red   ( Gamedata::getInstance().getXmlInt("hud/red"       )),
-  green ( Gamedata::getInstance().getXmlInt("hud/green"     )),
-  blue  ( Gamedata::getInstance().getXmlInt("hud/blue"      )),
-  alpha ( Gamedata::getInstance().getXmlInt("hud/alpha"     )),
-  show  ( false )
+  rect    ({Gamedata::getInstance().getXmlInt("hud/positionX" ),
+            Gamedata::getInstance().getXmlInt("hud/positionY" ),
+          854-2*Gamedata::getInstance().getXmlInt("hud/positionX"  ),
+          600-2*Gamedata::getInstance().getXmlInt("hud/positionY")}),
+  red     ( Gamedata::getInstance().getXmlInt("hud/red"       ) ),
+  green   ( Gamedata::getInstance().getXmlInt("hud/green"     ) ),
+  blue    ( Gamedata::getInstance().getXmlInt("hud/blue"      ) ),
+  alpha   ( Gamedata::getInstance().getXmlInt("hud/alpha"     ) ),
+  fontSize( Gamedata::getInstance().getXmlInt("font/size"     ) ),
+  offset  ( Gamedata::getInstance().getXmlInt("hud/offset"    ) )
 { }
 
 void Hud::showInstructions(SDL_Renderer* renderer)  {
@@ -31,24 +32,47 @@ void Hud::showInstructions(SDL_Renderer* renderer)  {
   // Now set the color for the outline of the hud:
   SDL_SetRenderDrawColor( renderer, 255, 0, 0, 255/2 );
   SDL_RenderDrawRect( renderer, &rect );
+ 
+  IoMod::getInstance().writeText(
+    "A / D" 
+    + Gamedata::getInstance().getXmlStr("hud/keyAD"), 
+    rect.x+7*offset, rect.y+offset,
+    {red, green, blue, alpha});  
+  IoMod::getInstance().writeText(
+    "J" 
+    + Gamedata::getInstance().getXmlStr("hud/keyJ"), 
+    rect.x+7*offset, rect.y+2*offset+fontSize,
+    {red, green, blue, alpha});  
+  IoMod::getInstance().writeText(
+    "W" 
+    + Gamedata::getInstance().getXmlStr("hud/keyW"), 
+    rect.x+7*offset, rect.y+3*offset+2*fontSize,
+    {red, green, blue, alpha});  
+  IoMod::getInstance().writeText(
+    "S" 
+    + Gamedata::getInstance().getXmlStr("hud/keyS"), 
+    rect.x+7*offset, rect.y+4*offset+3*fontSize,
+    {red, green, blue, alpha});  
+  IoMod::getInstance().writeText(
+    "S + A / D" 
+    + Gamedata::getInstance().getXmlStr("hud/keySAD"), 
+    rect.x+7*offset, rect.y+5*offset+4*fontSize,
+    {red, green, blue, alpha});
+  IoMod::getInstance().writeText(
+    "Left shift" 
+    + Gamedata::getInstance().getXmlStr("hud/keySHIFT"), 
+    rect.x+7*offset, rect.y+6*offset+5*fontSize,
+    {red, green, blue, alpha});
+  IoMod::getInstance().writeText(
+    "F1" 
+    + Gamedata::getInstance().getXmlStr("hud/keyF1"), 
+    rect.x+7*offset, rect.y+7*offset+6*fontSize,
+    {red, green, blue, alpha}); 
+  IoMod::getInstance().writeText(
+    Gamedata::getInstance().getXmlStr("hud/resume"), 
+    rect.x+7*offset, rect.y+rect.h-offset-fontSize,
+    {red, green, blue, alpha});
 
   // Render the rect to the screen
   SDL_RenderPresent(renderer);
-
-  IoMod::getInstance().writeText("WU", rect.x+10, rect.y+60,
-  {(uint8_t)Gamedata::getInstance().getXmlInt("hud/red"),
-   (uint8_t)Gamedata::getInstance().getXmlInt("hud/green"),
-   (uint8_t)Gamedata::getInstance().getXmlInt("hud/blue"),
-   (uint8_t)Gamedata::getInstance().getXmlInt("hud/alpha")});
-
-}
-
-
-void Hud::draw() const {
-
-  // IoMod::getInstance().writeText("WU", rect.x+10, rect.y+60,
-  // {(uint8_t)Gamedata::getInstance().getXmlInt("hud/red"),
-  //  (uint8_t)Gamedata::getInstance().getXmlInt("hud/green"),
-  //  (uint8_t)Gamedata::getInstance().getXmlInt("hud/blue"),
-  //  (uint8_t)Gamedata::getInstance().getXmlInt("hud/alpha")});
 }

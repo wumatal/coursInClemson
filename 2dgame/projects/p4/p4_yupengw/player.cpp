@@ -222,10 +222,10 @@ void Player::knee()   {
 void Player::lattack() {
   frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frames");
-  if( currentFrame == hitFrame )
-    currentMode = HIT;
-  else
-    currentMode = ATCK;
+  // if( currentFrame == hitFrame )
+  //   currentMode = HIT;
+  // else
+  //   currentMode = ATCK;
   if( currentFrame  >= lastFrame ) {
     lastFrame = currentFrame;
     if ( toLeft ) {
