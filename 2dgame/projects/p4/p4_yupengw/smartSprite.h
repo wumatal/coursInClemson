@@ -11,7 +11,7 @@ public:
   SmartSprite& operator=( const SmartSprite& );
   virtual ~SmartSprite() { }
 
-  void attacking() { currentMode = ATCK; currentFrame = 0; /*lastFrame = 0;*/}
+  void attacking() { currentMode = ATCK; currentFrame = 0; }
   void walking()   { currentMode = WALK;  }
   int  getMode() const { return currentMode;  }
   void setMode( const std::string&  );
@@ -20,18 +20,13 @@ public:
   void setPlayerPos(const Vector2f& p) { playerPos = p; }
   bool attackable();
 
-  virtual void falling()   { currentMode = FALL; currentFrame = 0; /*lastFrame = 0;*/}
+  virtual void falling()   { currentMode = FALL; currentFrame = 0; }
   virtual void walk()   = 0;
   virtual void attack() = 0;
   virtual void fall()   = 0;
 
-// protected:
-//   unsigned lastFrame;
-//   enum MODE {WALK, ATCK, FALL, DEAD};
-//   MODE currentMode;
 
 private:
-
   enum MODE {WALK, ATCK, FALL, DEAD};
   MODE currentMode;
 

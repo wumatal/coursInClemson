@@ -12,8 +12,6 @@ public:
   virtual ~HomeSprite() { }
 
   virtual void update(Uint32 ticks);
-  void collided() { collision = true;   }
-  void missed()   { collision = false;  }
 
   void stop();
   void shake();
@@ -21,9 +19,6 @@ public:
 private:
   std::vector<Image *> stopImgs;
   std::vector<Image *> shakeImgs;
-
-  bool attacked;
-  bool collision;
 
   unsigned lastFrame;
 };

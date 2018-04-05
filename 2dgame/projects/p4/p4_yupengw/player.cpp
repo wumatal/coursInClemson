@@ -22,7 +22,7 @@ Player::Player ( const std::string& name ) :
   blockRImgs  ( ImageFactory::getInstance().getImages(name+"BlockRight")),
   lattackRImgs( ImageFactory::getInstance().getImages(name+"LAttackRight")),
   // inAir(false), landed(false),
-  toLeft(true), collision(false),
+  toLeft(true), collision(false), hit( false ),
   initialPosition(getPosition()), initialVelocity(getVelocity()),
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
                            Gamedata::getInstance().getXmlInt(name+"Jump/speedY"))),
@@ -51,10 +51,9 @@ Player::Player ( const Player& s ) :
   kneeRImgs  ( s.kneeRImgs ),
   blockRImgs  ( s.blockImgs),
   lattackRImgs( s.lattackImgs),
-  // inAir ( s.inAir ),
-  // landed( s.landed ),
-  toLeft( s.toLeft ),
-  collision(s.collision),
+  toLeft   ( s.toLeft ),
+  collision( s.collision ),
+  hit      ( s.hit ),
   initialPosition( s.initialPosition ),
   initialVelocity( s.getVelocity() ),
   jumpingVelocity( s.jumpingVelocity ),
@@ -84,10 +83,9 @@ Player& Player::operator=( const Player& s ) {
   blockImgs   = s.blockImgs;
   lattackImgs = s.lattackImgs;
 
-  // inAir   = s.inAir;
-  // landed  = s.landed;
-  toLeft  = s.toLeft;
+  toLeft    = s.toLeft;
   collision = s.collision;
+  hit       = s.hit;
 
   initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
@@ -222,11 +220,14 @@ void Player::knee()   {
 void Player::lattack() {
   frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"LAttack/frames");
-  // if( currentFrame == hitFrame )
-  //   currentMode = HIT;
-  // else
-  //   currentMode = ATCK;
+
   if( currentFrame  >= lastFrame ) {
+    if( hit )
+      hit = false;
+    
+    if( currentFrame == hitFrame )
+      hit = true;
+
     lastFrame = currentFrame;
     if ( toLeft ) {
       images = lattackImgs;

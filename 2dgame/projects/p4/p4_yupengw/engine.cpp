@@ -51,17 +51,17 @@ Engine::Engine() :
   Vector2f pos = player->getPosition();
   int w = player->getScaledWidth();
   int h = player->getScaledHeight();
+
   Vector2f bpos = home->getPosition();
   int bw = home->getScaledWidth();
   int bh = home->getScaledHeight();
-  Player* p = static_cast<Player*>(player);
 
   int n = Gamedata::getInstance().getXmlInt("Blade/quantity");
   sprites.reserve(n);
 
   for (int i = 0; i < n; ++i) {
     sprites.push_back( new Rival("Blade", pos, bpos, w, h, bw, bh) );
-    p->attach( static_cast<Rival*>(sprites[i]) );
+    player->attach( static_cast<Rival*>(sprites[i]) );
   }
 
   // strategies.push_back( new PerPixelCollisionStrategy );
@@ -87,7 +87,7 @@ void Engine::draw() const {
   }
 
   // strategies[currentStrategy]->draw();
-  strategy->draw();
+  // strategy->draw();
 
   player->draw();
   grass.draw();
@@ -102,26 +102,37 @@ void Engine::checkForCollisions() {
   while ( it != sprites.end() ) {
     deleted = false;
     Rival* doa = static_cast<Rival*>(*it);
-    Player* p  = static_cast<Player*>(player);
     // Check if player is collided with rival.
     // if ( strategies[currentStrategy]->execute(*p, **it) ) {
-    if ( strategy->execute(*p, **it) ) {
+    if ( strategy->execute(*player, **it) ) {
       // If the rival is attacking, check if the player defends or not.
-      if( doa->getMode() == 1) {
+      if( doa->isHit() == 1) {
       }
       // If the player is attacking, set the rival to fall.
-      if( p->getMode() == 2 && doa->getMode() < 2 ) {
+      if( player->isHit() && doa->getMode() < 2 ) {
         doa->falling();
+      }
+    }
+
+    if ( strategy->execute(*home, **it) ) {
+      if( doa->isHit() ) {
+        home->shake();
       }
     }
     // Check the deads
     if( doa->getMode() == 3 ) {
-      p->detach(doa);
+      player->detach(doa);
       delete doa;
       it = sprites.erase(it);
       deleted = true;
     }
     if( !deleted ) ++it;
+  }
+
+  if ( strategy->execute(*player, *gate) ) {
+    if( player->isHit() ) {
+      gate->shake();
+    }
   }
 }
 
@@ -133,7 +144,6 @@ void Engine::update(Uint32 ticks) {
   Vector2f bpos = home->getPosition();
   int bw = home->getScaledWidth();
   int bh = home->getScaledHeight();
-  Player* p = static_cast<Player*>(player);
 
   sky.update();
   bamboo4.update();
@@ -151,7 +161,7 @@ void Engine::update(Uint32 ticks) {
   while ( sprites.size() < n ) {
     Drawable* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
     sprites.push_back( d );
-    p->attach( static_cast<Rival*>(d) );
+    player->attach( static_cast<Rival*>(d) );
   }
   player->update(ticks);
   grass.update();
@@ -227,73 +237,72 @@ void Engine::play() {
     ticks = clock.getElapsedTicks();
     if ( ticks > 0 ) {
       clock.incrFrame();
-      Player* p = static_cast<Player*>(player);
       // switch player's mode to do correspoding actions.
-      switch ( p->getMode() ) {
+      switch ( player->getMode() ) {
         // If player is jumping, he can do nothing but turn, move and attack.
         case 0:
           if (keystate[SDL_SCANCODE_A]) {
-            p->turnRight();
-            p->jump(-300);
+            player->turnRight();
+            player->jump(-300);
           }
           else if (keystate[SDL_SCANCODE_D]) {
-            p->turnLeft();
-            p->jump(300);
+            player->turnLeft();
+            player->jump(300);
           }
           else
-            p->jump(0);
+            player->jump(0);
           break;
         // If landing, player can not be interrupted
         case 1:
-          p->land();
+          player->land();
           break;
         // If attacking, player can not be interrupted
         case 2:
         case 6:
-          p->lattack();
+          player->lattack();
           break;
         // If blocking held, player will stay the final frame.
         case 3:
         case 4:
           if (keystate[SDL_SCANCODE_LSHIFT]) {
-            p->block();
+            player->block();
           }
           else{
-            p->blockDone();
+            player->blockDone();
           }
           break;
         default:
 
           if (keystate[SDL_SCANCODE_W]) {
-            p->jumping();
-            p->jump(0);
+            player->jumping();
+            player->jump(0);
           }
           if (keystate[SDL_SCANCODE_A]) {
-            p->turnRight();
-            p->walk();
+            player->turnRight();
+            player->walk();
           }
           if (keystate[SDL_SCANCODE_D]) {
-            p->turnLeft();
-            p->walk();
+            player->turnLeft();
+            player->walk();
           }
           if (keystate[SDL_SCANCODE_S]) {
-            p->knee();
+            player->knee();
           }
           if (keystate[SDL_SCANCODE_J]) {
-            p->lattacking();
-            p->lattack();
+            player->lattacking();
+            player->lattack();
           }
           if (keystate[SDL_SCANCODE_LSHIFT]) {
-            p->blocking();
-            p->block();
+            player->blocking();
+            player->block();
           }
           if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
-            p->turnRight();
-            p->roll();
+            player->turnRight();
+            player->roll();
           }
           if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
-            p->turnLeft();
-            p->roll();
+            player->turnLeft();
+            player->roll();
           }
       }
 

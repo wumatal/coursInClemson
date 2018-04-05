@@ -34,9 +34,9 @@ private:
   World grass;
   Viewport& viewport;
 
-  Drawable* home;
-  Drawable* gate;
-  Drawable* player;
+  HomeSprite* home;
+  HomeSprite* gate;
+  Player* player;
   std::vector<Drawable*> sprites;
   unsigned currentSprite;
 

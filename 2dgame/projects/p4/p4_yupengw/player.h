@@ -27,8 +27,8 @@ public:
   void lattacking() { currentMode = ATCK;  currentFrame = 0; }
   void blocking()   { currentMode = BLCK;  currentFrame = 0; }
   void blockDone()  { currentMode = IDLE; }
-  // bool isJumping() const { return inAir;  }
-  // bool isLanding() const { return landed; }
+  bool isHit() const{ return hit;         }
+
   int  getMode() const { return currentMode;   }
 
   void ready();
@@ -41,7 +41,7 @@ public:
   void block();
 
 private:
-  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE, HIT};
+  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE};
   std::list<Rival*> observers;
   // The frames of all motions of the player
   std::vector<Image *> readyImgs;
@@ -61,14 +61,16 @@ private:
   std::vector<Image *> blockRImgs;
   std::vector<Image *> lattackRImgs;
   // Indicate the orientation of the player
-  // bool inAir;
-  // bool landed;
   bool toLeft;
   bool collision;
+  bool hit;
+
   Vector2f initialPosition;
   Vector2f initialVelocity;
   Vector2f jumpingVelocity;
+
   MODE currentMode;
+
   int  gravity;
   unsigned lastFrame;
   unsigned hitFrame;
