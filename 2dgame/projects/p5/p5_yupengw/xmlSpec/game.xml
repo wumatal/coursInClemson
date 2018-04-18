@@ -1,0 +1,360 @@
+<?xml version = "1.0"?>
+<GameData>
+<!-- screenTitle is also used to identify you and your animation.
+     So make sure to include your name as part of the screenTitle -->
+<title>The Tracker Framework</title>
+<maxStringSize>50</maxStringSize>
+
+<frameCapOn>true</frameCapOn>
+<period>17</period>
+
+<maxFrames>300</maxFrames>
+<username>yupengw</username>
+
+<view>
+  <width>854</width>
+  <height>600</height>
+</view>
+
+<world>
+  <width>2000</width>
+  <height>700</height>
+</world>
+
+<sky>
+  <file>assets/sky.jpg</file>
+  <factor>6</factor>
+  <transparency>false</transparency>
+</sky>
+
+<bamboo4>
+  <file>assets/bamboo4.png</file>
+  <factor>5</factor>
+  <transparency>false</transparency>
+</bamboo4>
+
+<CloudFar>
+  <file>assets/cloud.png</file>
+  <startLoc x="1560" y="200"/>
+  <speedX>-70</speedX>
+  <speedY>0</speedY>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
+</CloudFar>
+
+<bamboo3>
+  <file>assets/bamboo3.png</file>
+  <factor>3</factor>
+  <transparency>false</transparency>
+</bamboo3>
+
+<bamboo2>
+  <file>assets/bamboo2.png</file>
+  <factor>2</factor>
+  <transparency>false</transparency>
+</bamboo2>
+
+<home>
+  <file>assets/home.png</file>
+  <startLoc x="-70" y="300"/>
+  <frames>1</frames>
+  <imageWidth>329</imageWidth>
+  <imageHeight>326</imageHeight>
+  <frameInterval>329</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</home>
+<homeShake>
+  <file>assets/homeShake.png</file>
+  <frames>5</frames>
+  <imageWidth>385</imageWidth>
+  <imageHeight>326</imageHeight>
+  <frameInterval>385</frameInterval>
+  <transparency>false</transparency>
+</homeShake>
+
+<gate>
+  <file>assets/gate.png</file>
+  <startLoc x="1700" y="296"/>
+  <frames>1</frames>
+  <imageWidth>333</imageWidth>
+  <imageHeight>369</imageHeight>
+  <frameInterval>333</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</gate>
+<gateShake>
+  <file>assets/gateShake.png</file>
+  <frames>5</frames>
+  <imageWidth>367</imageWidth>
+  <imageHeight>369</imageHeight>
+  <frameInterval>367</frameInterval>
+  <transparency>false</transparency>
+</gateShake>
+
+<grass>
+  <file>assets/grass.png</file>
+  <factor>1</factor>
+  <transparency>false</transparency>
+</grass>
+
+<Cloud>
+  <file>assets/cloud.png</file>
+  <startLoc x="150" y="320"/>
+  <speedX>-100</speedX>
+  <speedY>0</speedY>
+  <posOffset>50</posOffset>
+  <transparency>false</transparency>
+</Cloud>
+
+<font name="font">
+  <file>fonts/againts.ttf</file>
+  <size>27</size>
+  <red>176</red>
+  <green>228</green>
+  <blue>197</blue>
+  <alpha>0</alpha>
+</font>
+
+<Player>
+  <file>assets/player/ready91x120.png</file>
+  <startLoc x="110" y="510"/>
+  <frames>10</frames>
+  <imageWidth>91</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>91</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</Player>
+<PlayerRight>
+  <file>assets/player/ready91x120right.png</file>
+  <frames>10</frames>
+  <imageWidth>91</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>91</frameInterval>
+  <transparency>false</transparency>
+</PlayerRight>
+<PlayerWalk>
+  <file>assets/player/walk103x120.png</file>
+  <frames>8</frames>
+  <imageWidth>103</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>103</frameInterval>
+  <speedX>170</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerWalk>
+<PlayerWalkRight>
+  <file>assets/player/walk103x120right.png</file>
+  <frames>8</frames>
+  <imageWidth>103</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>103</frameInterval>
+  <transparency>false</transparency>
+</PlayerWalkRight>
+<PlayerJump>
+  <file>assets/player/jump93x110.png</file>
+  <frames>5</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>110</imageHeight>
+  <frameInterval>93</frameInterval>
+  <speedX>0</speedX>
+  <speedY>-1470</speedY>
+  <grav>490</grav>
+  <transparency>false</transparency>
+</PlayerJump>
+<PlayerJumpRight>
+  <file>assets/player/jump93x110right.png</file>
+  <frames>5</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>110</imageHeight>
+  <frameInterval>93</frameInterval>
+  <transparency>false</transparency>
+</PlayerJumpRight>
+<PlayerLand>
+  <file>assets/player/land93x120.png</file>
+  <frames>4</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>93</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerLand>
+<PlayerLandRight>
+  <file>assets/player/land93x120right.png</file>
+  <frames>4</frames>
+  <imageWidth>93</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>93</frameInterval>
+  <transparency>false</transparency>
+</PlayerLandRight>
+<PlayerKnee>
+  <file>assets/player/knee.png</file>
+  <frames>1</frames>
+  <imageWidth>112</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>112</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerKnee>
+<PlayerKneeRight>
+  <file>assets/player/kneeright.png</file>
+  <frames>1</frames>
+  <imageWidth>112</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>112</frameInterval>
+  <transparency>false</transparency>
+</PlayerKneeRight>
+<PlayerRoll>
+  <file>assets/player/roll116x125.png</file>
+  <frames>5</frames>
+  <imageWidth>116</imageWidth>
+  <imageHeight>125</imageHeight>
+  <frameInterval>116</frameInterval>
+  <speedX>270</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerRoll>
+<PlayerRollRight>
+  <file>assets/player/roll116x125right.png</file>
+  <frames>5</frames>
+  <imageWidth>116</imageWidth>
+  <imageHeight>125</imageHeight>
+  <frameInterval>116</frameInterval>
+  <transparency>false</transparency>
+</PlayerRollRight>
+<PlayerLAttack>
+  <file>assets/player/lattack178x120.png</file>
+  <frames>6</frames>
+  <imageWidth>178</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>178</frameInterval>
+  <hitFrame>4</hitFrame>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerLAttack>
+<PlayerLAttackRight>
+  <file>assets/player/lattack178x120right.png</file>
+  <frames>6</frames>
+  <imageWidth>178</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>178</frameInterval>
+  <transparency>false</transparency>
+</PlayerLAttackRight>
+<PlayerBlock>
+  <file>assets/player/block86x120.png</file>
+  <frames>4</frames>
+  <imageWidth>86</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>86</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</PlayerBlock>
+<PlayerBlockRight>
+  <file>assets/player/block86x120right.png</file>
+  <frames>4</frames>
+  <imageWidth>86</imageWidth>
+  <imageHeight>120</imageHeight>
+  <frameInterval>86</frameInterval>
+  <transparency>false</transparency>
+</PlayerBlockRight>
+
+<Blade>
+  <file>assets/rivals/blade/normal/walk162x141.png</file>
+  <startLoc x="1700" y="485"/>
+  <frames>8</frames>
+  <imageWidth>162</imageWidth>
+  <imageHeight>141</imageHeight>
+  <frameInterval>162</frameInterval>
+  <speedX>-64</speedX>
+  <speedY>0</speedY>
+  <quantity>7</quantity>
+  <velOffset>10</velOffset>
+  <safeDistance>80</safeDistance>
+  <transparency>false</transparency>
+</Blade>
+<BladeAttack>
+  <file>assets/rivals/blade/normal/attack152x170.png</file>
+  <frames>16</frames>
+  <imageWidth>152</imageWidth>
+  <imageHeight>170</imageHeight>
+  <frameInterval>152</frameInterval>
+  <hitFrame>6</hitFrame>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</BladeAttack>
+<BladeFallBwd>
+  <file>assets/rivals/blade/normal/fallbwd165x170.png</file>
+  <frames>11</frames>
+  <imageWidth>165</imageWidth>
+  <imageHeight>170</imageHeight>
+  <frameInterval>165</frameInterval>
+  <speedX>10</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</BladeFallBwd>
+
+<Rival>
+  <file>assets/rival.png</file>
+  <startLoc x="1500" y="200"/>
+  <frames>4</frames>
+  <imageWidth>137</imageWidth>
+  <imageHeight>95</imageHeight>
+  <frameInterval>137</frameInterval>
+  <speedX>-300</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</Rival>
+
+<Shuriken>
+  <file>assets/shuriken.png</file>
+  <startLoc x="227" y="240"/>
+  <speedX>300</speedX>
+  <speedY>300</speedY>
+  <quantity>7</quantity>
+  <velOffset>50</velOffset>
+  <transparency>false</transparency>
+</Shuriken>
+
+<hud>
+  <positionX>160</positionX>
+  <positionY>120</positionY>
+  <keyAD>                          Move left or right.</keyAD>
+  <keyS>                               Crouch</keyS>
+  <keyW>                               Jump</keyW>
+  <keyJ>                               Light attack</keyJ>
+  <keySAD>                  Roll left or right</keySAD>
+  <keyF1>                               Show this instructions</keyF1>
+  <keySHIFT>                 Block</keySHIFT>
+  <resume>Press F1 to resume.</resume>
+  <offset>10</offset>
+  <red>70</red>
+  <green>70</green>
+  <blue>70</blue>
+  <alpha>10</alpha>
+</hud>
+
+<fps>
+  <positionX>30</positionX>
+  <positionY>60</positionY>
+</fps>
+
+<myName>
+  <name>Yupeng Wu</name>
+  <positionX>30</positionX>
+  <positionY>-60</positionY>
+  <red>255</red>
+  <green>255</green>
+  <blue>255</blue>
+  <alpha>0</alpha>
+</myName>
+
+</GameData>
