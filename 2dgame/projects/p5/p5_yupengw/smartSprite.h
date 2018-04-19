@@ -25,7 +25,6 @@ public:
   virtual void attack() = 0;
   virtual void fall()   = 0;
 
-
 private:
   enum MODE {WALK, ATCK, FALL, DEAD};
   MODE currentMode;

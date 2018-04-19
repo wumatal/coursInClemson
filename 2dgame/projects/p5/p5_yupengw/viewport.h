@@ -2,6 +2,7 @@
 #define VIEWPORT__H
 #include "drawable.h"
 #include "gamedata.h"
+#include "bladePool.h"
 
 class Viewport {
 public:
@@ -28,12 +29,8 @@ private:
   int objWidth;
   int objHeight;
 
-  // Used to calculate fps
-  // Uint32 startclock;
-  // Uint32 deltaclock;
-  // Uint32 currentFPS;
-
   const Drawable *objectToTrack;
+  const BladePool& blades;
 
   Viewport();
   Viewport(const Viewport&);

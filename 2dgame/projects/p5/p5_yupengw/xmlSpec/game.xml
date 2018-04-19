@@ -257,7 +257,7 @@
   <frameInterval>162</frameInterval>
   <speedX>-64</speedX>
   <speedY>0</speedY>
-  <quantity>7</quantity>
+  <quantity>49</quantity>
   <velOffset>10</velOffset>
   <safeDistance>100</safeDistance>
   <transparency>false</transparency>
@@ -328,6 +328,21 @@
   <positionX>30</positionX>
   <positionY>60</positionY>
 </fps>
+
+<hudInfo>
+  <positionX>600</positionX>
+  <positionY>30</positionY>
+</hudInfo>
+
+<bladeActive>
+  <positionX>600</positionX>
+  <positionY>60</positionY>  
+</bladeActive>
+
+<bladeInPool>
+  <positionX>600</positionX>
+  <positionY>90</positionY>  
+</bladeInPool>
 
 <myName>
   <name>Yupeng Wu</name>

@@ -4,10 +4,13 @@
 #include <vector>
 #include <string>
 
+class Drawable;
+class HomeSprite;
+
 class ObjectPool {
 public:
-  ObjectPool(const std::string& );
-
+  ObjectPool() {}
+  virtual ~ObjectPool() {}
   virtual int getActiveCount()   const = 0;
   virtual int getInactiveCount() const = 0;
   virtual int getSize()          const = 0;
@@ -19,7 +22,7 @@ public:
   virtual void draw()          = 0;
   virtual void update(Uint32)  = 0;
 
-  virtual void collideWith( const Drawable*, const HomeSprite* ) = 0;
+  virtual void collideWith( Drawable*, HomeSprite* ) = 0;
 
 };
 #endif

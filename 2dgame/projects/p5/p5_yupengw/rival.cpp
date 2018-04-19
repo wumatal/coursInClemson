@@ -20,6 +20,8 @@ Rival::Rival ( const std::string& name, const Vector2f& pos,
   walkImgs ( images ),
   attackImgs ( ImageFactory::getInstance().getImages(name+"Attack") ),
   fallbwdImgs( ImageFactory::getInstance().getImages(name+"FallBwd")),
+  initialPosition( Vector2f(Gamedata::getInstance().getXmlInt(name+"/startLoc/x"),
+                            Gamedata::getInstance().getXmlInt(name+"/startLoc/y")) ),
   initialVelocity( makeVelocity(getVelocityX())),
   lastFrame( 0 ),
   hit      ( false ),
@@ -31,7 +33,8 @@ Rival::Rival ( const Rival& s ) :
   walkImgs   ( s.walkImgs ),
   attackImgs ( s.attackImgs ),
   fallbwdImgs( s.fallbwdImgs ),
-  initialVelocity( s.getVelocity() ),
+  initialPosition( s.initialPosition ),
+  initialVelocity( s.initialVelocity ),
   lastFrame  ( s.lastFrame ),
   hit        ( s.hit ),
   hitFrame   ( s.hitFrame )
@@ -43,12 +46,18 @@ Rival& Rival::operator=( const Rival& s ) {
   attackImgs = s.attackImgs;
   fallbwdImgs  = s.fallbwdImgs;
 
+  initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
   lastFrame    = s.lastFrame;
   hit = s.hit;
   hitFrame = s.hitFrame;
 
   return *this;
+}
+
+void Rival::init() {
+  setPosition(initialPosition);
+  walking();
 }
 
 void Rival::walk()   {

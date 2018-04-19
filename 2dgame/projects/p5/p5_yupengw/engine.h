@@ -10,6 +10,7 @@
 class CollisionStrategy;
 class HomeSprite;
 class Player;
+class BladePool;
 
 class Engine {
 public:
@@ -37,9 +38,8 @@ private:
   HomeSprite* home;
   HomeSprite* gate;
   Player* player;
-  std::vector<Drawable*> sprites;
-  std::vector<Drawable*> spritesFreelist;
   unsigned currentSprite;
+  BladePool& blades;
 
   // std::vector<CollisionStrategy*> strategies;
   CollisionStrategy* strategy;

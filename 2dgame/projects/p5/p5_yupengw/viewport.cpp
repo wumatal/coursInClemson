@@ -17,7 +17,8 @@ Viewport::Viewport() :
   viewHeight(gdata.getXmlInt("view/height")),
   objWidth(0), objHeight(0),
   // startclock(SDL_GetTicks()), deltaclock(0), currentFPS(0),
-  objectToTrack(NULL)
+  objectToTrack(NULL),
+  blades( BladePool::getInstance() )
 {}
 
 void Viewport::setObjectToTrack(const Drawable *obj) {
@@ -31,10 +32,21 @@ void Viewport::draw() const {
     writeText("Tracking: " + objectToTrack->getName(), 30, 30);
 
   std::stringstream currentFPS;
+  std::stringstream currentBladeActive;
+  std::stringstream currentBladeInPool;
   currentFPS << Clock::getInstance().getFps();
+  currentBladeActive << blades.getActiveCount();
+  currentBladeInPool << blades.getInactiveCount();
+  
   IoMod::getInstance().
     writeText("fps: " + currentFPS.str(),
     gdata.getXmlInt("fps/positionX"), gdata.getXmlInt("fps/positionY"));
+  IoMod::getInstance().
+    writeText("Active: " + currentBladeActive.str(),
+    gdata.getXmlInt("bladeActive/positionX"), gdata.getXmlInt("bladeActive/positionY"));
+  IoMod::getInstance().
+    writeText("In Pool: " + currentBladeInPool.str(),
+    gdata.getXmlInt("bladeInPool/positionX"), gdata.getXmlInt("bladeInPool/positionY"));
   IoMod::getInstance().
     writeText(gdata.getXmlStr("myName/name"),
     gdata.getXmlInt("myName/positionX"), gdata.getXmlInt("myName/positionY"),
@@ -42,6 +54,10 @@ void Viewport::draw() const {
      (uint8_t)gdata.getXmlInt("myName/green"),
      (uint8_t)gdata.getXmlInt("myName/blue"),
      (uint8_t)gdata.getXmlInt("myName/alpha")});
+
+  IoMod::getInstance().
+    writeText("Press F 1 to More infos", 
+    gdata.getXmlInt("hudInfo/positionX"), gdata.getXmlInt("hudInfo/positionY"));
 }
 
 void Viewport::update() {

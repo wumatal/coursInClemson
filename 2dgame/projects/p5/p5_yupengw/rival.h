@@ -10,7 +10,10 @@ public:
   Rival( const Rival& );
   Rival& operator=( const Rival& );
 
+  ~Rival() {}
+
   bool isHit() const { return hit; }
+  void init();
 
   virtual void falling()   { SmartSprite::falling(); lastFrame = 0;}
   virtual void update(Uint32 ticks);
@@ -20,6 +23,7 @@ private:
   std::vector<Image *> attackImgs;
   std::vector<Image *> fallbwdImgs;
 
+  Vector2f initialPosition;
   Vector2f initialVelocity;
   unsigned lastFrame;
   bool     hit;
