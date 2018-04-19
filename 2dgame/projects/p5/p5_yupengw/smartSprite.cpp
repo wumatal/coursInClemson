@@ -71,10 +71,11 @@ bool SmartSprite::attackable() {
   float distanceToEnemy = ::distance( x, y, ex, ey );
   float distanceToBase  = ::distance( x, y, bx, by );
 
-  return (distanceToBase < safeDistance) || ((distanceToEnemy < safeDistance) &&
+  return (distanceToBase < 1.6 * safeDistance) || ((distanceToEnemy < safeDistance) &&
          (playerPos[0] <= getX()) && (playerPos[1] >= getY()));
 
 }
+
 void SmartSprite::update(Uint32 ticks) {
   MultiSprite::update(ticks);
   // std::cout << getX() << '\n';

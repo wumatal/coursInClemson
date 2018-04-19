@@ -38,12 +38,13 @@ private:
   HomeSprite* gate;
   Player* player;
   std::vector<Drawable*> sprites;
+  std::vector<Drawable*> spritesFreelist;
   unsigned currentSprite;
 
   // std::vector<CollisionStrategy*> strategies;
   CollisionStrategy* strategy;
   // int  currentStrategy;
-  bool collision;
+  // bool collision;
 
   bool makeVideo;
 

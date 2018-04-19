@@ -104,9 +104,10 @@ bool PerPixelCollisionStrategy::execute(
       const Drawable& obj1, const Drawable& obj2) const {
 
   RectangularCollisionStrategy strategy;
-  if ( not strategy.execute(obj1, obj2) ) return false;
+  if ( not strategy.execute(obj1, obj2) ) {
+    return false;
+  }
   // If we got this far, we know that the sprite rectangles intersect!
-
   Vector2f p1 = obj1.getPosition() - Viewport::getInstance().getPosition();
   Vector2f p2 = obj2.getPosition() - Viewport::getInstance().getPosition();
 
@@ -118,7 +119,6 @@ bool PerPixelCollisionStrategy::execute(
 
   int o1Left = p1[0];
   int o1Right = o1Left+width1;
-
   int o2Left = p2[0];
   int o2Right = o2Left+width2;
   std::vector<int> sides;
@@ -128,7 +128,6 @@ bool PerPixelCollisionStrategy::execute(
   sides.push_back( o2Left );
   sides.push_back( o2Right );
   std::sort( sides.begin(), sides.end() );
-
 
   int o1Up = p1[1];
   int o1Down = o1Up+height1;

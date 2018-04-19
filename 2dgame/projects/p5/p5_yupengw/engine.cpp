@@ -20,8 +20,11 @@ Engine::~Engine() {
   for( Drawable* d : sprites ){
     delete d;
   }
+  for( Drawable* d : spritesFreelist ){
+    delete d;
+  }
   // for ( CollisionStrategy* strategy : strategies ) {
-    // delete strategy;
+  //   delete strategy;
   // }
   delete strategy;
   std::cout << "Terminating program" << std::endl;
@@ -42,10 +45,12 @@ Engine::Engine() :
   home  ( new HomeSprite("home") ),
   gate  ( new HomeSprite("gate") ),
   player( new Player("Player") ),
-  sprites(), currentSprite(0),
-  // strategies(), currentStrategy(0),
-  strategy( new PerPixelCollisionStrategy ),
-  collision( false ),
+  sprites(),
+  spritesFreelist(),
+  currentSprite(0),
+  // strategies(), //currentStrategy(0),
+  strategy( new RectangularCollisionStrategy ),
+  // collision( false ),
   makeVideo( false )
 {
   Vector2f pos = player->getPosition();
@@ -58,13 +63,14 @@ Engine::Engine() :
 
   int n = Gamedata::getInstance().getXmlInt("Blade/quantity");
   sprites.reserve(n);
+  spritesFreelist.reserve(n);
 
   for (int i = 0; i < n; ++i) {
+    // spritesFreelist.push_back( new Rival("Blade", pos, bpos, w, h, bw, bh) );
     sprites.push_back( new Rival("Blade", pos, bpos, w, h, bw, bh) );
     player->attach( static_cast<Rival*>(sprites[i]) );
   }
 
-  // strategies.push_back( new PerPixelCollisionStrategy );
   // strategies.push_back( new RectangularCollisionStrategy );
   // strategies.push_back( new MidPointCollisionStrategy );
 
@@ -75,13 +81,12 @@ Engine::Engine() :
 void Engine::draw() const {
   sky.draw();
   bamboo4.draw();
-  // cloudFar->draw();
   bamboo3.draw();
   bamboo2.draw();
   home->draw();
   gate->draw();
 
-  // io.writeText("Press m to change strategy", 500, 60);
+  io.writeText("Press F 1 to More infos", 500, 60);
   for( Drawable* d : sprites ){
       d->draw();
   }
@@ -91,7 +96,6 @@ void Engine::draw() const {
 
   player->draw();
   grass.draw();
-  // cloud->draw();
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
@@ -103,14 +107,14 @@ void Engine::checkForCollisions() {
     deleted = false;
     Rival* doa = static_cast<Rival*>(*it);
     // Check if player is collided with rival.
-    // if ( strategies[currentStrategy]->execute(*p, **it) ) {
+    // if ( strategies[0]->execute(*player, **it) ) {
     if ( strategy->execute(*player, **it) ) {
       // If the rival is attacking, check if the player defends or not.
-      if( doa->isHit() == 1) {
-        // if( player->getMode() == 4 )
-          // player->setVelocityX(10);
+      if( doa->isHit()) {
+        if( player->getMode() == 4 )
+          player->setVelocityX(-200);
         // else
-          // player->jump();
+        //   player->jumping();
       }
       // If the player is attacking, set the rival to fall.
       if( player->isHit() && doa->getMode() < 2 ) {
@@ -118,7 +122,8 @@ void Engine::checkForCollisions() {
       }
     }
 
-    if ( strategy->execute(*home, **it) ) {
+    // else if ( strategies[1]->execute(*home, **it) ) {
+    else if ( strategy->execute(*home, **it) ) {
       if( doa->isHit() ) {
         home->shake();
       }
@@ -127,12 +132,14 @@ void Engine::checkForCollisions() {
     if( doa->getMode() == 3 ) {
       player->detach(doa);
       delete doa;
+      // spritesFreelist.push_back(*it);
       it = sprites.erase(it);
       deleted = true;
     }
     if( !deleted ) ++it;
   }
 
+  // if ( strategies[0]->execute(*player, *gate) ) {
   if ( strategy->execute(*player, *gate) ) {
     if( player->isHit() ) {
       gate->shake();
@@ -151,16 +158,15 @@ void Engine::update(Uint32 ticks) {
 
   sky.update();
   bamboo4.update();
-  // cloudFar->update(ticks);
   bamboo3.update();
   bamboo2.update();
   home->update(ticks);
   gate->update(ticks);
 
-  checkForCollisions();
   for( Drawable* d : sprites ) {
       d->update(ticks);
   }
+  checkForCollisions();
 
   while ( sprites.size() < n ) {
     Drawable* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
@@ -169,7 +175,6 @@ void Engine::update(Uint32 ticks) {
   }
   player->update(ticks);
   grass.update();
-  // cloud->update(ticks);
 
   viewport.update(); // always update viewport last
 }
@@ -313,6 +318,11 @@ void Engine::play() {
             player->roll();
           }
       }
+
+      // if( !spritesFreelist.empty() && std::rand()%4 == 0 ) {
+      //   sprites.push_back(spritesFreelist.back());
+      //   spritesFreelist.pop_back();
+      // }
 
       draw();
       update(ticks);

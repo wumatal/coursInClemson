@@ -33,15 +33,6 @@
   <transparency>false</transparency>
 </bamboo4>
 
-<CloudFar>
-  <file>assets/cloud.png</file>
-  <startLoc x="1560" y="200"/>
-  <speedX>-70</speedX>
-  <speedY>0</speedY>
-  <posOffset>50</posOffset>
-  <transparency>false</transparency>
-</CloudFar>
-
 <bamboo3>
   <file>assets/bamboo3.png</file>
   <factor>3</factor>
@@ -99,15 +90,6 @@
   <factor>1</factor>
   <transparency>false</transparency>
 </grass>
-
-<Cloud>
-  <file>assets/cloud.png</file>
-  <startLoc x="150" y="320"/>
-  <speedX>-100</speedX>
-  <speedY>0</speedY>
-  <posOffset>50</posOffset>
-  <transparency>false</transparency>
-</Cloud>
 
 <font name="font">
   <file>fonts/againts.ttf</file>
@@ -277,7 +259,7 @@
   <speedY>0</speedY>
   <quantity>7</quantity>
   <velOffset>10</velOffset>
-  <safeDistance>80</safeDistance>
+  <safeDistance>100</safeDistance>
   <transparency>false</transparency>
 </Blade>
 <BladeAttack>

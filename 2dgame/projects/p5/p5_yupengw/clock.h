@@ -42,5 +42,5 @@ private:
 
   Clock();
   Clock(const Clock&);
-  Clock&operator=(const Clock&);
+  Clock& operator=(const Clock&);
 };

@@ -81,7 +81,7 @@ void Rival::attack()   {
   if( currentFrame  >= lastFrame ) {
     if( hit )
       hit = false;
-    
+
     if( currentFrame == hitFrame )
       hit = true;
 
@@ -98,7 +98,8 @@ void Rival::attack()   {
 }
 
 void Rival::update(Uint32 ticks) {
-  if( getMode() == 1) ticks *= 2;
+  if( getMode() == 1) {
+    ticks *= 2;
+  }
   SmartSprite::update(2 * ticks);
-  // walk();
 }
