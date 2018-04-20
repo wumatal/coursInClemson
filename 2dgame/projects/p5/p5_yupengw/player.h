@@ -65,7 +65,8 @@ private:
   std::vector<Image *> blockImgs;
   std::vector<Image *> lattackImgs;
   // std::vector<Image *> hurtImgs;
-  // std::vector<Image *> shootImgs;
+  std::vector<Image *> shootImgs;
+
   std::vector<Image *> readyRImgs;
   std::vector<Image *> walkRImgs;
   std::vector<Image *> landRImgs;
@@ -75,7 +76,8 @@ private:
   std::vector<Image *> blockRImgs;
   std::vector<Image *> lattackRImgs;
   // std::vector<Image *> hurtRImgs;
-  // std::vector<Image *> shootRImgs;
+  std::vector<Image *> shootRImgs;
+
   // Indicate the orientation of the player
   bool toLeft;
   bool collision;

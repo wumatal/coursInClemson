@@ -1,10 +1,11 @@
-#include <vector>
+#include <list>
 #include <SDL.h>
 #include "objectPool.h"
 #include "gamedata.h"
 #include "collisionStrategy.h"
 
 class Rival;
+class Player;
 
 class BladePool : public ObjectPool {
 public:
@@ -20,6 +21,7 @@ public:
 
   virtual void deleteAll( );
   virtual void active( );
+  void active( Player*, HomeSprite* );
 
   virtual void push(Drawable*);
   virtual void draw();
@@ -28,8 +30,8 @@ public:
   virtual void collideWith( Drawable*, HomeSprite* );
 private:
   int numOfObjs;
-  std::vector<Rival*> actives;
-  std::vector<Rival*> inPools;
+  std::list<Rival*> actives;
+  std::list<Rival*> inPools;
   CollisionStrategy* strategy;
 
   BladePool() :

@@ -373,12 +373,12 @@
 
 <bladeActive>
   <positionX>600</positionX>
-  <positionY>60</positionY>  
+  <positionY>60</positionY>
 </bladeActive>
 
 <bladeInPool>
   <positionX>600</positionX>
-  <positionY>90</positionY>  
+  <positionY>90</positionY>
 </bladeInPool>
 
 <myName>

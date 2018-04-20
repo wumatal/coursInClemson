@@ -45,25 +45,25 @@ Engine::Engine() :
   currentSprite(0),
   blades( BladePool::getInstance() ),
   // strategies(), //currentStrategy(0),
-  strategy( new RectangularCollisionStrategy ),
+  strategy( new MidPointCollisionStrategy ),
   // collision( false ),
   makeVideo( false )
 {
-  Vector2f pos = player->getPosition();
-  int w = player->getScaledWidth();
-  int h = player->getScaledHeight();
+  // Vector2f pos = player->getPosition();
+  // int w = player->getScaledWidth();
+  // int h = player->getScaledHeight();
+  //
+  // Vector2f bpos = home->getPosition();
+  // int bw = home->getScaledWidth();
+  // int bh = home->getScaledHeight();
 
-  Vector2f bpos = home->getPosition();
-  int bw = home->getScaledWidth();
-  int bh = home->getScaledHeight();
-
-  int n = blades.getSize();
-
-  for (int i = 0; i < n; ++i) {
-    Rival* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
-    blades.push( d );
-    player->attach( d );
-  }
+  // int n = blades.getSize();
+  //
+  // for (int i = 0; i < n; ++i) {
+  //   Rival* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
+  //   blades.push( d );
+  //   player->attach( d );
+  // }
 
   // strategies.push_back( new RectangularCollisionStrategy );
   // strategies.push_back( new PerPixelCollisionStrategy );
@@ -80,7 +80,7 @@ void Engine::draw() const {
   bamboo2.draw();
   home->draw();
   gate->draw();
-  
+
   blades.draw();
   // strategies[currentStrategy]->draw();
   // strategy->draw();
@@ -110,6 +110,7 @@ void Engine::update(Uint32 ticks) {
   home->update(ticks);
   gate->update(ticks);
 
+  blades.active(player, home);
   blades.update(ticks);
   checkForCollisions();
 

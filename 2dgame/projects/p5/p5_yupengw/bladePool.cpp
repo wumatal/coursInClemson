@@ -32,26 +32,43 @@ void BladePool::draw() {
 }
 
 void BladePool::update( Uint32 ticks ) {
-  active();
-
   for( Rival* d : actives ) {
     d->update(ticks);
   }
-  
 }
 
-void BladePool::active(){
-  if( !inPools.empty() && std::rand()%51 == 7 ) {
+void BladePool::active( ){
+  if( std::rand() % 51 == 7 ) {
     static_cast<Rival*>(inPools.back())->init();
     actives.push_back(inPools.back());
     inPools.pop_back();
   }
 }
 
+void BladePool::active( Player* player, HomeSprite* home ){
+  if( !inPools.empty() ) {
+    active();
+  }
+  else {
+    Vector2f pos = player->getPosition();
+    int w = player->getScaledWidth();
+    int h = player->getScaledHeight();
+
+    Vector2f bpos = home->getPosition();
+    int bw = home->getScaledWidth();
+    int bh = home->getScaledHeight();
+
+    Rival* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
+    push( d );
+    player->attach( d );
+  }
+}
+
+
 void BladePool::collideWith( Drawable* p, HomeSprite* home ) {
   Player* player = static_cast<Player*>(p);
   bool deleted = false;
-  
+
   auto it = actives.begin();
   while ( it != actives.end() ) {
     deleted = false;

@@ -14,7 +14,7 @@ Player::Player ( const std::string& name ) :
   blockImgs   ( ImageFactory::getInstance().getImages(name+"Block")     ),
   lattackImgs ( ImageFactory::getInstance().getImages(name+"LAttack")   ),
   // hurtImgs    ( ImageFactory::getInstance().getImages(name+"Hurt")      ),
-  // shootImgs   ( ImageFactory::getInstance().getImages(name+"Shoot")     ),
+  shootImgs   ( ImageFactory::getInstance().getImages(name+"Shoot")     ),
   readyRImgs  ( ImageFactory::getInstance().getImages(name+"Right")     ),
   walkRImgs   ( ImageFactory::getInstance().getImages(name+"WalkRight") ),
   landRImgs   ( ImageFactory::getInstance().getImages(name+"LandRight") ),
@@ -24,7 +24,7 @@ Player::Player ( const std::string& name ) :
   blockRImgs  ( ImageFactory::getInstance().getImages(name+"BlockRight")),
   lattackRImgs( ImageFactory::getInstance().getImages(name+"LAttackRight")),
   // hurtRImgs   ( ImageFactory::getInstance().getImages(name+"HurtRight")   ),
-  // shootRImgs  ( ImageFactory::getInstance().getImages(name+"ShootRight")),
+  shootRImgs  ( ImageFactory::getInstance().getImages(name+"ShootRight")),
   // inAir(false), landed(false),
   toLeft(true), collision(false), hit( false ),
   initialPosition(getPosition()), initialVelocity(getVelocity()),
@@ -48,7 +48,7 @@ Player::Player ( const Player& s ) :
   blockImgs  ( s.blockImgs),
   lattackImgs( s.lattackImgs),
   // hurtImgs   ( s.hurtImgs),
-  // shootImgs  ( s.shootImgs),
+  shootImgs  ( s.shootImgs),
   readyRImgs ( s.readyRImgs ),
   walkRImgs  ( s.walkRImgs ),
   landRImgs  ( s.landRImgs ),
@@ -58,7 +58,7 @@ Player::Player ( const Player& s ) :
   blockRImgs  ( s.blockImgs),
   lattackRImgs( s.lattackImgs),
   // hurtRImgs   ( s.hurtRImgs),
-  // shootRImgs  ( s.shootRImgs),
+  shootRImgs  ( s.shootRImgs),
   toLeft   ( s.toLeft ),
   collision( s.collision ),
   hit      ( s.hit ),
@@ -83,7 +83,7 @@ Player& Player::operator=( const Player& s ) {
   blockImgs  = s.blockImgs;
   lattackImgs= s.lattackImgs;
   // hurtImgs   = s.hurtImgs;
-  // shootImgs  = s.shootImgs;
+  shootImgs  = s.shootImgs;
   walkRImgs  = s.walkRImgs;
   readyRImgs = s.readyRImgs;
   landRImgs  = s.landImgs;
@@ -93,7 +93,7 @@ Player& Player::operator=( const Player& s ) {
   blockRImgs   = s.blockRImgs;
   lattackRImgs = s.lattackRImgs;
   // hurtRImgs    = s.hurtRImgs;
-  // shootRImgs   = s.shootRImgs;
+  shootRImgs   = s.shootRImgs;
 
   toLeft    = s.toLeft;
   collision = s.collision;
@@ -237,7 +237,7 @@ void Player::lattack() {
   if( currentFrame  >= lastFrame ) {
     if( hit )
       hit = false;
-    
+
     if( currentFrame == hitFrame )
       hit = true;
 
@@ -330,7 +330,7 @@ void Player::respondTo( const Uint8 * keystate) {
         jump(0);
       break;
     // If landing, player can not be interrupted
-    case LAND: 
+    case LAND:
       land();
       break;
     // If attacking, player can not be interrupted
