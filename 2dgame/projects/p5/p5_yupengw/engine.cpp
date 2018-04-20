@@ -15,6 +15,8 @@
 // #include "bladePool.h"
 
 Engine::~Engine() {
+
+  // player->deleteBullets();
   delete player;
   delete home;
   delete gate;
@@ -98,6 +100,7 @@ void Engine::checkForCollisions() {
   if ( strategy->execute(*player, *gate) ) {
     if( player->isHit() ) {
       gate->shake();
+      // gate->explode();
     }
   }
 }

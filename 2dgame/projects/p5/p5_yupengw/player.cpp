@@ -1,6 +1,5 @@
 #include "player.h"
 #include "gamedata.h"
-#include "imageFactory.h"
 
 Player::Player ( const std::string& name ) :
   MultiSprite(name),
@@ -25,9 +24,10 @@ Player::Player ( const std::string& name ) :
   // lattackRImgs( ImageFactory::getInstance().getImages(name+"LAttackRight")),
   hurtRImgs   ( ImageFactory::getInstance().getImages(name+"HurtRight")   ),
   shootRImgs  ( ImageFactory::getInstance().getImages(name+"ShootRight")),
+  bullets(), // bulletsFreeList(),
   // inAir(false), landed(false),
-  toLeft(true), //collision(false), 
-  hit( false ),
+  toLeft ( true  ), //collision(false),
+  hit    ( false ),
   initialPosition(getPosition()), initialVelocity(getVelocity()),
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
                            Gamedata::getInstance().getXmlInt(name+"Jump/speedY"))),
@@ -35,7 +35,11 @@ Player::Player ( const std::string& name ) :
   gravity     ( Gamedata::getInstance().getXmlInt(name+"Jump/grav") ),
   lastFrame   ( 0 ),
   hitFrame( Gamedata::getInstance().getXmlInt(getName()+"LAttack/hitFrame")-1 )
-{ }
+{
+  setAttack(7 );
+  setHealth(10);
+  setDefend(1);
+}
 
 Player::Player ( const Player& s ) :
   MultiSprite(s),
@@ -60,6 +64,8 @@ Player::Player ( const Player& s ) :
   // lattackRImgs( s.lattackImgs),
   hurtRImgs   ( s.hurtRImgs),
   shootRImgs  ( s.shootRImgs),
+  bullets  ( s.bullets),
+  // bulletsFreeList(s.bulletsFreeList),
   toLeft   ( s.toLeft ),
   // collision( s.collision ),
   hit      ( s.hit ),
@@ -70,7 +76,11 @@ Player::Player ( const Player& s ) :
   gravity( s.gravity ),
   lastFrame( s.lastFrame ),
   hitFrame( s.hitFrame )
-{ }
+{
+  setAttack( s.getAttack() );
+  setHealth( s.getHealth() );
+  setDefend( s.getDefend() );
+}
 
 Player& Player::operator=( const Player& s ) {
   MultiSprite::operator=(s);
@@ -96,6 +106,8 @@ Player& Player::operator=( const Player& s ) {
   hurtRImgs    = s.hurtRImgs;
   shootRImgs   = s.shootRImgs;
 
+  bullets   = s.bullets;
+  // bulletsFreeList = s.bulletsFreeList;
   toLeft    = s.toLeft;
   // collision = s.collision;
   hit       = s.hit;
@@ -107,6 +119,10 @@ Player& Player::operator=( const Player& s ) {
   gravity = s.gravity;
   lastFrame = s.lastFrame;
   hitFrame  = s.hitFrame;
+
+  setAttack( s.getAttack() );
+  setHealth( s.getHealth() );
+  setDefend( s.getDefend() );
 
   return *this;
 }
@@ -281,7 +297,10 @@ void Player::shoot() {
   if( !hit ) {
     hit = true;
   }
+
   if( currentFrame  >= lastFrame ) {
+    if( currentFrame > lastFrame && lastFrame == hitFrame )
+      activeBullet();
 
     lastFrame = currentFrame;
     if ( toLeft ) {
@@ -354,6 +373,10 @@ void Player::respondTo( const Uint8 * keystate) {
       //   lattacking();
       //   lattack();
       // }
+      if (keystate[SDL_SCANCODE_SPACE]) {
+        shooting();
+        shoot();
+      }
       break;
     case SHOT:
       shoot();
@@ -409,6 +432,14 @@ void Player::respondTo( const Uint8 * keystate) {
   }
 }
 
+void Player::draw() const {
+  MultiSprite::draw();
+  for ( const Bullet& bullet : bullets ) {
+    if( !bullet.checkCollectStatus() )
+      bullet.draw();
+  }
+}
+
 void Player::update(Uint32 ticks) {
   if ( currentMode == SHOT ) ticks *= 1.5;
   // if ( !collision ) MultiSprite::update( 3 * ticks);
@@ -419,4 +450,68 @@ void Player::update(Uint32 ticks) {
     (*ptr)->setPlayerPos( getPosition() );
     ++ptr;
   }
+  // for (auto it = bullets.begin(); it != bullets.end(); ) {
+  //   if ((*it)->checkCollectStatus()) {
+  //     it = bullets.erase(it);
+  //     bulletsFreeList.push_back(*it);
+  //   } else {
+  //     (*it)->update(ticks);
+  //     ++it;
+  //   }
+  // }
+  for ( Bullet& bullet : bullets ) {
+    if( !bullet.checkCollectStatus() ) {
+      bullet.update( ticks );
+    }
+    else
+      bullet.deactive( );
+  }
 }
+
+void Player::activeBullet() {
+  // std::cout << "1" << '\n';
+
+  float deltaX = getScaledWidth()/2;
+  float deltaY = getScaledHeight()/3;
+  if( bullets.empty() ) {
+    Bullet bullet("bullet");
+    bullet.setPosition( getPosition() +Vector2f(deltaX, deltaY) );
+    bullets.push_back( bullet );
+    return;
+  }
+
+  for ( Bullet& bullet : bullets ) {
+    if( !bullet.isActive() ) {
+      bullet.init( toLeft );
+      bullet.setPosition( getPosition() +Vector2f(deltaX, deltaY) );
+      return;
+    }
+  }
+
+  Bullet bullet("bullet");
+  bullet.setPosition( getPosition() +Vector2f(deltaX, deltaY) );
+  bullets.push_back( bullet );
+
+  // if( bullets.empty() ) {
+  //   if( bulletsFreeList.empty() ) {
+  //     Bullet b("bullet");
+  //     bullets.push_back( b );
+  //     b.setPosition(getPosition() + Vector2f(deltaX, deltaY));
+  //     b.init( toLeft );
+  //   }
+  //   else {
+  //     Bullet b = bulletsFreeList.back();
+  //     bullets.push_back( b );
+  //     bulletsFreeList.pop_back();
+  //     b.setPosition(getPosition() + Vector2f(deltaX, deltaY));
+  //     b.init( toLeft );
+  //   }
+  // }
+}
+
+// void Player::deleteBullets() {
+//   for( Bullet b : bullets)
+//     delete b;
+//   for( Bullet b : bulletsFreeList )
+//     delete b;
+// }

@@ -1,19 +1,22 @@
 #include "homeSprite.h"
 #include "gamedata.h"
 #include "imageFactory.h"
+#include "explodingSprite.h"
 
 HomeSprite::HomeSprite ( const std::string& name ) :
   MultiSprite(name),
   stopImgs( images ),
   shakeImgs( ImageFactory::getInstance().getImages(name+"Shake") ),
-  lastFrame(0)
+  lastFrame(0),
+  explosion(nullptr)
 { }
 
 HomeSprite::HomeSprite ( const HomeSprite& s ) :
   MultiSprite( s ),
   stopImgs( s.stopImgs ),
   shakeImgs( s.shakeImgs ),
-  lastFrame( s.lastFrame )
+  lastFrame( s.lastFrame ),
+  explosion( s.explosion )
 { }
 
 HomeSprite& HomeSprite::operator=( const HomeSprite& s ) {
@@ -21,6 +24,7 @@ HomeSprite& HomeSprite::operator=( const HomeSprite& s ) {
   stopImgs  = s.stopImgs;
   shakeImgs = s.shakeImgs;
   lastFrame = s.lastFrame;
+  explosion = s.explosion;
 
   return *this;
 }
@@ -40,6 +44,14 @@ void HomeSprite::shake(){
   }
   else {
     lastFrame = 0;
+  }
+}
+
+void HomeSprite::explode() {
+  if ( !explosion ){
+    Sprite
+    sprite(getName(), getPosition(), getVelocity(), images[currentFrame]);
+    explosion = new ExplodingSprite(sprite);
   }
 }
 

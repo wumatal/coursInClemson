@@ -26,11 +26,20 @@ public:
     return images[currentFrame]->getSurface();
   }
 
-  // int getPower()  const { return power;  }
-  // int getHealth() const { return health; }
+  int getPower()  const { return power;  }
+  int getHealth() const { return health; }
+  int getAttack() const { return attack; }
+  int getDefend() const { return defend; }
 
-  // void setPower( const int p ) { power = p; }
-  // void setHealth(const int h ) { health = h;}
+  void setPower (const int p ) { power  = p; }
+  void setHealth(const int h ) { health = h; }
+  void setAttack(const int a ) { attack = a; }
+  void setDefend(const int d ) { defend = d; }
+
+  void subtractHealth( const int harm ) {
+    if( harm > defend )
+      health -= (harm - defend);
+  }
 
 protected:
   std::vector<Image *> images;
@@ -44,9 +53,10 @@ protected:
 
   void advanceFrame(Uint32 ticks);
   MultiSprite& operator=(const MultiSprite&);
-// private:
-//   int power;
-//   int defend;
-//   int health;
+private:
+  int attack;
+  int defend;
+  int health;
+  int power;
 };
 #endif

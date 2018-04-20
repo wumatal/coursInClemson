@@ -26,7 +26,11 @@ Rival::Rival ( const std::string& name, const Vector2f& pos,
   lastFrame( 0 ),
   hit      ( false ),
   hitFrame ( Gamedata::getInstance().getXmlInt(getName()+"Attack/hitFrame") )
-{ }
+{
+  setAttack(1 );
+  setHealth(10);
+  setDefend(2);
+}
 
 Rival::Rival ( const Rival& s ) :
   SmartSprite(s),
@@ -38,7 +42,11 @@ Rival::Rival ( const Rival& s ) :
   lastFrame  ( s.lastFrame ),
   hit        ( s.hit ),
   hitFrame   ( s.hitFrame )
-{ }
+{
+  setAttack( s.getAttack() );
+  setHealth( s.getHealth() );
+  setDefend( s.getDefend() );
+}
 
 Rival& Rival::operator=( const Rival& s ) {
   SmartSprite::operator=(s);
@@ -51,7 +59,9 @@ Rival& Rival::operator=( const Rival& s ) {
   lastFrame    = s.lastFrame;
   hit = s.hit;
   hitFrame = s.hitFrame;
-
+  setAttack( s.getAttack() );
+  setHealth( s.getHealth() );
+  setDefend( s.getDefend() );
   return *this;
 }
 
@@ -67,7 +77,7 @@ void Rival::walk()   {
   // if ( getX() < worldWidth-getScaledWidth())
   setVelocityX(initialVelocity[0]);
 }
-void Rival::fall()    {
+void Rival::fall(  )    {
   frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"FallBwd/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"FallBwd/frames");
 
@@ -79,7 +89,12 @@ void Rival::fall()    {
     lastFrame = 0;
     // const string s("DEAD");
     // currentMode = DEAD ;
-    setMode("DEAD");
+    if( getHealth() > 0 ) {
+      setMode("IDLE");
+    }
+    else {
+      setMode("DEAD");
+    }
   }
   setVelocityX(Gamedata::getInstance().getXmlInt(getName()+"FallBwd/speedX"));
   setVelocityY(0);

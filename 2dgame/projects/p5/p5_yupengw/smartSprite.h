@@ -20,7 +20,10 @@ public:
   void setPlayerPos(const Vector2f& p) { playerPos = p; }
   bool attackable();
 
-  virtual void falling()   { currentMode = FALL; currentFrame = 0; }
+  virtual void falling()   {
+    currentMode = FALL;
+    currentFrame = 0;
+  }
   virtual void walk()   = 0;
   virtual void attack() = 0;
   virtual void fall()   = 0;

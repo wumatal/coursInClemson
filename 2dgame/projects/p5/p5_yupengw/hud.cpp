@@ -32,44 +32,49 @@ void Hud::showInstructions(SDL_Renderer* renderer)  {
   // Now set the color for the outline of the hud:
   SDL_SetRenderDrawColor( renderer, 255, 0, 0, 255/2 );
   SDL_RenderDrawRect( renderer, &rect );
- 
+
   IoMod::getInstance().writeText(
-    "A / D" 
-    + Gamedata::getInstance().getXmlStr("hud/keyAD"), 
+    "A / D"
+    + Gamedata::getInstance().getXmlStr("hud/keyAD"),
     rect.x+7*offset, rect.y+offset,
-    {red, green, blue, alpha});  
+    {red, green, blue, alpha});
+  // IoMod::getInstance().writeText(
+  //   "J"
+  //   + Gamedata::getInstance().getXmlStr("hud/keyJ"),
+  //   rect.x+7*offset, rect.y+2*offset+fontSize,
+  //   {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "J" 
-    + Gamedata::getInstance().getXmlStr("hud/keyJ"), 
+    "SPACE"
+    + Gamedata::getInstance().getXmlStr("hud/keySPACE"), 
     rect.x+7*offset, rect.y+2*offset+fontSize,
-    {red, green, blue, alpha});  
+    {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "W" 
-    + Gamedata::getInstance().getXmlStr("hud/keyW"), 
+    "W"
+    + Gamedata::getInstance().getXmlStr("hud/keyW"),
     rect.x+7*offset, rect.y+3*offset+2*fontSize,
-    {red, green, blue, alpha});  
+    {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "S" 
-    + Gamedata::getInstance().getXmlStr("hud/keyS"), 
+    "S"
+    + Gamedata::getInstance().getXmlStr("hud/keyS"),
     rect.x+7*offset, rect.y+4*offset+3*fontSize,
-    {red, green, blue, alpha});  
+    {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "S + A / D" 
-    + Gamedata::getInstance().getXmlStr("hud/keySAD"), 
+    "S + A / D"
+    + Gamedata::getInstance().getXmlStr("hud/keySAD"),
     rect.x+7*offset, rect.y+5*offset+4*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "Left shift" 
-    + Gamedata::getInstance().getXmlStr("hud/keySHIFT"), 
+    "Left shift"
+    + Gamedata::getInstance().getXmlStr("hud/keySHIFT"),
     rect.x+7*offset, rect.y+6*offset+5*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    "F1" 
-    + Gamedata::getInstance().getXmlStr("hud/keyF1"), 
+    "F1"
+    + Gamedata::getInstance().getXmlStr("hud/keyF1"),
     rect.x+7*offset, rect.y+7*offset+6*fontSize,
-    {red, green, blue, alpha}); 
+    {red, green, blue, alpha});
   IoMod::getInstance().writeText(
-    Gamedata::getInstance().getXmlStr("hud/resume"), 
+    Gamedata::getInstance().getXmlStr("hud/resume"),
     rect.x+7*offset, rect.y+rect.h-offset-fontSize,
     {red, green, blue, alpha});
 

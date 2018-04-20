@@ -79,7 +79,7 @@ void BladePool::collideWith( Drawable* p, HomeSprite* home ) {
       if( (*it)->isHit()) {
         if( player->getMode() == 4 )
           player->setVelocityX(-300);
-        else
+        else if( player->hurtable() )
           player->hurting();
       }
       // If the player is attacking, set the rival to fall.

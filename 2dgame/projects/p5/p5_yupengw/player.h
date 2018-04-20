@@ -6,6 +6,7 @@
 #include <cmath>
 #include "multisprite.h"
 #include "rival.h"
+#include "bullet.h"
 
 class Player : public MultiSprite {
 public:
@@ -14,6 +15,7 @@ public:
   Player& operator=( const Player& );
 
   virtual void update( Uint32 ticks );
+  virtual void draw() const;
   // Add collision
   void attach( Rival* o ) { observers.push_back(o); }
   void detach( Rival* o );
@@ -34,15 +36,20 @@ public:
   void landing()    { currentMode = LAND;  currentFrame = 0; }
   // void lattacking() { currentMode = ATCK;  currentFrame = 0; }
   void blocking()   { currentMode = BLCK;  currentFrame = 0; }
-  void hurting()    { 
+  void hurting()    {
     if( currentMode == IDLE || currentMode == LAND ) {
-        currentMode = HURT;  
-        currentFrame = 0; 
-      }
+      currentMode = HURT;
+      currentFrame = 0;
     }
+  }
   void shooting()   { currentMode = SHOT;  currentFrame = 0; }
   void blockDone()  { currentMode = IDLE; }
   bool isHit() const{ return hit;         }
+  bool hurtable() const {
+    if( currentMode == LAND || currentMode == IDLE || currentMode == HURT)
+      return true;
+    else return false;
+  }
 
   int  getMode() const { return currentMode;   }
 
@@ -54,8 +61,11 @@ public:
   void knee();
   // void lattack();
   void block();
-  void hurt();
+  void hurt( );
   void shoot();
+
+  void activeBullet ( );
+  // void deleteBullets( );
 
 private:
   enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE, SHOT, HURT};
@@ -83,6 +93,8 @@ private:
   std::vector<Image *> hurtRImgs;
   std::vector<Image *> shootRImgs;
 
+  std::list<Bullet> bullets;
+  // std::list<Bullet> bulletsFreeList;
   // Indicate the orientation of the player
   bool toLeft;
   // bool collision;

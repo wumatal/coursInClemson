@@ -55,6 +55,10 @@
   <speedX>0</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
+  <chunk>
+    <size>16</size>
+    <distance>200</distance>
+  </chunk>
 </home>
 <homeShake>
   <file>assets/homeShake.png</file>
@@ -75,6 +79,10 @@
   <speedX>0</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>
+  <chunk>
+    <size>16</size>
+    <distance>200</distance>
+  </chunk>
 </gate>
 <gateShake>
   <file>assets/gateShake.png</file>
@@ -333,15 +341,48 @@
   <transparency>false</transparency>
 </Rival>
 
-<Shuriken>
-  <file>assets/shuriken.png</file>
-  <startLoc x="227" y="240"/>
-  <speedX>300</speedX>
-  <speedY>300</speedY>
-  <quantity>7</quantity>
-  <velOffset>50</velOffset>
+<bullet>
+  <file>assets/bullet.png</file>
+  <frames>6</frames>
+  <imageWidth>125</imageWidth>
+  <imageHeight>96</imageHeight>
+  <frameInterval>125</frameInterval>
+  <startLoc x="100" y="100"/>
+  <speedX>400</speedX>
+  <speedY>0</speedY>
+  <distance>220</distance>
   <transparency>false</transparency>
-</Shuriken>
+</bullet>
+<bulletRight>
+  <file>assets/bulletright.png</file>
+  <frames>6</frames>
+  <imageWidth>125</imageWidth>
+  <imageHeight>96</imageHeight>
+  <frameInterval>125</frameInterval>
+  <speedX>-400</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</bulletRight>
+<bulletCollide>
+  <file>assets/bulletCollide.png</file>
+  <frames>6</frames>
+  <imageWidth>125</imageWidth>
+  <imageHeight>98</imageHeight>
+  <frameInterval>125</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</bulletCollide>
+<bulletCollideRight>
+  <file>assets/bulletCollideright.png</file>
+  <frames>6</frames>
+  <imageWidth>125</imageWidth>
+  <imageHeight>98</imageHeight>
+  <frameInterval>125</frameInterval>
+  <speedX>0</speedX>
+  <speedY>0</speedY>
+  <transparency>false</transparency>
+</bulletCollideRight>
 
 <hud>
   <positionX>160</positionX>
@@ -350,6 +391,7 @@
   <keyS>                               Crouch</keyS>
   <keyW>                               Jump</keyW>
   <keyJ>                               Light attack</keyJ>
+  <keySPACE>                        Shoot</keySPACE>
   <keySAD>                  Roll left or right</keySAD>
   <keyF1>                               Show this instructions</keyF1>
   <keySHIFT>                 Block</keySHIFT>

@@ -24,19 +24,26 @@ MultiSprite::MultiSprite( const std::string& name) :
   frameInterval( Gamedata::getInstance().getXmlInt(name+"/frameInterval")),
   timeSinceLastFrame( 0 ),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
-  worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
-  // power( 1 ), health( 1 )
+  worldHeight(Gamedata::getInstance().getXmlInt("world/height")),
+  attack( 0 ),
+	defend( 0 ),
+	health( 1 ),
+	power ( 0 )
 { }
 
 MultiSprite::MultiSprite(const MultiSprite& s) :
   Drawable(s),
-  images(s.images),
-  currentFrame(s.currentFrame),
+  images  (s.images),
+  currentFrame  ( s.currentFrame),
   numberOfFrames( s.numberOfFrames ),
-  frameInterval( s.frameInterval ),
+  frameInterval ( s.frameInterval ),
   timeSinceLastFrame( s.timeSinceLastFrame ),
-  worldWidth( s.worldWidth ),
-  worldHeight( s.worldHeight )
+  worldWidth  ( s.worldWidth ),
+  worldHeight ( s.worldHeight ),
+	attack			( s.attack ),
+	defend			( s.defend ),
+	health			( s.health ),
+	power 			( s.power  )
   { }
 
 MultiSprite& MultiSprite::operator=(const MultiSprite& s) {
@@ -48,6 +55,10 @@ MultiSprite& MultiSprite::operator=(const MultiSprite& s) {
   timeSinceLastFrame = ( s.timeSinceLastFrame );
   worldWidth = ( s.worldWidth );
   worldHeight = ( s.worldHeight );
+	attack	=		( s.attack );
+	defend	=		( s.defend );
+	health	=		( s.health );
+	power 	=		( s.power  );
   return *this;
 }
 

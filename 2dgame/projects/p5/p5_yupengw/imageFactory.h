@@ -1,3 +1,5 @@
+#ifndef IMAGEFACTORY_H
+#define IMAGEFACTORY_H
 #include <string>
 #include <vector>
 #include <map>
@@ -38,3 +40,4 @@ private:
     multiImages()
   {}
 };
+#endif

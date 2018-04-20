@@ -4,6 +4,8 @@
 #include <string>
 #include "multisprite.h"
 
+class ExplodingSprite;
+
 class HomeSprite : public MultiSprite {
 public:
   HomeSprite(const std::string&);
@@ -16,11 +18,13 @@ public:
   void stop();
   void shake();
 
+  void explode();
 private:
   std::vector<Image *> stopImgs;
   std::vector<Image *> shakeImgs;
 
   unsigned lastFrame;
+  ExplodingSprite* explosion;
 };
 
 #endif

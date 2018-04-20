@@ -6,6 +6,8 @@ CXXFLAGS=`sdl2-config --cflags` -g -W -Wall -std=c++11 -Weffc++ -Wextra -pedanti
 LDFLAGS = `sdl2-config --libs` -lm -lexpat -lSDL2_ttf -lSDL2_image
 
 OBJS = \
+	explodingSprite.o \
+	chunk.o \
   renderContext.o \
 	ioMod.o \
 	hud.o \
@@ -20,6 +22,7 @@ OBJS = \
 	sprite.o \
 	multisprite.o \
 	smartSprite.o \
+	bullet.o \
 	player.o \
 	rival.o \
 	bladePool.o \
