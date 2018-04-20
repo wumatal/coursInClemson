@@ -12,7 +12,7 @@
 #include "engine.h"
 #include "frameGenerator.h"
 #include "collisionStrategy.h"
-#include "bladePool.h"
+// #include "bladePool.h"
 
 Engine::~Engine() {
   delete player;
@@ -22,6 +22,7 @@ Engine::~Engine() {
   // for ( CollisionStrategy* strategy : strategies ) {
   //   delete strategy;
   // }
+
   delete strategy;
   std::cout << "Terminating program" << std::endl;
 }
@@ -65,6 +66,7 @@ Engine::Engine() :
   }
 
   // strategies.push_back( new RectangularCollisionStrategy );
+  // strategies.push_back( new PerPixelCollisionStrategy );
   // strategies.push_back( new MidPointCollisionStrategy );
 
   Viewport::getInstance().setObjectToTrack(player);
@@ -109,10 +111,10 @@ void Engine::update(Uint32 ticks) {
   gate->update(ticks);
 
   blades.update(ticks);
-
   checkForCollisions();
 
   player->update(ticks);
+
   grass.update();
 
   viewport.update(); // always update viewport last
@@ -187,80 +189,8 @@ void Engine::play() {
     ticks = clock.getElapsedTicks();
     if ( ticks > 0 ) {
       clock.incrFrame();
-      // switch player's mode to do correspoding actions.
-      switch ( player->getMode() ) {
-        // If player is jumping, he can do nothing but turn, move and attack.
-        case 0:
-          if (keystate[SDL_SCANCODE_A]) {
-            player->turnRight();
-            player->jump(-300);
-          }
-          else if (keystate[SDL_SCANCODE_D]) {
-            player->turnLeft();
-            player->jump(300);
-          }
-          else
-            player->jump(0);
-          break;
-        // If landing, player can not be interrupted
-        case 1:
-          player->land();
-          break;
-        // If attacking, player can not be interrupted
-        case 2:
-        case 6:
-          player->lattack();
-          break;
-        // If blocking held, player will stay the final frame.
-        case 3:
-        case 4:
-          if (keystate[SDL_SCANCODE_LSHIFT]) {
-            player->block();
-          }
-          else{
-            player->blockDone();
-          }
-          if (keystate[SDL_SCANCODE_J]) {
-            player->lattacking();
-            player->lattack();
-          }
-          break;
-        default:
 
-          if (keystate[SDL_SCANCODE_W]) {
-            player->jumping();
-            player->jump(0);
-          }
-          if (keystate[SDL_SCANCODE_A]) {
-            player->turnRight();
-            player->walk();
-          }
-          if (keystate[SDL_SCANCODE_D]) {
-            player->turnLeft();
-            player->walk();
-          }
-          if (keystate[SDL_SCANCODE_S]) {
-            player->knee();
-          }
-          if (keystate[SDL_SCANCODE_J]) {
-            player->lattacking();
-            player->lattack();
-          }
-          if (keystate[SDL_SCANCODE_LSHIFT]) {
-            player->blocking();
-            player->block();
-          }
-          if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
-            player->turnRight();
-            player->roll();
-          }
-          if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_D]) {
-            player->turnLeft();
-            player->roll();
-          }
-      }
-
-
+      player->respondTo(keystate);
 
       draw();
       update(ticks);

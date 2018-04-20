@@ -18,6 +18,14 @@ public:
   void attach( Rival* o ) { observers.push_back(o); }
   void detach( Rival* o );
 
+  // virtual int getScaledWidth()  const {
+  //   return MultiSprite::getScaledWidth() - 70;
+  // }
+
+  // virtual float getX() const  { return MultiSprite::getX() - 170; }
+
+  void respondTo( const Uint8 * );
+
   void collided()   { collision = true;   }
   void missed()     { collision = false;  }
   void turnLeft()   { toLeft    = true;   }
@@ -26,6 +34,8 @@ public:
   void landing()    { currentMode = LAND;  currentFrame = 0; }
   void lattacking() { currentMode = ATCK;  currentFrame = 0; }
   void blocking()   { currentMode = BLCK;  currentFrame = 0; }
+  // void hurting()    { currentMode = HURT;  currentFrame = 0; }
+  // void shooting()   { currentMode = SHOT;  currentFrame = 0; }
   void blockDone()  { currentMode = IDLE; }
   bool isHit() const{ return hit;         }
 
@@ -39,9 +49,11 @@ public:
   void knee();
   void lattack();
   void block();
+  // void hurt();
+  // void shoot();
 
 private:
-  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE};
+  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE};//, SHOT, HURT};
   std::list<Rival*> observers;
   // The frames of all motions of the player
   std::vector<Image *> readyImgs;
@@ -52,6 +64,8 @@ private:
   std::vector<Image *> kneeImgs;
   std::vector<Image *> blockImgs;
   std::vector<Image *> lattackImgs;
+  // std::vector<Image *> hurtImgs;
+  // std::vector<Image *> shootImgs;
   std::vector<Image *> readyRImgs;
   std::vector<Image *> walkRImgs;
   std::vector<Image *> landRImgs;
@@ -60,6 +74,8 @@ private:
   std::vector<Image *> kneeRImgs;
   std::vector<Image *> blockRImgs;
   std::vector<Image *> lattackRImgs;
+  // std::vector<Image *> hurtRImgs;
+  // std::vector<Image *> shootRImgs;
   // Indicate the orientation of the player
   bool toLeft;
   bool collision;

@@ -61,7 +61,7 @@ void BladePool::collideWith( Drawable* p, HomeSprite* home ) {
       // If the rival is attacking, check if the player defends or not.
       if( (*it)->isHit()) {
         if( player->getMode() == 4 )
-          player->setVelocityX(-200);
+          player->setVelocityX(-300);
         // else
         //   player->jumping();
       }

@@ -19,6 +19,7 @@ bool RectangularCollisionStrategy::execute(
   float right2 = left2+sprite2.getScaledWidth();
   if ( right1 < left2 ) return false;
   if ( left1 > right2 ) return false;
+  if ( right2 < left1 ) return false;
   float top1 = sprite1.getY();
   float top2 = sprite2.getY();
   float bottom1 = top1+sprite1.getScaledHeight();
