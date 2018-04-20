@@ -25,6 +25,7 @@ MultiSprite::MultiSprite( const std::string& name) :
   timeSinceLastFrame( 0 ),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
+  // power( 1 ), health( 1 )
 { }
 
 MultiSprite::MultiSprite(const MultiSprite& s) :

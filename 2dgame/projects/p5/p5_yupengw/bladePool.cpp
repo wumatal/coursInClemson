@@ -46,7 +46,7 @@ void BladePool::active( ){
 }
 
 void BladePool::active( Player* player, HomeSprite* home ){
-  if( !inPools.empty() ) {
+  if( !inPools.empty() && (inPools.size() + actives.size()) < 70 ) {
     active();
   }
   else {
@@ -79,8 +79,8 @@ void BladePool::collideWith( Drawable* p, HomeSprite* home ) {
       if( (*it)->isHit()) {
         if( player->getMode() == 4 )
           player->setVelocityX(-300);
-        // else
-        //   player->jumping();
+        else
+          player->hurting();
       }
       // If the player is attacking, set the rival to fall.
       if( player->isHit() && (*it)->getMode() < 2 ) {

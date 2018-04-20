@@ -25,6 +25,13 @@ public:
   virtual const SDL_Surface* getSurface() const {
     return images[currentFrame]->getSurface();
   }
+
+  // int getPower()  const { return power;  }
+  // int getHealth() const { return health; }
+
+  // void setPower( const int p ) { power = p; }
+  // void setHealth(const int h ) { health = h;}
+
 protected:
   std::vector<Image *> images;
 
@@ -37,5 +44,9 @@ protected:
 
   void advanceFrame(Uint32 ticks);
   MultiSprite& operator=(const MultiSprite&);
+// private:
+//   int power;
+//   int defend;
+//   int health;
 };
 #endif

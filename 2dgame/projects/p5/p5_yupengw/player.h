@@ -26,16 +26,21 @@ public:
 
   void respondTo( const Uint8 * );
 
-  void collided()   { collision = true;   }
-  void missed()     { collision = false;  }
+  // void collided()   { collision = true;   }
+  // void missed()     { collision = false;  }
   void turnLeft()   { toLeft    = true;   }
   void turnRight()  { toLeft    = false;  }
   void jumping()    { currentMode = JUMP;  currentFrame = 0; }
   void landing()    { currentMode = LAND;  currentFrame = 0; }
-  void lattacking() { currentMode = ATCK;  currentFrame = 0; }
+  // void lattacking() { currentMode = ATCK;  currentFrame = 0; }
   void blocking()   { currentMode = BLCK;  currentFrame = 0; }
-  // void hurting()    { currentMode = HURT;  currentFrame = 0; }
-  // void shooting()   { currentMode = SHOT;  currentFrame = 0; }
+  void hurting()    { 
+    if( currentMode == IDLE || currentMode == LAND ) {
+        currentMode = HURT;  
+        currentFrame = 0; 
+      }
+    }
+  void shooting()   { currentMode = SHOT;  currentFrame = 0; }
   void blockDone()  { currentMode = IDLE; }
   bool isHit() const{ return hit;         }
 
@@ -47,13 +52,13 @@ public:
   void jump(int);
   void roll();
   void knee();
-  void lattack();
+  // void lattack();
   void block();
-  // void hurt();
-  // void shoot();
+  void hurt();
+  void shoot();
 
 private:
-  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE};//, SHOT, HURT};
+  enum MODE {JUMP, LAND, ATCK, BLCK, DFND, IDLE, SHOT, HURT};
   std::list<Rival*> observers;
   // The frames of all motions of the player
   std::vector<Image *> readyImgs;
@@ -63,8 +68,8 @@ private:
   std::vector<Image *> rollImgs;
   std::vector<Image *> kneeImgs;
   std::vector<Image *> blockImgs;
-  std::vector<Image *> lattackImgs;
-  // std::vector<Image *> hurtImgs;
+  // std::vector<Image *> lattackImgs;
+  std::vector<Image *> hurtImgs;
   std::vector<Image *> shootImgs;
 
   std::vector<Image *> readyRImgs;
@@ -74,13 +79,13 @@ private:
   std::vector<Image *> rollRImgs;
   std::vector<Image *> kneeRImgs;
   std::vector<Image *> blockRImgs;
-  std::vector<Image *> lattackRImgs;
-  // std::vector<Image *> hurtRImgs;
+  // std::vector<Image *> lattackRImgs;
+  std::vector<Image *> hurtRImgs;
   std::vector<Image *> shootRImgs;
 
   // Indicate the orientation of the player
   bool toLeft;
-  bool collision;
+  // bool collision;
   bool hit;
 
   Vector2f initialPosition;
