@@ -6,6 +6,7 @@
 #include "clock.h"
 #include "world.h"
 #include "viewport.h"
+#include "sound.h"
 
 class CollisionStrategy;
 class HomeSprite;
@@ -16,7 +17,7 @@ class Engine {
 public:
   Engine ();
   ~Engine ();
-  void play();
+  bool play();
   void switchSprite();
   Engine(const Engine&) = delete;
   Engine& operator=(const Engine&) = delete;
@@ -24,6 +25,7 @@ public:
 private:
   const RenderContext* rc;
   const IoMod&         io;
+  SDLSound&      sound;
   Hud&  hud;
   Clock& clock;
 
@@ -47,6 +49,8 @@ private:
   // bool collision;
 
   bool makeVideo;
+  bool win;
+  bool lose;
 
   void draw() const;
   void update(Uint32);

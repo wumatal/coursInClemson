@@ -38,40 +38,40 @@ void Hud::showInstructions(SDL_Renderer* renderer)  {
     + Gamedata::getInstance().getXmlStr("hud/keyAD"),
     rect.x+7*offset, rect.y+offset,
     {red, green, blue, alpha});
-  // IoMod::getInstance().writeText(
-  //   "J"
-  //   + Gamedata::getInstance().getXmlStr("hud/keyJ"),
-  //   rect.x+7*offset, rect.y+2*offset+fontSize,
-  //   {red, green, blue, alpha});
+  IoMod::getInstance().writeText(
+    "J"
+    + Gamedata::getInstance().getXmlStr("hud/keyJ"),
+    rect.x+7*offset, rect.y+2*offset+fontSize,
+    {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "SPACE"
-    + Gamedata::getInstance().getXmlStr("hud/keySPACE"), 
-    rect.x+7*offset, rect.y+2*offset+fontSize,
+    + Gamedata::getInstance().getXmlStr("hud/keySPACE"),
+    rect.x+7*offset, rect.y+3*offset+2*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "W"
     + Gamedata::getInstance().getXmlStr("hud/keyW"),
-    rect.x+7*offset, rect.y+3*offset+2*fontSize,
+    rect.x+7*offset, rect.y+4*offset+3*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "S"
     + Gamedata::getInstance().getXmlStr("hud/keyS"),
-    rect.x+7*offset, rect.y+4*offset+3*fontSize,
+    rect.x+7*offset, rect.y+5*offset+4*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "S + A / D"
     + Gamedata::getInstance().getXmlStr("hud/keySAD"),
-    rect.x+7*offset, rect.y+5*offset+4*fontSize,
+    rect.x+7*offset, rect.y+6*offset+5*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "Left shift"
     + Gamedata::getInstance().getXmlStr("hud/keySHIFT"),
-    rect.x+7*offset, rect.y+6*offset+5*fontSize,
+    rect.x+7*offset, rect.y+7*offset+6*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     "F1"
     + Gamedata::getInstance().getXmlStr("hud/keyF1"),
-    rect.x+7*offset, rect.y+7*offset+6*fontSize,
+    rect.x+7*offset, rect.y+8*offset+7*fontSize,
     {red, green, blue, alpha});
   IoMod::getInstance().writeText(
     Gamedata::getInstance().getXmlStr("hud/resume"),

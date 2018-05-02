@@ -130,6 +130,7 @@
   <health>10</health>
   <healthBarX>30</healthBarX>
   <healthBarY>150</healthBarY>
+  <life>3</life>
   <chunk>
     <size>16</size>
     <distance>200</distance>

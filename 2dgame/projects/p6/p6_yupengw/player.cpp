@@ -1,6 +1,7 @@
 #include "player.h"
 #include "gamedata.h"
 #include "explodingSprite.h"
+#include "sound.h"
 
 Player::Player ( const std::string& name ) :
   player(name),
@@ -30,6 +31,7 @@ Player::Player ( const std::string& name ) :
   toLeft ( true  ), //collision(false),
   hit    ( false ),
   dead   ( false ),
+  lives  ( Gamedata::getInstance().getXmlInt(name+"/life")),
   initialPosition(player.getPosition()),
   initialVelocity(player.getVelocity()),
   jumpingVelocity(Vector2f(Gamedata::getInstance().getXmlInt(name+"Jump/speedX"),
@@ -73,6 +75,7 @@ Player::Player ( const Player& s ) :
   // collision( s.collision ),
   hit      ( s.hit  ),
   dead     ( s.dead ),
+  lives    ( s.lives ),
   initialPosition( s.initialPosition ),
   initialVelocity( s.player.getVelocity() ),
   jumpingVelocity( s.jumpingVelocity ),
@@ -113,6 +116,7 @@ Player& Player::operator=( const Player& s ) {
   toLeft    = s.toLeft;
   hit       = s.hit;
   dead      = s.dead;
+  lives     = s.lives;
 
   initialPosition = s.initialPosition;
   initialVelocity = s.initialVelocity;
@@ -295,7 +299,7 @@ void Player::block() {
   player.setVelocityY(0);
 }
 
-void Player::shoot() {
+void Player::shoot(SDLSound& sound) {
   player.setNumberOfFrames(Gamedata::getInstance().getXmlInt(getName()+"Shoot/frames"));
 
   if( !hit ) {
@@ -303,8 +307,10 @@ void Player::shoot() {
   }
 
   if( player.getCurrentFrame()  >= lastFrame ) {
-    if( player.getCurrentFrame() > lastFrame && lastFrame == hitFrame )
+    if( player.getCurrentFrame() > lastFrame && lastFrame == 2*hitFrame ){
       activeBullet();
+      sound[5];
+    }
 
     lastFrame = player.getCurrentFrame();
     if ( toLeft ) {
@@ -343,7 +349,7 @@ void Player::hurt() {
   player.setVelocityY(0);
 }
 
-void Player::respondTo( const Uint8 * keystate) {
+void Player::respondTo( const Uint8 * keystate, SDLSound& sound) {
   switch ( getMode() ) {
     // If player is jumping, he can do nothing but turn, move and attack.
     case JUMP:
@@ -377,15 +383,15 @@ void Player::respondTo( const Uint8 * keystate) {
       }
       if (keystate[SDL_SCANCODE_SPACE]) {
         shooting();
-        shoot();
+        shoot( sound );
       }
       break;
-    case SHOT: shoot(); break;
+    case SHOT: shoot(sound); break;
     case HURT:
       hurt();
       if (keystate[SDL_SCANCODE_SPACE]) {
         shooting();
-        shoot();
+        shoot(sound);
       }
       if (keystate[SDL_SCANCODE_LSHIFT]) {
         blocking();
@@ -395,6 +401,7 @@ void Player::respondTo( const Uint8 * keystate) {
     default:
 
       if (keystate[SDL_SCANCODE_W]) {
+        sound[1];
         jumping();
         jump(0);
       }
@@ -410,6 +417,7 @@ void Player::respondTo( const Uint8 * keystate) {
         knee();
       }
       if (keystate[SDL_SCANCODE_J]) {
+        sound[4];
         lattacking();
         lattack();
       }
@@ -418,8 +426,9 @@ void Player::respondTo( const Uint8 * keystate) {
         block();
       }
       if (keystate[SDL_SCANCODE_SPACE]) {
+        sound[3];
         shooting();
-        shoot();
+        shoot(sound);
       }
       if (keystate[SDL_SCANCODE_S] && keystate[SDL_SCANCODE_A]) {
         turnRight();
@@ -470,12 +479,14 @@ void Player::update(Uint32 ticks) {
     revive();
   }
 
+
   if ( currentMode == SHOT ) ticks *= 1.5;
   player.update( 3 * ticks);
   if ( currentMode == IDLE )  ready();
   std::list<Rival*>::iterator ptr = observers.begin();
   while ( ptr != observers.end() ) {
     (*ptr)->setPlayerPos( player.getPosition() );
+    (*ptr)->setPlayerDead( dead );
     ++ptr;
   }
   for ( Bullet& bullet : bullets ) {
@@ -485,6 +496,10 @@ void Player::update(Uint32 ticks) {
     else
       bullet.deactive( );
   }
+}
+
+bool Player::lostLife() {
+  return --lives > 0;
 }
 
 void Player::explode() {

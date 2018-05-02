@@ -29,6 +29,7 @@ SmartSprite::SmartSprite(const std::string& name, const Vector2f& pos,
   playerHeight(h),
   baseWidth(bw),
   baseHeight(bh),
+  playerdead(false),
   safeDistance(Gamedata::getInstance().getXmlFloat(name+"/safeDistance"))
 {}
 
@@ -43,6 +44,7 @@ SmartSprite::SmartSprite(const SmartSprite& s) :
   playerHeight(s.playerHeight),
   baseWidth(s.baseWidth),
   baseHeight(s.baseHeight),
+  playerdead(s.playerdead),
   safeDistance(s.safeDistance)
 {}
 
@@ -57,6 +59,7 @@ SmartSprite& SmartSprite::operator=( const SmartSprite& s ) {
   baseHeight   = s.baseHeight;
   currentMode  = s.currentMode;
   safeDistance = s.safeDistance;
+  playerdead   = s.playerdead;
 
   return *this;
 }
@@ -81,7 +84,7 @@ void SmartSprite::update(Uint32 ticks) {
   // std::cout << getX() << '\n';
   // if ( getX() > 0 && getX() < worldWidth-getScaledWidth() ) {
   if ( currentMode == WALK ) {
-    if(attackable()) {
+    if(attackable() && !playerdead) {
       attacking();
       attack();
     }

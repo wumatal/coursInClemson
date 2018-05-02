@@ -2,6 +2,7 @@
 #include "homeSprite.h"
 #include "player.h"
 #include "rival.h"
+#include "sound.h"
 
 BladePool& BladePool::getInstance() {
   static BladePool instance;
@@ -46,12 +47,13 @@ void BladePool::active( ){
 }
 
 void BladePool::active( Player* player, HomeSprite* home ){
+  if( halt ) return;
   // if( !inPools.empty() && (inPools.size() + actives.size()) > 10 ) {
   if( !inPools.empty() ) {
     active();
   }
-  // else {
-  else if ((inPools.size() + actives.size())<1) {
+  else {
+  // else if ((inPools.size() + actives.size())<1) {
     Vector2f pos = player->getPosition();
     int w = player->getScaledWidth();
     int h = player->getScaledHeight();
@@ -67,7 +69,7 @@ void BladePool::active( Player* player, HomeSprite* home ){
 }
 
 
-void BladePool::collideWith( Player* player, HomeSprite* home ) {
+bool BladePool::collideWith( Player* player, HomeSprite* home, SDLSound& sound ) {
   // Player* player = static_cast<Player*>(p);
   bool deleted = false;
 
@@ -78,12 +80,24 @@ void BladePool::collideWith( Player* player, HomeSprite* home ) {
     if ( strategy->execute(*(player->getPlayer()), **it) ) {
       // If the rival is attacking, check if the player defends or not.
       if( (*it)->isHit()) {
-        if( player->getMode() == 4 )
+        sound[6];
+        if( player->getMode() == 4 ){
+          sound[7];
           player->setVelocityX(-500);
+        }
         else if( player->hurtable() ) {
+          sound[9];
           player->hurting();
-          if( player->getPlayer()->subtractHealth((*it)->getAttack()) )
+          if( player->getPlayer()->subtractHealth((*it)->getAttack()) ){
             player->explode();
+            if( player->lostLife() ) {
+              sound[0];
+            }
+            else {
+              sound[2];
+              return false;
+            }
+          }
         }
       }
       // If the player is attacking, set the rival to fall.
@@ -96,9 +110,12 @@ void BladePool::collideWith( Player* player, HomeSprite* home ) {
     // else if ( strategies[1]->execute(*home, **it) ) {
     else if ( strategy->execute(*home, **it) ) {
       if( (*it)->isHit() ) {
+        sound[6];
         if( home->subtractHealth((*it)->getAttack()) ) {
+          sound[8];
           home->explode();
           // lose!
+          return false;
         }
         else {
           home->shake();
@@ -114,5 +131,13 @@ void BladePool::collideWith( Player* player, HomeSprite* home ) {
       deleted = true;
     }
     if( !deleted ) ++it;
+  }
+  return true;
+}
+
+void BladePool::cease() {
+  halt = true;
+  for( Rival* r : actives ) {
+    r->falling();
   }
 }

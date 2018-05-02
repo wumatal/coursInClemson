@@ -18,6 +18,7 @@ public:
   void update(Uint32 ticks);
 
   void setPlayerPos(const Vector2f& p) { playerPos = p; }
+  void setPlayerDead(const bool dead)  { playerdead = dead; }
   bool attackable();
 
   virtual void falling()   {
@@ -38,6 +39,7 @@ private:
   int playerHeight;
   int baseWidth;
   int baseHeight;
+  bool playerdead;
   float safeDistance;
 
 };

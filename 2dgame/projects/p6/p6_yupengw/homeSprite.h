@@ -26,6 +26,8 @@ private:
 
   unsigned lastFrame;
   ExplodingSprite* explosion;
+
+  bool detroied;
 };
 
 #endif

@@ -19,7 +19,6 @@ Engine::~Engine() {
   delete player;
   delete home;
   delete gate;
-
   delete strategy;
   std::cout << "Terminating program" << std::endl;
 }
@@ -27,6 +26,7 @@ Engine::~Engine() {
 Engine::Engine() :
   rc   ( RenderContext::getInstance() ),
   io   ( IoMod::getInstance() ),
+  sound( SDLSound::getInstance() ),
   hud  ( Hud::getInstance() ),
   clock( Clock::getInstance() ),
   renderer( rc->getRenderer() ),
@@ -44,7 +44,9 @@ Engine::Engine() :
   // strategies(), //currentStrategy(0),
   strategy( new PerPixelCollisionStrategy ),
   // collision( false ),
-  makeVideo( false )
+  makeVideo( false ),
+  win( false ),
+  lose(false )
 {
   Viewport::getInstance().setObjectToTrack(player->getPlayer());
   std::cout << "Loading complete" << std::endl;
@@ -55,8 +57,20 @@ void Engine::draw() const {
   bamboo4.draw();
   bamboo3.draw();
   bamboo2.draw();
+
   home->draw();
   gate->draw();
+
+  if( win  ) {
+    io.writeText("You Win! Press R to Restart the game", 250, 200);
+    // clock.pause();
+    blades.cease();
+  }
+  if( lose ) {
+    io.writeText("You Lose! Press R to Restart the game", 250, 200);
+    // clock.pause();
+    blades.cease();
+  }
 
   blades.draw();
 
@@ -66,10 +80,14 @@ void Engine::draw() const {
   std::stringstream pHl;
   std::stringstream gtHl;
   std::stringstream hHl;
+  std::stringstream life;
   pHl << player->getPlayer()->getHealth();
   hHl << home->getHealth();
   gtHl << gate->getHealth();
+  life << player->getLives();
 
+  IoMod::getInstance().
+    writeText("Lives: " + life.str(), 30, 30);
   IoMod::getInstance().
     writeText("player: " + pHl.str(),
     Gamedata::getInstance().getXmlInt("Player/healthBarX"),
@@ -90,13 +108,19 @@ void Engine::draw() const {
 
 void Engine::checkForCollisions() {
 
-  blades.collideWith( player, home );
+  if( !blades.collideWith( player, home, sound ) ) {
+    win = false; lose = true;
+    return;
+  }
 
   if ( strategy->execute(*(player->getPlayer()), *gate) ) {
     if( player->isHit() ) {
       if( gate->subtractHealth(player->getPlayer()->getAttack()) ) {
+        sound[8];
         gate->explode();
-        // win!
+        win  = true;
+        lose = false;
+        return;
       }
       else {
         gate->shake();
@@ -124,7 +148,7 @@ void Engine::update(Uint32 ticks) {
   viewport.update(); // always update viewport last
 }
 
-void Engine::play() {
+bool Engine::play() {
   SDL_Event event;
   const Uint8* keystate;
   bool done = false;
@@ -145,6 +169,11 @@ void Engine::play() {
         if ( keystate[SDL_SCANCODE_P] ) {
           if ( clock.isPaused() ) clock.unpause();
           else clock.pause();
+        }
+        if ( keystate[SDL_SCANCODE_R] ) {
+          blades.restart();
+          clock.unpause();
+          return true;
         }
         // You may press 'F' to track hero directly
         if ( keystate[SDL_SCANCODE_F] ) {
@@ -176,7 +205,7 @@ void Engine::play() {
     if ( ticks > 0 ) {
       clock.incrFrame();
 
-      player->respondTo(keystate);
+      player->respondTo(keystate, sound);
 
       draw();
       update(ticks);
@@ -185,4 +214,5 @@ void Engine::play() {
       }
     }
   }
+  return false;
 }

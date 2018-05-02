@@ -28,8 +28,7 @@ void Viewport::setObjectToTrack(const Drawable *obj) {
 }
 
 void Viewport::draw() const {
-  IoMod::getInstance().
-    writeText("Tracking: " + objectToTrack->getName(), 30, 30);
+
 
   std::stringstream currentFPS;
   std::stringstream currentBladeActive;
@@ -37,7 +36,7 @@ void Viewport::draw() const {
   currentFPS << Clock::getInstance().getFps();
   currentBladeActive << blades.getActiveCount();
   currentBladeInPool << blades.getInactiveCount();
-  
+
   IoMod::getInstance().
     writeText("fps: " + currentFPS.str(),
     gdata.getXmlInt("fps/positionX"), gdata.getXmlInt("fps/positionY"));
@@ -56,7 +55,7 @@ void Viewport::draw() const {
      (uint8_t)gdata.getXmlInt("myName/alpha")});
 
   IoMod::getInstance().
-    writeText("Press F 1 to More infos", 
+    writeText("Press F 1 to More infos",
     gdata.getXmlInt("hudInfo/positionX"), gdata.getXmlInt("hudInfo/positionY"));
 }
 

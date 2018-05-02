@@ -9,6 +9,7 @@
 #include "bullet.h"
 
 class ExplodingSprite;
+class SDLSound;
 
 class Player {
 public:
@@ -45,7 +46,8 @@ public:
 
   MultiSprite* getPlayer() { return &player; }
 
-  void respondTo( const Uint8 * );
+  void respondTo( const Uint8 *, SDLSound& );
+  bool lostLife();
 
   void turnLeft()   { toLeft    = true;   }
   void turnRight()  { toLeft    = false;  }
@@ -63,12 +65,13 @@ public:
   void blockDone()  { currentMode = IDLE; }
   bool isHit() const{ return hit;         }
   bool hurtable() const {
-    if( currentMode == LAND || currentMode == IDLE || currentMode == HURT)
+    if( !dead && (currentMode == LAND || currentMode == IDLE || currentMode == HURT ))
       return true;
     else return false;
   }
 
-  int  getMode() const { return currentMode;   }
+  int  getMode () const { return currentMode;   }
+  int  getLives() const { return lives;         }
 
   void ready();
   void walk();
@@ -79,7 +82,7 @@ public:
   void lattack();
   void block();
   void hurt( );
-  void shoot();
+  void shoot(SDLSound&);
   void explode();
   void activeBullet ( );
 
@@ -121,6 +124,8 @@ private:
   // bool collision;
   bool hit;
   bool dead;
+
+  int lives;
 
   Vector2f initialPosition;
   Vector2f initialVelocity;

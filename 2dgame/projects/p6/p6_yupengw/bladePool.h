@@ -6,6 +6,7 @@
 
 class Rival;
 class Player;
+class SDLSound;
 
 class BladePool : public ObjectPool {
 public:
@@ -28,18 +29,23 @@ public:
   virtual void update(Uint32);
 
   virtual void collideWith( Drawable*, HomeSprite* ) {}
-  virtual void collideWith( Player*,   HomeSprite* );
+  virtual bool collideWith( Player*,   HomeSprite*, SDLSound& );
+
+  void cease();
+  void restart() { halt = false; };
 private:
   int numOfObjs;
   std::list<Rival*> actives;
   std::list<Rival*> inPools;
   CollisionStrategy* strategy;
+  bool halt;
 
   BladePool() :
     numOfObjs( Gamedata::getInstance().getXmlInt("Blade/quantity") ),
     actives(),
     inPools(),
-    strategy( new PerPixelCollisionStrategy )
+    strategy( new PerPixelCollisionStrategy ),
+    halt(false)
   {}
   BladePool( const BladePool& );
   BladePool& operator=( const BladePool& );
