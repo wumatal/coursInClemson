@@ -16,14 +16,9 @@
 
 Engine::~Engine() {
 
-  // player->deleteBullets();
   delete player;
   delete home;
   delete gate;
-
-  // for ( CollisionStrategy* strategy : strategies ) {
-  //   delete strategy;
-  // }
 
   delete strategy;
   std::cout << "Terminating program" << std::endl;
@@ -47,31 +42,11 @@ Engine::Engine() :
   currentSprite(0),
   blades( BladePool::getInstance() ),
   // strategies(), //currentStrategy(0),
-  strategy( new MidPointCollisionStrategy ),
+  strategy( new PerPixelCollisionStrategy ),
   // collision( false ),
   makeVideo( false )
 {
-  // Vector2f pos = player->getPosition();
-  // int w = player->getScaledWidth();
-  // int h = player->getScaledHeight();
-  //
-  // Vector2f bpos = home->getPosition();
-  // int bw = home->getScaledWidth();
-  // int bh = home->getScaledHeight();
-
-  // int n = blades.getSize();
-  //
-  // for (int i = 0; i < n; ++i) {
-  //   Rival* d = new Rival("Blade", pos, bpos, w, h, bw, bh);
-  //   blades.push( d );
-  //   player->attach( d );
-  // }
-
-  // strategies.push_back( new RectangularCollisionStrategy );
-  // strategies.push_back( new PerPixelCollisionStrategy );
-  // strategies.push_back( new MidPointCollisionStrategy );
-
-  Viewport::getInstance().setObjectToTrack(player);
+  Viewport::getInstance().setObjectToTrack(player->getPlayer());
   std::cout << "Loading complete" << std::endl;
 }
 
@@ -84,11 +59,31 @@ void Engine::draw() const {
   gate->draw();
 
   blades.draw();
-  // strategies[currentStrategy]->draw();
-  // strategy->draw();
 
   player->draw();
   grass.draw();
+
+  std::stringstream pHl;
+  std::stringstream gtHl;
+  std::stringstream hHl;
+  pHl << player->getPlayer()->getHealth();
+  hHl << home->getHealth();
+  gtHl << gate->getHealth();
+
+  IoMod::getInstance().
+    writeText("player: " + pHl.str(),
+    Gamedata::getInstance().getXmlInt("Player/healthBarX"),
+    Gamedata::getInstance().getXmlInt("Player/healthBarY"));
+  IoMod::getInstance().
+    writeText("home: " + hHl.str(),
+    Gamedata::getInstance().getXmlInt("home/healthBarX"),
+    Gamedata::getInstance().getXmlInt("home/healthBarY"));
+  IoMod::getInstance().
+    writeText("gate: " + gtHl.str(),
+    Gamedata::getInstance().getXmlInt("gate/healthBarX"),
+    Gamedata::getInstance().getXmlInt("gate/healthBarY"));
+
+
   viewport.draw();
   SDL_RenderPresent(renderer);
 }
@@ -96,11 +91,16 @@ void Engine::draw() const {
 void Engine::checkForCollisions() {
 
   blades.collideWith( player, home );
-  // if ( strategies[0]->execute(*player, *gate) ) {
-  if ( strategy->execute(*player, *gate) ) {
+
+  if ( strategy->execute(*(player->getPlayer()), *gate) ) {
     if( player->isHit() ) {
-      gate->shake();
-      // gate->explode();
+      if( gate->subtractHealth(player->getPlayer()->getAttack()) ) {
+        gate->explode();
+        // win!
+      }
+      else {
+        gate->shake();
+      }
     }
   }
 }
@@ -124,18 +124,6 @@ void Engine::update(Uint32 ticks) {
   viewport.update(); // always update viewport last
 }
 
-/*
-void Engine::switchSprite(){
-  if( currentSprite == sprites.size()) {
-    Viewport::getInstance().setObjectToTrack(player);
-    currentSprite = 0;
-  }
-  else {
-    Viewport::getInstance().setObjectToTrack(sprites[currentSprite++]);
-  }
-}
-*/
-
 void Engine::play() {
   SDL_Event event;
   const Uint8* keystate;
@@ -158,15 +146,9 @@ void Engine::play() {
           if ( clock.isPaused() ) clock.unpause();
           else clock.pause();
         }
-        // if ( keystate[SDL_SCANCODE_T] ) {
-        //   switchSprite();
-        // }
-        // if ( keystate[SDL_SCANCODE_M] ) {
-        //   currentStrategy = (1 + currentStrategy) % strategies.size();
-        // }
         // You may press 'F' to track hero directly
         if ( keystate[SDL_SCANCODE_F] ) {
-          Viewport::getInstance().setObjectToTrack(player);
+          Viewport::getInstance().setObjectToTrack(player->getPlayer());
         }
         // Press F1 to bring the game pause and show the instructions
         if ( keystate[SDL_SCANCODE_F1] ) {

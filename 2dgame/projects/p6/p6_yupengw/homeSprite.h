@@ -11,8 +11,9 @@ public:
   HomeSprite(const std::string&);
   HomeSprite(const HomeSprite&);
   HomeSprite& operator=( const HomeSprite& );
-  virtual ~HomeSprite() { }
+  virtual ~HomeSprite();
 
+  virtual void draw() const;
   virtual void update(Uint32 ticks);
 
   void stop();

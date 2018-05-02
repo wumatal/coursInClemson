@@ -27,7 +27,8 @@ public:
   virtual void draw();
   virtual void update(Uint32);
 
-  virtual void collideWith( Drawable*, HomeSprite* );
+  virtual void collideWith( Drawable*, HomeSprite* ) {}
+  virtual void collideWith( Player*,   HomeSprite* );
 private:
   int numOfObjs;
   std::list<Rival*> actives;
@@ -38,7 +39,7 @@ private:
     numOfObjs( Gamedata::getInstance().getXmlInt("Blade/quantity") ),
     actives(),
     inPools(),
-    strategy( new RectangularCollisionStrategy )
+    strategy( new PerPixelCollisionStrategy )
   {}
   BladePool( const BladePool& );
   BladePool& operator=( const BladePool& );

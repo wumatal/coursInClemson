@@ -9,7 +9,10 @@ HomeSprite::HomeSprite ( const std::string& name ) :
   shakeImgs( ImageFactory::getInstance().getImages(name+"Shake") ),
   lastFrame(0),
   explosion(nullptr)
-{ }
+{
+  setAttack(Gamedata::getInstance().getXmlInt(name+"/power") );
+  setHealth(Gamedata::getInstance().getXmlInt(name+"/health"));
+}
 
 HomeSprite::HomeSprite ( const HomeSprite& s ) :
   MultiSprite( s ),
@@ -18,6 +21,8 @@ HomeSprite::HomeSprite ( const HomeSprite& s ) :
   lastFrame( s.lastFrame ),
   explosion( s.explosion )
 { }
+
+HomeSprite::~HomeSprite( ) { if (explosion) delete explosion; }
 
 HomeSprite& HomeSprite::operator=( const HomeSprite& s ) {
   MultiSprite::operator=( s ),
@@ -55,7 +60,21 @@ void HomeSprite::explode() {
   }
 }
 
+void HomeSprite::draw() const {
+  if ( explosion ) explosion->draw();
+  else MultiSprite::draw();
+}
+
 void HomeSprite::update(Uint32 ticks) {
+  if ( explosion ) {
+    explosion->update(ticks);
+    if ( explosion->chunkCount() == 0 ) {
+      delete explosion;
+      explosion = NULL;
+    }
+    return;
+  }
+
   MultiSprite::update(6*ticks);
   stop();
 }

@@ -5,10 +5,14 @@
 #include <cmath>
 #include "drawable.h"
 
+// class ExplodingSprite;
+
 class MultiSprite : public Drawable {
 public:
   MultiSprite(const std::string&);
   MultiSprite(const MultiSprite&);
+  // ~MultiSprite();
+  ~MultiSprite(){}
 
   virtual void draw() const;
   virtual void update(Uint32 ticks);
@@ -26,25 +30,36 @@ public:
     return images[currentFrame]->getSurface();
   }
 
+  void resetCurrentFrame()    { currentFrame = 0;     }
+  void decreaseCurrentFrame() { --currentFrame;       }
+  unsigned getCurrentFrame()  { return currentFrame;  }
+  unsigned getNumberOfFrames(){ return numberOfFrames;}
+  void setNumberOfFrames( unsigned nof ) { numberOfFrames = nof; }
 
+  int getWorldWidth () { return worldWidth; }
+  int getWorldHeight() { return worldHeight;}
 
-  int getPower()  const { return power;  }
+  void setImages(const std::vector<Image *>& _images) {
+    images = _images;
+  }
+
+  std::vector<Image*> getImages() const { return images; }
+
   int getHealth() const { return health; }
   int getAttack() const { return attack; }
-  int getDefend() const { return defend; }
 
-  void setPower (const int p ) { power  = p; }
   void setHealth(const int h ) { health = h; }
   void setAttack(const int a ) { attack = a; }
-  void setDefend(const int d ) { defend = d; }
 
-  void subtractHealth( const int harm ) {
-    if( harm > defend )
-      health -= (harm - defend);
-  }
+  bool subtractHealth( const int );
+
+  MultiSprite& operator=(const MultiSprite&);
+
+  // virtual void explode();
 
 protected:
   std::vector<Image *> images;
+  // ExplodingSprite* explosion;
 
   unsigned currentFrame;
   unsigned numberOfFrames;
@@ -54,12 +69,9 @@ protected:
   int worldHeight;
 
   void advanceFrame(Uint32 ticks);
-  MultiSprite& operator=(const MultiSprite&);
-  
+
 private:
   int attack;
-  int defend;
   int health;
-  int power;
 };
 #endif

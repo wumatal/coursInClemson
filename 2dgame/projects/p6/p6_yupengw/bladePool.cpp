@@ -46,10 +46,12 @@ void BladePool::active( ){
 }
 
 void BladePool::active( Player* player, HomeSprite* home ){
-  if( !inPools.empty() && (inPools.size() + actives.size()) > 10 ) {
+  // if( !inPools.empty() && (inPools.size() + actives.size()) > 10 ) {
+  if( !inPools.empty() ) {
     active();
   }
-  else {
+  // else {
+  else if ((inPools.size() + actives.size())<1) {
     Vector2f pos = player->getPosition();
     int w = player->getScaledWidth();
     int h = player->getScaledHeight();
@@ -65,33 +67,42 @@ void BladePool::active( Player* player, HomeSprite* home ){
 }
 
 
-void BladePool::collideWith( Drawable* p, HomeSprite* home ) {
-  Player* player = static_cast<Player*>(p);
+void BladePool::collideWith( Player* player, HomeSprite* home ) {
+  // Player* player = static_cast<Player*>(p);
   bool deleted = false;
 
   auto it = actives.begin();
   while ( it != actives.end() ) {
     deleted = false;
     // Check if player is collided with rival.
-    // if ( strategies[0]->execute(*player, **it) ) {
-    if ( strategy->execute(*player, **it) ) {
+    if ( strategy->execute(*(player->getPlayer()), **it) ) {
       // If the rival is attacking, check if the player defends or not.
       if( (*it)->isHit()) {
         if( player->getMode() == 4 )
-          player->setVelocityX(-300);
-        else if( player->hurtable() )
+          player->setVelocityX(-500);
+        else if( player->hurtable() ) {
           player->hurting();
+          if( player->getPlayer()->subtractHealth((*it)->getAttack()) )
+            player->explode();
+        }
       }
       // If the player is attacking, set the rival to fall.
       if( player->isHit() && (*it)->getMode() < 2 ) {
-        (*it)->falling();
+        if( (*it)->subtractHealth(player->getPlayer()->getAttack()) )
+          (*it)->falling();
       }
     }
 
     // else if ( strategies[1]->execute(*home, **it) ) {
     else if ( strategy->execute(*home, **it) ) {
       if( (*it)->isHit() ) {
-        home->shake();
+        if( home->subtractHealth((*it)->getAttack()) ) {
+          home->explode();
+          // lose!
+        }
+        else {
+          home->shake();
+        }
       }
     }
     // Check the deads

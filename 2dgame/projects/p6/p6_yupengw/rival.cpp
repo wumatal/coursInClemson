@@ -27,9 +27,8 @@ Rival::Rival ( const std::string& name, const Vector2f& pos,
   hit      ( false ),
   hitFrame ( Gamedata::getInstance().getXmlInt(getName()+"Attack/hitFrame") )
 {
-  setAttack(1 );
-  setHealth(10);
-  setDefend(2);
+  setAttack(Gamedata::getInstance().getXmlInt(name+"/power") );
+  setHealth(Gamedata::getInstance().getXmlInt(name+"/health"));
 }
 
 Rival::Rival ( const Rival& s ) :
@@ -42,11 +41,7 @@ Rival::Rival ( const Rival& s ) :
   lastFrame  ( s.lastFrame ),
   hit        ( s.hit ),
   hitFrame   ( s.hitFrame )
-{
-  setAttack( s.getAttack() );
-  setHealth( s.getHealth() );
-  setDefend( s.getDefend() );
-}
+{ }
 
 Rival& Rival::operator=( const Rival& s ) {
   SmartSprite::operator=(s);
@@ -59,14 +54,13 @@ Rival& Rival::operator=( const Rival& s ) {
   lastFrame    = s.lastFrame;
   hit = s.hit;
   hitFrame = s.hitFrame;
-  setAttack( s.getAttack() );
-  setHealth( s.getHealth() );
-  setDefend( s.getDefend() );
   return *this;
 }
 
 void Rival::init() {
   setPosition(initialPosition);
+  lastFrame = 0;
+  hit = false;
   walking();
 }
 
@@ -102,12 +96,14 @@ void Rival::fall(  )    {
 void Rival::attack()   {
   frameInterval  = Gamedata::getInstance().getXmlInt(getName()+"Attack/frameInterval");
   numberOfFrames = Gamedata::getInstance().getXmlInt(getName()+"Attack/frames");
-  if( currentFrame  >= lastFrame ) {
-    if( hit )
-      hit = false;
 
-    if( currentFrame == hitFrame )
+  if( currentFrame  >= lastFrame ) {
+    if( currentFrame == hitFrame && lastFrame != currentFrame ) {
       hit = true;
+    }
+    else {
+      hit = false;
+    }
 
     lastFrame = currentFrame;
     images = attackImgs;

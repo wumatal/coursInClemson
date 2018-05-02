@@ -54,10 +54,14 @@
   <frameInterval>329</frameInterval>
   <speedX>0</speedX>
   <speedY>0</speedY>
+  <power>5</power>
+  <health>100</health>
+  <healthBarX>30</healthBarX>
+  <healthBarY>90</healthBarY>
   <transparency>false</transparency>
   <chunk>
     <size>16</size>
-    <distance>200</distance>
+    <distance>300</distance>
   </chunk>
 </home>
 <homeShake>
@@ -69,6 +73,7 @@
   <transparency>false</transparency>
 </homeShake>
 
+
 <gate>
   <file>assets/gate.png</file>
   <startLoc x="1700" y="296"/>
@@ -78,10 +83,14 @@
   <frameInterval>333</frameInterval>
   <speedX>0</speedX>
   <speedY>0</speedY>
+  <power>5</power>
+  <health>100</health>
+  <healthBarX>30</healthBarX>
+  <healthBarY>120</healthBarY>
   <transparency>false</transparency>
   <chunk>
-    <size>16</size>
-    <distance>200</distance>
+    <size>64</size>
+    <distance>300</distance>
   </chunk>
 </gate>
 <gateShake>
@@ -117,6 +126,14 @@
   <frameInterval>301</frameInterval>
   <speedX>0</speedX>
   <speedY>0</speedY>
+  <power>5</power>
+  <health>10</health>
+  <healthBarX>30</healthBarX>
+  <healthBarY>150</healthBarY>
+  <chunk>
+    <size>16</size>
+    <distance>200</distance>
+  </chunk>
   <transparency>false</transparency>
 </Player>
 <PlayerRight>
@@ -301,9 +318,11 @@
   <frameInterval>162</frameInterval>
   <speedX>-64</speedX>
   <speedY>0</speedY>
-  <quantity>7</quantity>
+  <quantity>1</quantity>
   <velOffset>10</velOffset>
-  <safeDistance>110</safeDistance>
+  <safeDistance>90</safeDistance>
+  <power>1</power>
+  <health>10</health>
   <transparency>false</transparency>
 </Blade>
 <BladeAttack>
@@ -312,7 +331,7 @@
   <imageWidth>152</imageWidth>
   <imageHeight>170</imageHeight>
   <frameInterval>152</frameInterval>
-  <hitFrame>6</hitFrame>
+  <hitFrame>8</hitFrame>
   <speedX>0</speedX>
   <speedY>0</speedY>
   <transparency>false</transparency>

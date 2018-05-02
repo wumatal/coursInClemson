@@ -4,6 +4,7 @@
 #include "sprite.h"
 #include "gamedata.h"
 #include "imageFactory.h"
+// #include "explodingSprite.h"
 
 Vector2f Sprite::makeVelocity(int vx, int vy) const {
   int offset = Gamedata::getInstance().getXmlInt("Shuriken/velOffset");
@@ -19,6 +20,7 @@ Sprite::Sprite(const string& n, const Vector2f& pos, const Vector2f& vel,
                const Image* img):
   Drawable(n, pos, vel),
   image( img ),
+  // explosion(nullptr),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -32,6 +34,7 @@ Sprite::Sprite(const std::string& name) :
                     Gamedata::getInstance().getXmlInt(name+"/speedY"))
            ),
   image( ImageFactory::getInstance().getImage(name) ),
+  // explosion(nullptr),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
@@ -39,15 +42,19 @@ Sprite::Sprite(const std::string& name) :
 Sprite::Sprite(const Sprite& s) :
   Drawable(s),
   image(s.image),
+  // explosion(s.explosion),
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height"))
 { }
+
+// Sprite::~Sprite() { if ( explosion ) delete explosion; }
 
 Sprite& Sprite::operator=(const Sprite& rhs) {
   Drawable::operator=( rhs );
   image = rhs.image;
   worldWidth = rhs.worldWidth;
   worldHeight = rhs.worldHeight;
+  // explosion = rhs.explosion;
   return *this;
 }
 
@@ -78,3 +85,7 @@ void Sprite::update(Uint32 ticks) {
     setVelocityX( -std::abs( getVelocityX() ) );
   }
 }
+
+// void Sprite::explode() {
+//   if ( !explosion ) explosion = new ExplodingSprite(*this);
+// }

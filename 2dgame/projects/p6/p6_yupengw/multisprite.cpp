@@ -1,6 +1,7 @@
 #include "multisprite.h"
 #include "gamedata.h"
 #include "imageFactory.h"
+// #include "explodingSprite.h"
 
 void MultiSprite::advanceFrame(Uint32 ticks) {
 	timeSinceLastFrame += ticks;
@@ -18,7 +19,7 @@ MultiSprite::MultiSprite( const std::string& name) :
                     Gamedata::getInstance().getXmlInt(name+"/speedY"))
            ),
   images( ImageFactory::getInstance().getImages(name) ),
-
+	// explosion(nullptr),
   currentFrame(0),
   numberOfFrames( Gamedata::getInstance().getXmlInt(name+"/frames") ),
   frameInterval( Gamedata::getInstance().getXmlInt(name+"/frameInterval")),
@@ -26,14 +27,13 @@ MultiSprite::MultiSprite( const std::string& name) :
   worldWidth(Gamedata::getInstance().getXmlInt("world/width")),
   worldHeight(Gamedata::getInstance().getXmlInt("world/height")),
   attack( 0 ),
-	defend( 0 ),
-	health( 1 ),
-	power ( 0 )
+	health( 1 )
 { }
 
 MultiSprite::MultiSprite(const MultiSprite& s) :
   Drawable(s),
   images  (s.images),
+	// explosion( s.explosion),
   currentFrame  ( s.currentFrame),
   numberOfFrames( s.numberOfFrames ),
   frameInterval ( s.frameInterval ),
@@ -41,9 +41,7 @@ MultiSprite::MultiSprite(const MultiSprite& s) :
   worldWidth  ( s.worldWidth ),
   worldHeight ( s.worldHeight ),
 	attack			( s.attack ),
-	defend			( s.defend ),
-	health			( s.health ),
-	power 			( s.power  )
+	health			( s.health )
   { }
 
 MultiSprite& MultiSprite::operator=(const MultiSprite& s) {
@@ -56,15 +54,28 @@ MultiSprite& MultiSprite::operator=(const MultiSprite& s) {
   worldWidth = ( s.worldWidth );
   worldHeight = ( s.worldHeight );
 	attack	=		( s.attack );
-	defend	=		( s.defend );
 	health	=		( s.health );
-	power 	=		( s.power  );
+	// explosion = s.explosion;
   return *this;
 }
+
+bool MultiSprite::subtractHealth( const int harm ) {
+		health -= harm;
+		return health <= 0 ? true : false;
+}
+// MultiSprite::~MultiSprite( ) { if (explosion) delete explosion; }
 
 void MultiSprite::draw() const {
   images[currentFrame]->draw(getX(), getY(), getScale());
 }
+
+// void MultiSprite::explode() {
+//   if ( !explosion ) {
+//     Sprite
+//     sprite(getName(), getPosition(), getVelocity(), images[currentFrame]);
+//     explosion = new ExplodingSprite(sprite);
+//   }
+// }
 
 void MultiSprite::update(Uint32 ticks) {
   advanceFrame(ticks);
@@ -79,7 +90,7 @@ void MultiSprite::update(Uint32 ticks) {
     setVelocityY( -fabs( getVelocityY() ) );
   }
 
-	if ( getX() < 0) {
+	if ( (0.5*getX()) < 0) {
 		setVelocityX( fabs( getVelocityX() ) );
 	}
 	if ( getX() > worldWidth-getScaledWidth()) {

@@ -38,7 +38,7 @@ void BladePool::update( Uint32 ticks ) {
 }
 
 void BladePool::active( ){
-  if( std::rand() % 51 == 7 ) {
+  if( std::rand() % 101 == 7 ) {
     static_cast<Rival*>(inPools.back())->init();
     actives.push_back(inPools.back());
     inPools.pop_back();

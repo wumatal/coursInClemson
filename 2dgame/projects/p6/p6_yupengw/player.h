@@ -8,14 +8,16 @@
 #include "rival.h"
 #include "bullet.h"
 
+class ExplodingSprite;
+
 class Player {
 public:
   Player( const std::string& );
   Player( const Player& );
   Player& operator=( const Player& );
 
-  virtual void update( Uint32 ticks );
-  virtual void draw() const { player.draw(); };
+  void update( Uint32 ticks );
+  void draw() const;
   // Add collision
   void attach( Rival* o ) { observers.push_back(o); }
   void detach( Rival* o );
@@ -23,42 +25,41 @@ public:
   const std::string& getName() const { return player.getName(); }
   int getX() const { return player.getX(); }
   int getY() const { return player.getY(); }
+  void setX( float x) { player.setX(x); }
+  void setY( float y) { player.setY(y); }
+  void setVelocityX( float vx ) { player.setVelocityX(vx);  }
+  void setVelocityY( float vy ) { player.setVelocityY(vy);  }
   const Image* getImage() const {
     return player.getImage();
   }
-  int getScaledWidth()  const { 
+  int getScaledWidth()  const {
     return player.getScaledWidth();
-  } 
-  int getScaledHeight()  const { 
+  }
+  int getScaledHeight()  const {
     return player.getScaledHeight();
-  } 
-  const SDL_Surface* getSurface() const { 
+  }
+  const SDL_Surface* getSurface() const {
     return player.getSurface();
   }
+  const Vector2f& getPosition() const    { return player.getPosition(); }
 
-  // virtual int getScaledWidth()  const {
-  //   return MultiSprite::getScaledWidth() - 70;
-  // }
-
-  // virtual float getX() const  { return MultiSprite::getX() - 170; }
+  MultiSprite* getPlayer() { return &player; }
 
   void respondTo( const Uint8 * );
 
-  // void collided()   { collision = true;   }
-  // void missed()     { collision = false;  }
   void turnLeft()   { toLeft    = true;   }
   void turnRight()  { toLeft    = false;  }
-  void jumping()    { currentMode = JUMP;  currentFrame = 0; }
-  void landing()    { currentMode = LAND;  currentFrame = 0; }
-  // void lattacking() { currentMode = ATCK;  currentFrame = 0; }
-  void blocking()   { currentMode = BLCK;  currentFrame = 0; }
+  void jumping()    { currentMode = JUMP;  player.resetCurrentFrame(); }
+  void landing()    { currentMode = LAND;  player.resetCurrentFrame(); }
+  void lattacking() { currentMode = ATCK;  player.resetCurrentFrame(); }
+  void blocking()   { currentMode = BLCK;  player.resetCurrentFrame(); }
   void hurting()    {
     if( currentMode == IDLE || currentMode == LAND ) {
       currentMode = HURT;
-      currentFrame = 0;
+      player.resetCurrentFrame();
     }
   }
-  void shooting()   { currentMode = SHOT;  currentFrame = 0; }
+  void shooting()   { currentMode = SHOT;  player.resetCurrentFrame(); }
   void blockDone()  { currentMode = IDLE; }
   bool isHit() const{ return hit;         }
   bool hurtable() const {
@@ -75,12 +76,14 @@ public:
   void jump(int);
   void roll();
   void knee();
-  // void lattack();
+  void lattack();
   void block();
   void hurt( );
   void shoot();
-
+  void explode();
   void activeBullet ( );
+
+  void revive();
   // void deleteBullets( );
 
 private:
@@ -96,7 +99,7 @@ private:
   std::vector<Image *> rollImgs;
   std::vector<Image *> kneeImgs;
   std::vector<Image *> blockImgs;
-  // std::vector<Image *> lattackImgs;
+  std::vector<Image *> lattackImgs;
   std::vector<Image *> hurtImgs;
   std::vector<Image *> shootImgs;
 
@@ -107,7 +110,7 @@ private:
   std::vector<Image *> rollRImgs;
   std::vector<Image *> kneeRImgs;
   std::vector<Image *> blockRImgs;
-  // std::vector<Image *> lattackRImgs;
+  std::vector<Image *> lattackRImgs;
   std::vector<Image *> hurtRImgs;
   std::vector<Image *> shootRImgs;
 
@@ -117,6 +120,7 @@ private:
   bool toLeft;
   // bool collision;
   bool hit;
+  bool dead;
 
   Vector2f initialPosition;
   Vector2f initialVelocity;
@@ -127,5 +131,6 @@ private:
   int  gravity;
   unsigned lastFrame;
   unsigned hitFrame;
+  ExplodingSprite* explosion;
 };
 #endif
